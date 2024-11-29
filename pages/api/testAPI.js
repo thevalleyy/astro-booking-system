@@ -1,4 +1,4 @@
-import testSomething from "@/js/testSomething";
+import testSomething from "../../js/testSomething.js";
 
 export default (req, res) => {
     // pass elemtents to the function

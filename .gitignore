@@ -1,6 +1,5 @@
 # Custom .gitignore
 /data
-config.json
 jsconfig.json
 
 

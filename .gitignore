@@ -1,6 +1,5 @@
 # Custom .gitignore
 /data
-.eslintrc.json
 config.json
 jsconfig.json
 

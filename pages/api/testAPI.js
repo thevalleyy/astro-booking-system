@@ -1,6 +1,6 @@
 import testSomething from "../../js/tableHeaders.js";
 
-export default (req, res) => {
+const handler = (req, res) => {
     // pass elemtents to the function
     try {
         const result = testSomething(req.query);
@@ -17,3 +17,5 @@ export default (req, res) => {
         res.status(500).json(json);
     }
 };
+
+export default handler;

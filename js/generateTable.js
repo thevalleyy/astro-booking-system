@@ -3,6 +3,8 @@ const fs = require("node:fs");
 
 /**
  * Generates a json table at data/table.json based on the config file
+ *
+ * Note that this function has to be called from the root directory of the project!
  */
 function generateTable() {
     const config = require("../config.json");
@@ -17,14 +19,14 @@ function generateTable() {
         table.data[headers[i]] = { 0: config.settings.default };
     }
 
-    fs.access("../data/table.json", fs.constants.F_OK, (err) => {
+    fs.access("./data/table.json", fs.constants.F_OK, (err) => {
         // don't overwrite the file if it exists
         if (err) {
             try {
-                fs.mkdirSync("../data").catch();
+                fs.mkdirSync("./data");
             } catch (e) {} // the directory already exists, so ignore the error
 
-            fs.writeFileSync("../data/table.json", JSON.stringify(table, null, 4));
+            fs.writeFileSync("./data/table.json", JSON.stringify(table, null, 4));
         }
     });
 }

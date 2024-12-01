@@ -8,5 +8,13 @@
         "requests": true,
         "log_path": "./logs/",
         "log_extension": ".log"
+    },
+    "html-meta-data": {
+        "title": "Windows NT 4.0 and Windows 95 Key Generator",
+        "description": "This Windows 95 styled website allows you to create Windows NT 4.0, Windows 95, Windows 98 and Office 7.0 keys. It supports different forms such as 10-digit, 11-digit, or OEM format. There's also a public API available!",
+        "url": "https://win95.thevalleyy.tk/",
+        "image": "https://i.imgur.com/skt7k4g.png",
+        "large_image": true,
+        "color": "#000181"
     }
 }

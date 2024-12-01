@@ -1,6 +1,10 @@
 {
     "settings": {
-        "port": 3000
+        "port": 3000,
+        "start": "18:00",
+        "end": "21:00",
+        "increment": "00:20",
+        "sots_per_column": 15
     },
     "log": {
         "enabled": false,

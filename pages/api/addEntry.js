@@ -5,13 +5,8 @@ const handler = (req, res) => {
     request(req);
 
     // pass elemtents to the function
-    const result = addEntry(req.query);
-    if (!result.success) {
-        res.status(400).json(result); // bad request
-        return;
-    }
-
-    res.status(200).json(result); // ok
+    const result = addEntry(JSON.parse(JSON.stringify(req.body)));
+    res.status(result.code).json(result);
 };
 
 export default handler;

@@ -9,6 +9,12 @@
             "firstname": "",
             "email": "",
             "bookedSlots": 0
+        },
+        "checks": {
+            "lastname": 30,
+            "firstname": 30,
+            "email": true,
+            "maxBookedSlots": 5
         }
     },
     "log": {

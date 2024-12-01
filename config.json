@@ -3,7 +3,13 @@
         "port": 3000,
         "start": "18:00",
         "end": "21:00",
-        "increment": "00:20"
+        "increment": "00:20",
+        "default": {
+            "lastname": "",
+            "firstname": "",
+            "email": "",
+            "bookedSlots": 0
+        }
     },
     "log": {
         "enabled": false,

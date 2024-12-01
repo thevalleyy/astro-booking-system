@@ -1,6 +1,9 @@
 {
     "settings": {
-        "port": 3000
+        "port": 3001,
+        "start": "18:00",
+        "end": "21:00",
+        "increment": "00:20"
     },
     "log": {
         "enabled": false,
@@ -10,10 +13,10 @@
         "log_extension": ".log"
     },
     "html-meta-data": {
-        "title": "Windows NT 4.0 and Windows 95 Key Generator",
-        "description": "This Windows 95 styled website allows you to create Windows NT 4.0, Windows 95, Windows 98 and Office 7.0 keys. It supports different forms such as 10-digit, 11-digit, or OEM format. There's also a public API available!",
-        "url": "https://win95.thevalleyy.tk/",
-        "image": "https://i.imgur.com/skt7k4g.png",
+        "title": "Astro-Booking-System",
+        "description": "Buchen Sie Ihren Termin!",
+        "url": "https://astro.rathenau.eu/",
+        "image": "https://apod.nasa.gov/apod/image/1611/PacmanCrawfordNew2048.jpg",
         "large_image": true,
         "color": "#000181"
     }

@@ -1,4 +1,4 @@
-import testSomething from "../../js/testSomething.js";
+import testSomething from "../../js/tableHeaders.js";
 
 export default (req, res) => {
     // pass elemtents to the function

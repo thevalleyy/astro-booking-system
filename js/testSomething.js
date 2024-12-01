@@ -1,6 +1,4 @@
-function testSomething(args) {
-    console.log("this test is run server-side");
-    console.log(args);
+function testSomething() {
     return "this is a test";
 }
 

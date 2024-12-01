@@ -1,6 +1,7 @@
 import React from 'react';
 const config = require("../config.json");
 
+
 const TimeTable = () => {
   // Function to generate times from 18:00 to 21:00, incrementing by 20 minutes
   const generateTimes = () => {

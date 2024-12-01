@@ -13,7 +13,7 @@
     },
     "log": {
         "enabled": false,
-        "ips": false,
+        "ips": true,
         "requests": true,
         "log_path": "./logs/",
         "log_extension": ".log"

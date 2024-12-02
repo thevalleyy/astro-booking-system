@@ -14,7 +14,6 @@
 html,
 body {
     background-color: #008081;
-    overflow: hidden;
 }
 
 span {
@@ -38,5 +37,15 @@ span {
 
 .center-H {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+}
+
+.clicked {
+    background-color: #00ff00;
+}
+
+.booked {
+    background-color: #ff0000;
 }

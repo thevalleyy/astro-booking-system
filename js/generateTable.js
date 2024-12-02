@@ -16,7 +16,7 @@ function generateTable() {
     };
 
     for (let i = 0; i < headers.length; i++) {
-        table.data[headers[i]] = { 0: config.settings.default };
+        table.data[headers[i]] = {};
     }
 
     fs.access("./data/table.json", fs.constants.F_OK, (err) => {

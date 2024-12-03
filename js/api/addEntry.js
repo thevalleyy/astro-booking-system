@@ -128,6 +128,8 @@ function addEntry(query) {
             bookedSlots: Number(query["bookedSlots"]),
         };
 
+        // backup file before writing
+        fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
     } catch (error) {
         console.error(error);

@@ -140,7 +140,7 @@ function addEntry(query) {
     return {
         code: 200,
         success: true,
-        message: "Test successful",
+        message: "Booking successful",
     };
 }
 

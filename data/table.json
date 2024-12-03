@@ -1,8 +1,21 @@
 {
-    "updated": 1733175049483,
+    "updated": 1733223905151,
     "data": {
         "18:00": {},
-        "18:20": {},
+        "18:20": {
+            "0": {
+                "firstname": "sdfsdfsdf",
+                "lastname": "sdfsdf",
+                "email": "sdf@sdf.com",
+                "bookedSlots": 3
+            },
+            "1": {
+                "firstname": "sdfsdfs",
+                "lastname": "dd",
+                "email": "sdf@sdfj.com",
+                "bookedSlots": 2
+            }
+        },
         "18:40": {},
         "19:00": {},
         "19:20": {},

@@ -1,10 +1,8 @@
-const fs = require("node:fs");
-
 /**
  * Get the number of booked slots for a specific time slot
  * @returns An object with the time slots and the number of already booked slots
  */
-function addEntry() {
+function getBookings() {
     try {
         const table = require("../../data/table.json")["data"];
         const response = {};
@@ -33,4 +31,4 @@ function addEntry() {
     }
 }
 
-module.exports = addEntry;
+module.exports = getBookings;

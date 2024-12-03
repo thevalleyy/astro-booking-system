@@ -1,7 +1,6 @@
 import Head from "next/head";
 const config = require("../config.json");
 const metaData = config["html-meta-data"];
-const oEmbed = "oembed.json";
 
 export default function FourOhFour() {
     return (
@@ -18,7 +17,9 @@ export default function FourOhFour() {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
             <div className="center fullscreen">
-                <p className="no-select">This page does not exist.</p>
+                <p className="no-select">How did you manage to do that? :)</p>
+                <br></br>
+                <p className="no-select">This page does not exist</p>
                 <p className="no-select"></p>
                 <div className="no-select btns">
                     <button
@@ -30,9 +31,7 @@ export default function FourOhFour() {
                             history.go(-1);
                         }}
                     >
-                        <span className="btn-text">
-                            <u>B</u>ack
-                        </span>
+                        <span className="btn-text">Back</span>
                     </button>
                     <button
                         className="btn"
@@ -43,9 +42,7 @@ export default function FourOhFour() {
                             window.location.href = "/";
                         }}
                     >
-                        <span className="btn-text">
-                            <u>H</u>ome
-                        </span>
+                        <span className="btn-text">Home</span>
                     </button>
                 </div>
             </div>

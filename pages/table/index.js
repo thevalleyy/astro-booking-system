@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
+import Head from "next/head";
 import axios from "axios";
 
 import tableHeaders from "../../js/tableHeaders.js";
 const config = require("../../config.json");
 const { slotsPerColumn } = config.settings;
 const { checks } = config.settings;
+const metaData = config["html-meta-data"];
 
+/**
+ * Request the server to book the selected slots
+ * @param {Function} setUpdated The function to set the updated time
+ */
 const bookSlots = (setUpdated) => {
     // send the data to the server and handle the response
     const firstname = document.getElementById("firstname").value;
@@ -57,6 +63,11 @@ const bookSlots = (setUpdated) => {
         });
 };
 
+/**
+ * Request the server to mark the booked slots
+ * @param {Function} setUpdated The function to set the updated time
+ * @param {String} reason The reason for the requested update
+ */
 const markBookedSlots = (setUpdated, reason) => {
     // get number of booked slots for each time slot
     axios
@@ -112,85 +123,95 @@ const TimeTable = () => {
     }, []);
 
     return (
-        <div>
-            <h1>Time Table - {updated}</h1>
-            <button
-                style={{ display: "none" }}
-                onClick={() => {
-                    markBookedSlots(setUpdated, "websocket");
-                }}
-                id="refreshButton"
-            ></button>
-            <table style={{ borderCollapse: "collapse", width: "100%" }}>
-                <thead>
-                    <tr>
-                        {times.map((time, index) => (
-                            <th
-                                className="header"
-                                key={`${time}`} // Added a unique key
-                                id={index}
-                                style={{
-                                    border: "1px solid #000",
-                                    padding: "8px",
-                                    textAlign: "center",
-                                    backgroundColor: "#f2f2f2",
-                                }}
-                            >
-                                {time}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {[...Array(slotsPerColumn)].map((_, rowIndex) => (
-                        <tr key={`row_${rowIndex}`}>
-                            {times.map((element, colIndex) => (
-                                <td
-                                    onClick={() => {
-                                        if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("booked")) return;
-                                        document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
-                                    }}
-                                    key={`${rowIndex}_${colIndex}`}
-                                    id={`${colIndex}_${rowIndex}`}
-                                    style={{
-                                        border: "1px solid #000",
-                                        padding: "8px",
-                                        textAlign: "center",
-                                    }}
+        <>
+            <Head>
+                <title>astro-booking-system - schedule</title>
+                <link rel="icon" href="/favicon.ico" />
+                <meta content={metaData.title} property="og:title" />
+                <meta content="website" property="og:type" />
+                <meta content={metaData.description} property="og:description" />
+                <meta content={metaData.url} property="og:url" />
+                <meta content={metaData.image} property="og:image" />
+                <meta content={metaData.color} name="theme-color" />
+                {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
+            </Head>
+            <div>
+                <h1>Time Table - {updated}</h1>
+                <h1>
+                    <a className="backToHome" href=".">
+                        {" "}
+                        Home
+                    </a>
+                </h1>
+                <button
+                    style={{ display: "none" }}
+                    onClick={() => {
+                        markBookedSlots(setUpdated, "websocket");
+                    }}
+                    id="refreshButton"
+                ></button>
+                <table className="schedule">
+                    <thead>
+                        <tr>
+                            {times.map((time, index) => (
+                                <th
+                                    className="header"
+                                    key={`${time}`} // Added a unique key
+                                    id={index}
                                 >
-                                    {colIndex} {rowIndex}
-                                </td>
+                                    {time}
+                                </th>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-            <form
-                className="center-H"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    bookSlots(setUpdated);
-                }}
-            >
-                <label htmlFor="name">Firstname:</label>
-                <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
+                    </thead>
+                    <tbody>
+                        {[...Array(slotsPerColumn)].map((_, rowIndex) => (
+                            <tr key={`row_${rowIndex}`}>
+                                {times.map((element, colIndex) => (
+                                    <td
+                                        className="slot"
+                                        onClick={() => {
+                                            if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("booked")) return;
+                                            document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
+                                        }}
+                                        key={`${rowIndex}_${colIndex}`}
+                                        id={`${colIndex}_${rowIndex}`}
+                                        title="Click to select"
+                                    >
+                                        {colIndex} {rowIndex}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                <form
+                    className="center-H"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        bookSlots(setUpdated);
+                    }}
+                >
+                    <label htmlFor="name">Firstname:</label>
+                    <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
 
-                <label htmlFor="name">Lastname:</label>
-                <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
+                    <label htmlFor="name">Lastname:</label>
+                    <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
 
-                <label htmlFor="name">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-                    size="30"
-                    required
-                />
+                    <label htmlFor="name">Email:</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                        size="30"
+                        required
+                    />
 
-                <input type="submit" value="Book" style={{ fontSize: "2em", marginTop: "10px" }}></input>
-            </form>
-        </div>
+                    <input type="submit" value="Book" style={{ fontSize: "2em", marginTop: "10px" }}></input>
+                </form>
+            </div>
+        </>
     );
 };
 

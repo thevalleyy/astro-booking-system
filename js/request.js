@@ -1,6 +1,10 @@
 const fs = require("node:fs");
 const config = require("../config.json");
 
+/**
+ * Write a log file with the request information
+ * @param {Request} req The request object
+ */
 async function writeLog(req) {
     if (!config.log.enabled) return;
 

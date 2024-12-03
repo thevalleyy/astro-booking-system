@@ -2,6 +2,7 @@ const fs = require("node:fs");
 
 const keys = Object.keys(require("../../config.json")["settings"]["default"]);
 const checks = require("../../config.json")["settings"]["checks"];
+const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"];
 const validSlots = Object.keys(require("../../data/table.json")["data"]);
 
 /**
@@ -14,7 +15,7 @@ function addEntry(query) {
         // check if all fields are present
         if (!query[keys[i]]) {
             return {
-                code: 200,
+                code: 400,
                 success: false,
                 message: "Missing field: " + keys[i],
             };
@@ -24,7 +25,7 @@ function addEntry(query) {
     if (!query["timeSlot"]) {
         // check if timeSlot is present
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: "Missing field: timeSlot",
         };
@@ -35,7 +36,7 @@ function addEntry(query) {
     if (query["firstname"].length > checks.firstname) {
         // check if firstname is too long
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: `Firstname too long. Maximum is ${checks.firstname}`,
         };
@@ -44,7 +45,7 @@ function addEntry(query) {
     if (query["lastname"].length > checks.lastname) {
         // check if lastname is too long
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: `Lastname too long. Maximum is ${checks.lastname}`,
         };
@@ -59,7 +60,7 @@ function addEntry(query) {
         if (!emailRegEx.test(email)) {
             // check if email is valid
             return {
-                code: 200,
+                code: 400,
                 success: false,
                 message: "Invalid email",
             };
@@ -69,7 +70,7 @@ function addEntry(query) {
     if (isNaN(query["bookedSlots"]) || Number(query["bookedSlots"]) < 0) {
         // check if bookedSlots is a number
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: "Invalid number of booked slots",
         };
@@ -78,7 +79,7 @@ function addEntry(query) {
     if (Number(query["bookedSlots"]) > checks.maxBookedSlots) {
         // check if bookedSlots is too high
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: `Too many booked slots. Maximum is ${checks.maxBookedSlots}`,
         };
@@ -87,7 +88,7 @@ function addEntry(query) {
     if (!validSlots.includes(query["timeSlot"])) {
         // check if timeSlot is valid
         return {
-            code: 200,
+            code: 400,
             success: false,
             message: "Invalid time slot",
         };
@@ -112,9 +113,9 @@ function addEntry(query) {
             slotsBooked += placedBookings[i]["bookedSlots"];
         }
 
-        if (slotsBooked + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+        if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
             return {
-                code: 200,
+                code: 400,
                 success: false,
                 message: "Not enough slots available",
             };
@@ -133,14 +134,14 @@ function addEntry(query) {
         return {
             code: 500,
             success: false,
-            message: "Error writing to file",
+            message: "Error writing to file. See server console for more information.",
         };
     }
 
     return {
         code: 200,
         success: true,
-        message: "Booking successful",
+        message: { updated: Date.now() },
     };
 }
 

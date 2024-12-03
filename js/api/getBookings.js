@@ -21,7 +21,7 @@ function addEntry() {
         return {
             code: 200,
             success: true,
-            message: response,
+            message: { updated: require("../../data/table.json").updated, data: response },
         };
     } catch (error) {
         console.error(error);

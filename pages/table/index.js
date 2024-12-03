@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import tableHeaders from "../../js/tableHeaders.js";
 const config = require("../../config.json");
-const table = require("../../data/table.json"); // TODOL: the file is not being watched! this means that the server needs to be restarted to see changes
 const { slotsPerColumn } = config.settings;
+const { checks } = config.settings;
 
-const bookSlots = () => {
+const bookSlots = (setUpdated) => {
     // send the data to the server and handle the response
     const firstname = document.getElementById("firstname").value;
     const lastname = document.getElementById("lastname").value;
@@ -42,55 +42,67 @@ const bookSlots = () => {
             timeSlot: timeSlot,
         })
         .then((response) => {
-            if (response.data.success) {
-                alert("Booking successful");
+            alert("Booking successful");
+            setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
+            markBookedSlots(setUpdated);
 
-                // remove all clicked slots
-                const clickedSlots = document.getElementsByClassName("clicked");
-                while (clickedSlots.length > 0) {
-                    clickedSlots[0].classList.remove("clicked");
-                }
-            } else {
-                alert(response.data.message);
-            }
+            // remove the content of the input fields
+            document.getElementById("firstname").value = "";
+            document.getElementById("lastname").value = "";
+            document.getElementById("email").value = "";
         })
         .catch((error) => {
-            console.error(error);
-            alert(error);
+            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
         });
 };
 
-const markBookedSlots = () => {
-    // mark the booked slots in the table
-    const data = table.data;
-    const slots = Object.keys(data);
-    slots.forEach((slot) => {
-        let bookedSlots = 0;
-        const bookings = data[slot];
+const markBookedSlots = (setUpdated) => {
+    // get number of booked slots for each time slot
+    axios
+        .get("/api/getBookings")
+        .then((response) => {
+            // remove all clicked or booke slots
+            const clickedSlots = document.getElementsByClassName("clicked");
+            while (clickedSlots.length > 0) {
+                clickedSlots[0].classList.remove("clicked");
+            }
 
-        Object.keys(bookings).forEach((booking) => {
-            bookedSlots += bookings[booking].bookedSlots;
+            const bookedSlots = document.getElementsByClassName("booked");
+            while (bookedSlots.length > 0) {
+                bookedSlots[0].classList.remove("booked");
+            }
+
+            // color the booked slots
+            const slots = response.data.message.data;
+            Object.keys(slots).forEach((key) => {
+                for (let i = 0; i < slots[key]; i++) {
+                    const index = Object.keys(slots).indexOf(key);
+                    document.getElementById(`${index}_${i}`).classList.add("booked");
+                    document.getElementById(`${index}_${i}`).style.cursor = "not-allowed";
+                    document.getElementById(`${index}_${i}`).title = "Already booked";
+                }
+            });
+
+            setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
+        })
+        .catch((error) => {
+            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
         });
-
-        for (let i = 0; i < bookedSlots; i++) {
-            document.getElementById(`${slots.indexOf(slot)}_${i}`).classList.add("booked");
-            document.getElementById(`${slots.indexOf(slot)}_${i}`).style.cursor = "not-allowed";
-            document.getElementById(`${slots.indexOf(slot)}_${i}`).title = "Already booked";
-        }
-    });
 };
 
 const TimeTable = () => {
-    useEffect(() => {
-        markBookedSlots();
-    }, []);
+    const [updated, setUpdated] = useState("Fetching data...");
 
     // Generate the times for the table headers
     const times = tableHeaders();
 
+    useEffect(() => {
+        markBookedSlots(setUpdated);
+    }, []);
+
     return (
         <div>
-            <h1>Time Table - Last updated {new Date(table.updated).toLocaleString()}</h1>
+            <h1>Time Table - {updated}</h1>
             <table style={{ borderCollapse: "collapse", width: "100%" }}>
                 <thead>
                     <tr>
@@ -128,7 +140,6 @@ const TimeTable = () => {
                                         textAlign: "center",
                                     }}
                                 >
-                                    {" "}
                                     {colIndex} {rowIndex}
                                 </td>
                             ))}
@@ -140,14 +151,14 @@ const TimeTable = () => {
                 className="center-H"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    bookSlots();
+                    bookSlots(setUpdated);
                 }}
             >
                 <label htmlFor="name">Firstname:</label>
-                <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={config.settings.checks.firstname} size="10" />
+                <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
 
                 <label htmlFor="name">Lastname:</label>
-                <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={config.settings.checks.lastname} size="10" />
+                <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
 
                 <label htmlFor="name">Email:</label>
                 <input

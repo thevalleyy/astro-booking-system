@@ -96,8 +96,6 @@ function getUserBookings(query) {
             });
         });
 
-        console.log(bookedSlots);
-
         return {
             code: 200,
             success: true,

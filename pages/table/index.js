@@ -14,9 +14,9 @@ const metaData = config["html-meta-data"];
  */
 const bookSlots = (setUpdated) => {
     // send the data to the server and handle the response
-    const firstname = document.getElementById("firstname").value;
-    const lastname = document.getElementById("lastname").value;
-    const email = document.getElementById("email").value;
+    const firstname = document.getElementById("firstname").value.replace(/\s+/g, "");
+    const lastname = document.getElementById("lastname").value.replace(/\s+/g, "");
+    const email = document.getElementById("email").value.replace(/\s+/g, "");
 
     // // transform the slots into an array of strings of their id
     const slotsArr = Array.from(document.getElementsByClassName("clicked")).map((slot) => slot.id);
@@ -51,10 +51,10 @@ const bookSlots = (setUpdated) => {
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
             markBookedSlots(setUpdated, "client");
 
-            // remove the content of the input fields
-            document.getElementById("firstname").value = "";
-            document.getElementById("lastname").value = "";
-            document.getElementById("email").value = "";
+            // // remove the content of the input fields
+            // document.getElementById("firstname").value = "";
+            // document.getElementById("lastname").value = "";
+            // document.getElementById("email").value = "";
 
             alert("Booking successful");
         })
@@ -115,9 +115,9 @@ const markBookedSlots = (setUpdated, reason) => {
 const checkBookedSlots = () => {
     axios
         .post("/api/getUserBookings", {
-            firstname: document.getElementById("firstname").value,
-            lastname: document.getElementById("lastname").value,
-            email: document.getElementById("email").value,
+            firstname: document.getElementById("firstname").value.replace(/\s+/g, ""),
+            lastname: document.getElementById("lastname").value.replace(/\s+/g, ""),
+            email: document.getElementById("email").value.replace(/\s+/g, ""),
         })
         .then((response) => {
             const { bookedSlots } = response.data.message;
@@ -131,6 +131,12 @@ const checkBookedSlots = () => {
             const clickedSlots = document.getElementsByClassName("clicked");
             while (clickedSlots.length > 0) {
                 clickedSlots[0].classList.remove("clicked");
+            }
+
+            // remove all bookedByClient slots
+            const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
+            while (bookedByClientSlots.length > 0) {
+                bookedByClientSlots[0].classList.remove("bookedByClient");
             }
 
             // color the booked slots
@@ -255,6 +261,7 @@ const TimeTable = () => {
                             style={{ fontSize: "2em", marginTop: "10px" }}
                             onClick={() => {
                                 bookSlots(setUpdated);
+                                document.getElementById("clearSelection").click();
                             }}
                         ></input>
                         <input
@@ -265,6 +272,25 @@ const TimeTable = () => {
                                 checkBookedSlots();
                             }}
                         ></input>
+                        <button
+                            type="button"
+                            id="clearSelection"
+                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            onClick={() => {
+                                const clickedSlots = document.getElementsByClassName("clicked");
+                                while (clickedSlots.length > 0) {
+                                    clickedSlots[0].classList.remove("clicked");
+                                }
+
+                                const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
+                                while (bookedByClientSlots.length > 0) {
+                                    bookedByClientSlots[0].title = "Already booked";
+                                    bookedByClientSlots[0].classList.remove("bookedByClient");
+                                }
+                            }}
+                        >
+                            Clear selection
+                        </button>
                     </div>
                 </form>
             </div>

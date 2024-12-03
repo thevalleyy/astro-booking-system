@@ -24,7 +24,7 @@ export default function Home() {
                 <br></br>
                 <h1 className="center-H">Welcome to the Astro Booking System</h1>
                 <br></br>
-                <h2 className="center-H">Here's how it works ... </h2>
+                <h2 className="center-H">Here&#39;s how it works ... </h2>
                 <br></br>
                 <div className="nextToEachOther">
                     <button

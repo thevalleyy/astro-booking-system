@@ -1,35 +1,9 @@
 {
-    "updated": 1733242692750,
+    "updated": 1733245207934,
     "data": {
-        "18:00": {
-            "0": {
-                "firstname": "Hans",
-                "lastname": "Wurst",
-                "email": "hanswurst@gmail.com",
-                "bookedSlots": 3
-            },
-            "1": {
-                "firstname": "Hans",
-                "lastname": "Wurst",
-                "email": "hanswurst@gmail.com",
-                "bookedSlots": 1
-            }
-        },
+        "18:00": {},
         "18:20": {},
-        "18:40": {
-            "0": {
-                "firstname": "SaaS",
-                "lastname": "Sfds",
-                "email": "hanswurst@gmail.com",
-                "bookedSlots": 3
-            },
-            "1": {
-                "firstname": "Hans",
-                "lastname": "Wurst",
-                "email": "hanswurst@gmail.com",
-                "bookedSlots": 2
-            }
-        },
+        "18:40": {},
         "19:00": {},
         "19:20": {},
         "19:40": {},

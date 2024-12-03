@@ -1,5 +1,6 @@
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ port: 8080 });
+const key = require("../passwords.json")["websocketkey"];
 
 // Handle client connections
 wss.on("connection", (socket) => {
@@ -11,21 +12,22 @@ wss.on("connection", (socket) => {
 
     socket.on("message", (data) => {
         // authenticate the message
-        const key = require("../passwords.json")["websocketkey"];
 
         // format key:message
         const parts = data.toString().split(":");
         if (parts.length !== 2) {
-            console.log("\x1b[35mWS > Received invalid message format");
-            console.log(data);
+            // console.log("\x1b[35mWS > Received invalid message format");
+            // console.log(data);
             return;
         }
 
         if (parts[0] !== key) {
-            console.log("\x1b[35mWS > Received invalid key");
-            console.log(parts[0]);
+            // console.log("\x1b[35mWS > Received invalid key");
+            // console.log(parts[0]);
             return;
         }
+
+        console.log("\x1b[35mWS > Received message: " + data);
 
         // broadcast just the message to all clients
         wss.clients.forEach(function each(client) {
@@ -33,7 +35,5 @@ wss.on("connection", (socket) => {
                 client.send(parts[1]);
             }
         });
-
-        console.log("\x1b[35mWS > Received message: " + data);
     });
 });

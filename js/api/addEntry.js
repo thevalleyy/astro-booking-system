@@ -94,9 +94,10 @@ function addEntry(query) {
         };
     }
 
-    // TODO: check if the user has already booked a slot
+    // TODO: check if the user has already booked max slots
     // TODO: build tool for users to check their bookings
     // TODO: mail confirmation
+    // TODO: start page with imprint (configurable), booking page, link to another configurable page
 
     try {
         const data = require("../../data/table.json")["data"];

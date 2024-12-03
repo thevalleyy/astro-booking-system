@@ -43,7 +43,7 @@ const bookSlots = (setUpdated) => {
         })
         .then((response) => {
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
-            markBookedSlots(setUpdated);
+            markBookedSlots(setUpdated, "client");
 
             // remove the content of the input fields
             document.getElementById("firstname").value = "";
@@ -57,34 +57,44 @@ const bookSlots = (setUpdated) => {
         });
 };
 
-const markBookedSlots = (setUpdated) => {
+const markBookedSlots = (setUpdated, reason) => {
     // get number of booked slots for each time slot
     axios
         .get("/api/getBookings")
         .then((response) => {
             // remove all clicked or booke slots
-            const clickedSlots = document.getElementsByClassName("clicked");
-            while (clickedSlots.length > 0) {
-                clickedSlots[0].classList.remove("clicked");
-            }
+            if (reason == "client") {
+                // only remove the clicked slots if the client booked a slot
+                const clickedSlots = document.getElementsByClassName("clicked");
+                while (clickedSlots.length > 0) {
+                    clickedSlots[0].classList.remove("clicked");
+                }
 
-            const bookedSlots = document.getElementsByClassName("booked");
-            while (bookedSlots.length > 0) {
-                bookedSlots[0].classList.remove("booked");
+                const bookedSlots = document.getElementsByClassName("booked");
+                while (bookedSlots.length > 0) {
+                    bookedSlots[0].classList.remove("booked");
+                }
             }
-
             // color the booked slots
             const slots = response.data.message.data;
+            let clickedSlotsWereBooked = false;
             Object.keys(slots).forEach((key) => {
                 for (let i = 0; i < slots[key]; i++) {
                     const index = Object.keys(slots).indexOf(key);
                     document.getElementById(`${index}_${i}`).classList.add("booked");
                     document.getElementById(`${index}_${i}`).style.cursor = "not-allowed";
                     document.getElementById(`${index}_${i}`).title = "Already booked";
+                    if (document.getElementById(`${index}_${i}`).classList.contains("clicked")) {
+                        document.getElementById(`${index}_${i}`).classList.remove("clicked");
+                        clickedSlotsWereBooked = true;
+                    }
                 }
             });
 
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
+            if (clickedSlotsWereBooked) {
+                alert("Some of the slots you selected are no longer available. Please select other slots.");
+            }
         })
         .catch((error) => {
             alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
@@ -98,7 +108,7 @@ const TimeTable = () => {
     const times = tableHeaders();
 
     useEffect(() => {
-        markBookedSlots(setUpdated);
+        markBookedSlots(setUpdated, "first");
     }, []);
 
     return (
@@ -107,7 +117,7 @@ const TimeTable = () => {
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    markBookedSlots(setUpdated);
+                    markBookedSlots(setUpdated, "websocket");
                 }}
                 id="refreshButton"
             ></button>

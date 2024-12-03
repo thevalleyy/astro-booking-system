@@ -82,3 +82,7 @@ span {
 .booked {
     background-color: #ff0000;
 }
+
+.bookedByClient {
+    background-color: #0000ff;
+}

@@ -95,9 +95,9 @@ function addEntry(query) {
     }
 
     // TODO: check if the user has already booked max slots
-    // TODO: build tool for users to check their bookings
     // TODO: mail confirmation
     // TODO: Admin panel
+    // TODO: visible error if ws fails
 
     try {
         const data = require("../../data/table.json")["data"];

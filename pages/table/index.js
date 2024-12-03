@@ -112,6 +112,47 @@ const markBookedSlots = (setUpdated, reason) => {
         });
 };
 
+const checkBookedSlots = () => {
+    axios
+        .post("/api/getUserBookings", {
+            firstname: document.getElementById("firstname").value,
+            lastname: document.getElementById("lastname").value,
+            email: document.getElementById("email").value,
+        })
+        .then((response) => {
+            const { bookedSlots } = response.data.message;
+
+            if (bookedSlots.length === 0) {
+                alert("No booked slots found");
+                return;
+            }
+
+            // remove all clicked slots
+            const clickedSlots = document.getElementsByClassName("clicked");
+            while (clickedSlots.length > 0) {
+                clickedSlots[0].classList.remove("clicked");
+            }
+
+            // color the booked slots
+            // [["18:00", 2], ["19:00", 1]]
+            bookedSlots.forEach((slot) => {
+                // find the header with the time
+                const headers = document.getElementsByClassName("header");
+                const header = Array.from(headers).find((header) => header.textContent === slot[0]);
+
+                // color the slots
+                for (let i = 0; i < slot[1]; i++) {
+                    document.getElementById(`${header.id}_${i}`).classList.add("bookedByClient");
+                    document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
+                    document.getElementById(`${header.id}_${i}`).title = "Your booking";
+                }
+            });
+        })
+        .catch((error) => {
+            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
+        });
+};
+
 const TimeTable = () => {
     const [updated, setUpdated] = useState("Fetching data...");
 
@@ -189,7 +230,6 @@ const TimeTable = () => {
                     className="center-H"
                     onSubmit={(e) => {
                         e.preventDefault();
-                        bookSlots(setUpdated);
                     }}
                 >
                     <label htmlFor="name">Firstname:</label>
@@ -208,7 +248,24 @@ const TimeTable = () => {
                         required
                     />
 
-                    <input type="submit" value="Book" style={{ fontSize: "2em", marginTop: "10px" }}></input>
+                    <div className="nextToEachOther">
+                        <input
+                            type="submit"
+                            value="Book"
+                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            onClick={() => {
+                                bookSlots(setUpdated);
+                            }}
+                        ></input>
+                        <input
+                            type="submit"
+                            value="Check booked slots"
+                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            onClick={() => {
+                                checkBookedSlots();
+                            }}
+                        ></input>
+                    </div>
                 </form>
             </div>
         </>

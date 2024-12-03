@@ -95,9 +95,7 @@ function addEntry(query) {
     }
 
     // TODO: check if the user has already booked a slot
-    // TODO: check if the time slot is currently being booked by another user
     // TODO: build tool for users to check their bookings
-    // TODO: backup file before writing
     // TODO: mail confirmation
 
     try {
@@ -117,7 +115,7 @@ function addEntry(query) {
             return {
                 code: 400,
                 success: false,
-                message: "Not enough slots available",
+                message: "Not enough slots available. Maybe try another time slot?",
             };
         }
 
@@ -139,6 +137,17 @@ function addEntry(query) {
             message: "Error writing to file. See server console for more information.",
         };
     }
+
+    // send refresh signal to all clients
+    const key = require("../../passwords.json")["websocketkey"];
+    const ws = new WebSocket("ws://localhost:8080");
+    ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+    };
+
+    ws.onopen = () => {
+        ws.send(`${key}:refresh`);
+    };
 
     return {
         code: 200,

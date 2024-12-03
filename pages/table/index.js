@@ -42,7 +42,6 @@ const bookSlots = (setUpdated) => {
             timeSlot: timeSlot,
         })
         .then((response) => {
-            alert("Booking successful");
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
             markBookedSlots(setUpdated);
 
@@ -50,6 +49,8 @@ const bookSlots = (setUpdated) => {
             document.getElementById("firstname").value = "";
             document.getElementById("lastname").value = "";
             document.getElementById("email").value = "";
+
+            alert("Booking successful");
         })
         .catch((error) => {
             alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
@@ -103,6 +104,13 @@ const TimeTable = () => {
     return (
         <div>
             <h1>Time Table - {updated}</h1>
+            <button
+                style={{ display: "none" }}
+                onClick={() => {
+                    markBookedSlots(setUpdated);
+                }}
+                id="refreshButton"
+            ></button>
             <table style={{ borderCollapse: "collapse", width: "100%" }}>
                 <thead>
                     <tr>

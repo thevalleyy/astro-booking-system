@@ -1,10 +1,11 @@
 const fs = require("node:fs");
+let nodemailer = reqire('nodemailer')
 
 const keys = Object.keys(require("../../config.json")["settings"]["default"]);
 const checks = require("../../config.json")["settings"]["checks"];
 const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"];
 const validSlots = Object.keys(require("../../data/table.json")["data"]);
-const confirmationEmailSettings = require("../../config.json")["settings"]["confirmationEmail"];
+const confirmationEmailSettings = require("../../passwords.json")["confirmationEmail"];
 
 /**
  * Adds a new entry to the json file
@@ -95,8 +96,8 @@ function addEntry(query) {
         };
     }
 
-    // // TODO: check if the user has already booked max slots
-    // TODO: mail confirmation
+    // TODO: check if the user has already booked max slots
+    // // TODO: mail confirmation
     // TODO: Admin panel
     // TODO: visible error if ws fails
 
@@ -132,38 +133,6 @@ function addEntry(query) {
         fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
 
-        //Send confirmation E-Mail to user
-        let nodemailer = reqire('nodemailer')
-        let transporter = nodemailer.createTransport({
-            service: confirmationEmailSettings.service,
-            auth: {
-                user: confirmationEmailSettings.serverEmailAddress,
-                pass: confirmationEmailSettings.serverEmailPassword
-            }
-        });
-        
-        var confirmationEmailOptions = {
-            from: confirmationEmailSettings.serverEmailAddress,
-            to: query["email"],
-            subject: `Confirmation for booking ${Number(query["bookedSlots"])} Slots for the Astro dingens`,
-            text: `Hallo ${query["firstname"]}, \n\nes freut uns, dass du ${Number(query["bookedSlots"])} Slots um ${query["timeSlot"]} gebucht hast und wünschen dir viel Spaß. :)\nMit freundlichen Grüßen,\nDas Astroteam`
-        };
-
-        transporter.sendMail(confirmationEmailOptions, function(error, info) {
-            if (error) {
-                console.error(error);
-                return {
-                    code: 500,
-                    success: false,
-                    message: "confirmation E-main couldn't be sent. Maybe invalid email? Maybe check config file?"
-                }
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
-        
-
-
     } catch (error) {
         console.error(error);
         return {
@@ -172,6 +141,36 @@ function addEntry(query) {
             message: "Error writing to file. See server console for more information.",
         };
     }
+
+    //Send confirmation E-Mail to user
+        
+    let transporter = nodemailer.createTransport({
+        service: confirmationEmailSettings.service,
+        auth: {
+            user: confirmationEmailSettings.serverEmailAddress,
+            pass: confirmationEmailSettings.serverEmailPassword
+        }
+    });
+    
+    var confirmationEmailOptions = {
+        from: confirmationEmailSettings.serverEmailAddress,
+        to: query["email"],
+        subject: `Confirmation for booking ${Number(query["bookedSlots"])} Slots for the Astro dingens`,
+        text: `Hallo ${query["firstname"]}, \n\nes freut uns, dass du ${Number(query["bookedSlots"])} Slots um ${query["timeSlot"]} gebucht hast und wünschen dir viel Spaß. :)\nMit freundlichen Grüßen,\nDas Astroteam`
+    };
+
+    transporter.sendMail(confirmationEmailOptions, function(error, info) {
+        if (error) {
+            console.error(error);
+            return {
+                code: 500,
+                success: false,
+                message: "confirmation E-main couldn't be sent. Maybe invalid email? Maybe check config file?"
+            }
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
 
     // send refresh signal to all clients
     const key = require("../../passwords.json")["websocketkey"];

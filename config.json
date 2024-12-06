@@ -17,11 +17,6 @@
             "firstname": 30,
             "email": true,
             "maxBookedSlots": 5
-        },
-        "confirmationEmail": {
-            "service": "gmail",
-            "serverEmailAddress": "test@mail.com",
-            "serverEmailPassword": "notInPlainText"
         }
     },
     "log": {

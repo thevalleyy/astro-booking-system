@@ -1,5 +1,5 @@
 const fs = require("node:fs");
-let nodemailer = reqire('nodemailer')
+let nodemailer = require('nodemailer')
 
 const keys = Object.keys(require("../../config.json")["settings"]["default"]);
 const checks = require("../../config.json")["settings"]["checks"];

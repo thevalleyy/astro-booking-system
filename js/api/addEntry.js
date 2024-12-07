@@ -126,6 +126,7 @@ function addEntry(query) {
             lastname: query["lastname"],
             email: query["email"],
             bookedSlots: Number(query["bookedSlots"]),
+            time: Date.now(),
         };
 
         // backup file before writing

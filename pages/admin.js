@@ -17,6 +17,9 @@ const requestData = () => {
         });
 };
 
+// TODO: Admin panel websocket refresh
+// TODO: repace alert() by custom modal
+
 const buildTable = (data) => {
     // delete the whole document
     const existingTable = document.querySelectorAll(".fullscreen");
@@ -29,6 +32,13 @@ const buildTable = (data) => {
     // create new fullscreen
     const fullscreen = document.createElement("div");
     fullscreen.className = "fullscreen";
+
+    fullscreen.innerHTML = `
+    <h1>
+    Admin Table - Last update: ${new Date(data["data"]["updated"]).toLocaleString()}
+    <h1 class="backToHome">
+    <a href="./table"> Booking panel</a> <a href="."> Home</a>
+    </h1>`;
 
     // create table
     const table = document.createElement("table");
@@ -60,6 +70,9 @@ const buildTable = (data) => {
             td.className = "slot";
             td.id = `${index}_${i}`;
             td.textContent = `${index} ${i}`;
+            td.onclick = () => {
+                alert("Empty slot");
+            };
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -84,7 +97,7 @@ const buildTable = (data) => {
                 const slotElement = document.getElementById(`${header.id}_${i}`);
                 slotElement.classList.add("bookedByClient");
                 slotElement.onclick = () => {
-                    alert(`Client: ${slot.firstname} ${slot.lastname}\nEmail: ${slot.email}`);
+                    alert(`Client: ${slot.firstname} ${slot.lastname}\nEmail: ${slot.email} \nBooked at ${new Date(slot.time).toLocaleString()}`);
                 };
             }
         });
@@ -108,6 +121,9 @@ export default function Home() {
             </Head>
 
             <div className="fullscreen">
+                <h1 className="backToHome">
+                    <a href="./table"> Booking panel</a> <a href="."> Home</a>
+                </h1>
                 <br></br>
                 <h1 className="center-H">Identify yourself</h1>
                 <br></br>

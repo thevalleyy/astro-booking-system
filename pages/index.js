@@ -26,6 +26,10 @@ export default function Home() {
                 <br></br>
                 <h2 className="center-H">Here&#39;s how it works ... </h2>
                 <br></br>
+                <h3 className="center-H">Bla bla bla</h3>
+                <br></br>
+                <br></br>
+                <br></br>
                 <div className="nextToEachOther">
                     <button
                         type="button"

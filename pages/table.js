@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
-import tableHeaders from "../../js/tableHeaders.js";
-const config = require("../../config.json");
+import tableHeaders from "../js/tableHeaders.js";
+const config = require("../config.json");
 const { slotsPerColumn } = config.settings;
 const { checks } = config.settings;
 const metaData = config["html-meta-data"];
@@ -112,6 +112,9 @@ const markBookedSlots = (setUpdated, reason) => {
         });
 };
 
+/**
+ * Request the server to return the booked slots for the client
+ */
 const checkBookedSlots = () => {
     axios
         .post("/api/getUserBookings", {
@@ -183,12 +186,10 @@ const TimeTable = () => {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
             <div>
+                <p style={{ display: "none" }} id="var"></p>
                 <h1>Time Table - {updated}</h1>
-                <h1>
-                    <a className="backToHome" href=".">
-                        {" "}
-                        Home
-                    </a>
+                <h1 className="backToHome">
+                    <a href="./admin"> Admin panel</a> <a href="."> Home</a>
                 </h1>
                 <button
                     style={{ display: "none" }}
@@ -236,6 +237,17 @@ const TimeTable = () => {
                     className="center-H"
                     onSubmit={(e) => {
                         e.preventDefault();
+                        switch (document.getElementById("var").textContent) {
+                            case "book":
+                                bookSlots(setUpdated);
+                                document.getElementById("clearSelection").click();
+                                break;
+                            case "check":
+                                checkBookedSlots();
+                                break;
+                            default:
+                                break;
+                        }
                     }}
                 >
                     <label htmlFor="name">Firstname:</label>
@@ -260,8 +272,7 @@ const TimeTable = () => {
                             value="Book"
                             style={{ fontSize: "2em", marginTop: "10px" }}
                             onClick={() => {
-                                bookSlots(setUpdated);
-                                document.getElementById("clearSelection").click();
+                                document.getElementById("var").textContent = "book";
                             }}
                         ></input>
                         <input
@@ -269,7 +280,7 @@ const TimeTable = () => {
                             value="Check booked slots"
                             style={{ fontSize: "2em", marginTop: "10px" }}
                             onClick={() => {
-                                checkBookedSlots();
+                                document.getElementById("var").textContent = "check";
                             }}
                         ></input>
                         <button

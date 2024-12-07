@@ -1,12 +1,33 @@
 {
-    "updated": 1733245207934,
+    "updated": 1733579474742,
     "data": {
         "18:00": {},
         "18:20": {},
         "18:40": {},
-        "19:00": {},
-        "19:20": {},
-        "19:40": {},
+        "19:00": {
+            "0": {
+                "firstname": "fds",
+                "lastname": "fds",
+                "email": "fds@fds.com",
+                "bookedSlots": 3
+            }
+        },
+        "19:20": {
+            "0": {
+                "firstname": "Heinz",
+                "lastname": "Walter",
+                "email": "hw@gmail.com",
+                "bookedSlots": 3
+            }
+        },
+        "19:40": {
+            "0": {
+                "firstname": "vsd",
+                "lastname": "vds",
+                "email": "vds@fds.com",
+                "bookedSlots": 1
+            }
+        },
         "20:00": {},
         "20:20": {},
         "20:40": {},

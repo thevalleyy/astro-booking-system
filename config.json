@@ -29,7 +29,7 @@
     "html-meta-data": {
         "title": "Abend der Astronomie",
         "description": "Buchen Sie Ihren Termin!",
-        "url": "https://astro.rathenau.eu/",
+        "url": "https://astro.example.com/",
         "image": "https://apod.nasa.gov/apod/image/1611/PacmanCrawfordNew2048.jpg",
         "large_image": true,
         "color": "#000181"

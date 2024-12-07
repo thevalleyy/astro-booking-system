@@ -98,6 +98,7 @@ function addEntry(query) {
     // TODO: mail confirmation
     // TODO: Admin panel
     // TODO: visible error if ws fails
+    // TODO: safe time of booking
 
     try {
         const data = require("../../data/table.json")["data"];

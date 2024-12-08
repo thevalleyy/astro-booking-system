@@ -1,16 +1,17 @@
 const fs = require("node:fs");
-let nodemailer = require('nodemailer')
+const nodemailer = require("nodemailer");
 
 const keys = Object.keys(require("../../config.json")["settings"]["default"]);
 const checks = require("../../config.json")["settings"]["checks"];
 const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"];
 const validSlots = Object.keys(require("../../data/table.json")["data"]);
 const confirmationEmailSettings = require("../../passwords.json")["confirmationEmail"];
+const mailSender = require("../../passwords.json")["sender"];
 
 /**
- * Adds a new entry to the json file
+ * Validates and adds a new entry to the json file, sends a confirmation email and refreshes the websocket
  * @param {Object} query The request body as an json object
- * @returns An object with a success flag and a message
+ * @returns An object with a http status code, a success flag and a message
  */
 function addEntry(query) {
     for (let i = 0; i < keys.length; i++) {
@@ -97,10 +98,9 @@ function addEntry(query) {
     }
 
     // TODO: check if the user has already booked max slots
-    // // TODO: mail confirmation
-    // TODO: Admin panel
+    // TODO: check if the user has already booked the same time slot
+    // TODO: mail confirmation
     // TODO: visible error if ws fails
-    // TODO: safe time of booking
 
     try {
         const data = require("../../data/table.json")["data"];
@@ -134,45 +134,14 @@ function addEntry(query) {
         // backup file before writing
         fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
-
     } catch (error) {
         console.error(error);
         return {
             code: 500,
             success: false,
-            message: "Error writing to file. See server console for more information.",
+            message: "Error writing to file. Refresh the page and try again.",
         };
     }
-
-    //Send confirmation E-Mail to user
-        
-    let transporter = nodemailer.createTransport({
-        service: confirmationEmailSettings.service,
-        auth: {
-            user: confirmationEmailSettings.serverEmailAddress,
-            pass: confirmationEmailSettings.serverEmailPassword
-        }
-    });
-    
-    var confirmationEmailOptions = {
-        from: confirmationEmailSettings.serverEmailAddress,
-        to: query["email"],
-        subject: `Confirmation for booking ${Number(query["bookedSlots"])} Slots for the Astro dingens`,
-        text: `Hallo ${query["firstname"]}, \n\nes freut uns, dass du ${Number(query["bookedSlots"])} Slots um ${query["timeSlot"]} gebucht hast und wünschen dir viel Spaß. :)\nMit freundlichen Grüßen,\nDas Astroteam`
-    };
-
-    transporter.sendMail(confirmationEmailOptions, function(error, info) {
-        if (error) {
-            console.error(error);
-            return {
-                code: 500,
-                success: false,
-                message: "confirmation E-main couldn't be sent. Maybe invalid email? Maybe check config file?"
-            }
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
 
     // send refresh signal to all clients
     const key = require("../../passwords.json")["websocketkey"];
@@ -184,6 +153,33 @@ function addEntry(query) {
     ws.onopen = () => {
         ws.send(`${key}:refresh`);
     };
+
+    // At this point, the entry has been added to the json file
+    // Send confirmation E-Mail to user
+    const transporter = nodemailer.createTransport(confirmationEmailSettings);
+
+    async function main() {
+        const info = await transporter.sendMail({
+            from: `"${mailSender}" <${confirmationEmailSettings.auth.user}>`,
+            to: query["email"],
+            subject: `Confirmation for booking ${query["bookedSlots"]} Slots for the Astro dingens`,
+            text: `Hallo ${query["firstname"]}, \n\nes freut uns, dass du ${Number(query["bookedSlots"])} Slots um ${
+                query["timeSlot"]
+            } gebucht hast und wünschen dir viel Spaß. :)\nMit freundlichen Grüßen,\nDas Astroteam`,
+        });
+
+        console.log("Message sent: %s", info.messageId);
+        transporter.close();
+    }
+
+    main().catch((error) => {
+        console.error(error);
+        return {
+            code: 500,
+            success: false,
+            message: "Your booking was successful, but we could not send you a confirmation email.",
+        };
+    });
 
     return {
         code: 200,

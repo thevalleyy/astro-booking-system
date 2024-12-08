@@ -18,6 +18,7 @@ const requestData = () => {
 };
 
 // TODO: Admin panel websocket refresh
+// TODO: admin panel cookie
 // TODO: repace alert() by custom modal
 
 const buildTable = (data) => {

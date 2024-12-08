@@ -14,7 +14,7 @@ const WebSocketClient = () => {
         ws.onmessage = (message) => {
             if (message.data === "refresh") {
                 console.log("Refresh signal received");
-                document.getElementById("refreshButton").click(); // Click the refresh button
+                document.getElementById("refreshButton")?.click(); // Click the refresh button
             }
         };
 

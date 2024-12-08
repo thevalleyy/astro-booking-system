@@ -9,12 +9,6 @@
         "end": "21:00",
         "increment": "00:20",
         "slotsPerColumn": 8,
-        "default": {
-            "lastname": "",
-            "firstname": "",
-            "email": "",
-            "bookedSlots": 0
-        },
         "checks": {
             "lastname": 30,
             "firstname": 30,
@@ -44,6 +38,13 @@
 
 ```json
 {
-    "websocketkey": "WebSocketKey"
+    "websocketkey": "WebSocketKey",
+    "adminkey": "AdminKey",
+    "adminPassword": "admin",
+    "confirmationEmail": {
+        "service": "gmail",
+        "serverEmailAddress": "test@mail.com",
+        "serverEmailPassword": "notInPlainText"
+    }
 }
 ```

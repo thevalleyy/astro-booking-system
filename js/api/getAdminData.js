@@ -1,5 +1,10 @@
 const passKey = require("../../passwords.json")["adminkey"];
 
+/**
+ * Validates the admin password and returns the table data
+ * @param {Object} query The request body as an json object
+ * @returns An object with a http status code, a success flag and a message
+ */
 function getAdminData(query) {
     const password = query["password"];
 

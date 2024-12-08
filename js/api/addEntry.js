@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const nodemailer = require("nodemailer");
+const getUserBookings = require("./getUserBookings.js");
 
 const keys = Object.keys(require("../../config.json")["settings"]["default"]);
 const checks = require("../../config.json")["settings"]["checks"];
@@ -7,6 +8,7 @@ const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"
 const validSlots = Object.keys(require("../../data/table.json")["data"]);
 const confirmationEmailSettings = require("../../passwords.json")["confirmationEmail"];
 const mailSender = require("../../passwords.json")["sender"];
+const passwords = require("../../passwords.json")["default"];
 
 /**
  * Validates and adds a new entry to the json file, sends a confirmation email and refreshes the websocket
@@ -97,9 +99,6 @@ function addEntry(query) {
         };
     }
 
-    // TODO: check if the user has already booked max slots
-    // TODO: check if the user has already booked the same time slot
-
     try {
         const data = require("../../data/table.json")["data"];
 
@@ -113,26 +112,51 @@ function addEntry(query) {
             slotsBooked += placedBookings[i]["bookedSlots"];
         }
 
+        // are enough total slots availible
         if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
             return {
                 code: 400,
                 success: false,
-                message: "Not enough slots available. Maybe try another time slot?",
+                message: "Not enough slots available.",
             };
         }
 
+        // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
+        bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
+        
+        if (bookings.length > 0) {
+            // user has already booked a time slot and requests another one
+            if (bookings[0][0] !== query["timeSlot"]) {
+                // user has bookings and tries to book in another time slot
+                return {
+                    code: 400,
+                    success: false,
+                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}` 
+                }
+            }
+
+            // user exceeds max booking limit
+            if(bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+                return {
+                    code: 400,
+                    success: false,
+                    message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`
+                }
+            }
+        }
+
         data[query["timeSlot"]][currentIndex] = {
-            firstname: query["firstname"],
-            lastname: query["lastname"],
-            email: query["email"],
-            bookedSlots: Number(query["bookedSlots"]),
-            time: Date.now(),
+                firstname: query["firstname"],
+                lastname: query["lastname"],
+                email: query["email"],
+                bookedSlots: Number(query["bookedSlots"]),
+                time: Date.now(),
         };
 
         // backup file before writing
         fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
-    } catch (error) {
+        } catch (error) {
         console.error(error);
         return {
             code: 500,
@@ -157,13 +181,13 @@ function addEntry(query) {
     const transporter = nodemailer.createTransport(confirmationEmailSettings);
 
     async function main() {
+        let confirmationMailText = passwords.mailText.replace("!BOOKEDSLOTS", query["bookedSlots"])
+        confirmationMailText.replace("!TIMESLOT", query["timeSlot"]);
         const info = await transporter.sendMail({
             from: `"${mailSender}" <${confirmationEmailSettings.auth.user}>`,
             to: query["email"],
-            subject: `Confirmation for booking ${query["bookedSlots"]} Slots for the Astro dingens`,
-            text: `Hallo ${query["firstname"]}, \n\nes freut uns, dass du ${Number(query["bookedSlots"])} Slots um ${
-                query["timeSlot"]
-            } gebucht hast und wünschen dir viel Spaß. :)\nMit freundlichen Grüßen,\nDas Astroteam`,
+            subject: passwords.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
+            text: confirmationMailText,
         });
 
         console.log("Message sent: %s", info.messageId);

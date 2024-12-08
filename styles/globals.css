@@ -86,3 +86,60 @@ span {
 .bookedByClient {
     background-color: #0000ff;
 }
+
+.buttonList {
+    cursor: pointer;
+}
+
+/* The alert message box */
+.alert {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    padding: 20px;
+    color: white;
+    margin-bottom: 15px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    z-index: -1;
+}
+
+.alert.visible {
+    opacity: 1;
+    max-height: 200px;
+    z-index: 1000;
+}
+
+/* Alert Types */
+.alert.error {
+    background-color: #f44336; /* Red */
+}
+
+.alert.success {
+    background-color: #4caf50; /* Green */
+}
+
+.alert.info {
+    background-color: #2196f3; /* Blue */
+}
+
+/* The close button */
+.closebtn {
+    position: absolute;
+    right: 3.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 1001;
+}
+
+.closebtn:hover {
+    color: black;
+}

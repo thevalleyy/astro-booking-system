@@ -5,6 +5,25 @@ const maxSlots = require("../config.json")["settings"]["slotsPerColumn"];
 
 import axios from "axios";
 
+/**
+ * Display an alert box
+ * @param {String} message The message to display
+ * @param {String} type The type of the message
+ * @param {Number} time The time in ms to display the message
+ */
+const alertBox = (message, type, time) => {
+    const notification = document.getElementsByClassName("alert")[0];
+    notification.childNodes[1].innerText = message;
+    notification.classList = `alert ${type} visible`;
+
+    if (time) {
+        setTimeout(() => {
+            notification.classList = "alert";
+        }, time);
+    } // TODO: make the text fade out before the notification
+    // TODO: fix the spam timeout
+};
+
 const requestData = () => {
     const password = document.getElementById("password")?.value || sessionStorage.getItem("password");
     axios
@@ -15,11 +34,14 @@ const requestData = () => {
             sessionStorage.setItem("password", password);
         })
         .catch((error) => {
-            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
+            if (sessionStorage.getItem("password") && error?.response?.data.code === 401) {
+                sessionStorage.removeItem("password");
+                window.location.reload();
+                return;
+            }
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 };
-
-// TODO: repace alert() by custom modal
 
 const buildTable = (data) => {
     // delete the whole document
@@ -78,7 +100,7 @@ const buildTable = (data) => {
             td.id = `${index}_${i}`;
             td.textContent = `${index} ${i}`;
             td.onclick = () => {
-                alert("Empty slot");
+                alertBox("Empty slot", "info", 2000);
             };
             tr.appendChild(td);
         });
@@ -104,13 +126,17 @@ const buildTable = (data) => {
                 const slotElement = document.getElementById(`${header.id}_${i}`);
                 slotElement.classList.add("bookedByClient");
                 slotElement.onclick = () => {
-                    alert(`Client: ${slot.firstname} ${slot.lastname}\nEmail: ${slot.email} \nBooked at ${new Date(slot.time).toLocaleString()}`);
+                    alertBox(
+                        `Client: ${slot.firstname} ${slot.lastname}\nEmail: ${slot.email} \nBooked at ${new Date(slot.time).toLocaleString()}`,
+                        "info"
+                    );
                 };
             }
         });
     });
 };
-
+// TODO: shift the table down to make space for the alert
+// TODO: color bookings form the same client in the same color
 export default function Home() {
     useEffect(() => {
         const password = sessionStorage.getItem("password");
@@ -139,6 +165,17 @@ export default function Home() {
                 <meta content={metaData.color} name="theme-color" />
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
+            <div className="alert">
+                <span
+                    className="closebtn no-select"
+                    onClick={() => {
+                        document.getElementsByClassName("alert")[0].classList = "alert";
+                    }}
+                >
+                    &times;
+                </span>
+                <span>This is an alert box.</span>
+            </div>
             <div style={{ display: "none" }}>
                 <button
                     onClick={() => {
@@ -148,7 +185,7 @@ export default function Home() {
                 ></button>
                 <button
                     onClick={() => {
-                        alert("the websocket connection failed. Live updates are disabled.");
+                        alertBox("The websocket connection failed. Live updates are disabled.", "error", 5000);
                     }}
                     id="wsError"
                 ></button>

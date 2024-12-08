@@ -9,8 +9,6 @@ function getAdminData(query) {
     const password = query["password"];
 
     try {
-        console.log(password, passKey);
-
         if (password !== passKey) {
             return {
                 code: 401,

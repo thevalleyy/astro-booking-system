@@ -9,6 +9,25 @@ const { checks } = config.settings;
 const metaData = config["html-meta-data"];
 
 /**
+ * Display an alert box
+ * @param {String} message The message to display
+ * @param {String} type The type of the message
+ * @param {Number} time The time in ms to display the message
+ */
+const alertBox = (message, type, time) => {
+    const notification = document.getElementsByClassName("alert")[0];
+    notification.childNodes[1].innerText = message;
+    notification.classList = `alert ${type} visible`;
+
+    if (time) {
+        setTimeout(() => {
+            notification.classList = "alert";
+        }, time);
+    } // TODO: make the text fade out before the notification
+    // TODO: fix the spam timeout
+};
+
+/**
  * Request the server to book the selected slots
  * @param {Function} setUpdated The function to set the updated time
  */
@@ -21,18 +40,12 @@ const bookSlots = (setUpdated) => {
     // // transform the slots into an array of strings of their id
     const slotsArr = Array.from(document.getElementsByClassName("clicked")).map((slot) => slot.id);
 
-    if (slotsArr.length === 0) {
-        alert("Please select at least one slot");
-        return;
-    }
+    if (slotsArr.length === 0) return alertBox("Please select at least one slot", "info", 3000);
 
     // // slots can only be booked in one column
     const firstColumn = slotsArr[0]?.split("_")[0] || "0";
     for (let i = 1; i < slotsArr.length; i++) {
-        if (slotsArr[i].split("_")[0] !== firstColumn) {
-            alert("You can only book slots in one column");
-            return;
-        }
+        if (slotsArr[i].split("_")[0] !== firstColumn) return alertBox("You can only book slots in one column", "info", 3000);
     }
 
     // get the time slot
@@ -49,17 +62,11 @@ const bookSlots = (setUpdated) => {
         })
         .then((response) => {
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
-            markBookedSlots(setUpdated, "client");
-
-            // // remove the content of the input fields
-            // document.getElementById("firstname").value = "";
-            // document.getElementById("lastname").value = "";
-            // document.getElementById("email").value = "";
-
-            alert("Booking successful");
+            document.getElementById("checkUserBookings")?.click(); //TODO: explain the color of the slots
+            alertBox("Booking successful!", "success", 3000);
         })
         .catch((error) => {
-            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 };
 
@@ -104,11 +111,11 @@ const markBookedSlots = (setUpdated, reason) => {
 
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
             if (clickedSlotsWereBooked) {
-                alert("Some of the slots you selected are no longer available. Please select other slots.");
+                alertBox("Some of the slots you selected are no longer available. Please select other slots.", "info", 5000);
             }
         })
         .catch((error) => {
-            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 };
 
@@ -123,12 +130,10 @@ const checkBookedSlots = () => {
             email: document.getElementById("email").value.replace(/\s+/g, ""),
         })
         .then((response) => {
+            document.getElementById("clearSelection").click(); // clear the selection
             const { bookedSlots } = response.data.message;
 
-            if (bookedSlots.length === 0) {
-                alert("No booked slots found");
-                return;
-            }
+            if (bookedSlots.length === 0) return alertBox("You have not booked any slots", "info", 3000);
 
             // remove all clicked slots
             const clickedSlots = document.getElementsByClassName("clicked");
@@ -158,7 +163,7 @@ const checkBookedSlots = () => {
             });
         })
         .catch((error) => {
-            alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 };
 
@@ -186,6 +191,17 @@ const TimeTable = () => {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
             <div>
+                <div className="alert">
+                    <span
+                        className="closebtn no-select"
+                        onClick={() => {
+                            document.getElementsByClassName("alert")[0].classList = "alert";
+                        }}
+                    >
+                        &times;
+                    </span>
+                    <span>This is an alert box.</span>
+                </div>
                 <p style={{ display: "none" }} id="var"></p>
                 <h1>Time Table - {updated}</h1>
                 <h1 className="backToHome">
@@ -206,7 +222,7 @@ const TimeTable = () => {
                         Home
                     </button>
                 </h1>
-                <button
+                <button //TODO: so somethign against brute forcing
                     style={{ display: "none" }}
                     onClick={() => {
                         markBookedSlots(setUpdated, "websocket");
@@ -216,7 +232,7 @@ const TimeTable = () => {
                 <button
                     style={{ display: "none" }}
                     onClick={() => {
-                        alert("the websocket connection failed. Live updates are disabled.");
+                        alertBox("Websocket connection failed. Live updates are disabled.", "error", 5000);
                     }}
                     id="wsError"
                 ></button>
@@ -262,7 +278,6 @@ const TimeTable = () => {
                         switch (document.getElementById("var").textContent) {
                             case "book":
                                 bookSlots(setUpdated);
-                                document.getElementById("clearSelection").click();
                                 break;
                             case "check":
                                 checkBookedSlots();
@@ -299,6 +314,7 @@ const TimeTable = () => {
                         ></input>
                         <input
                             type="submit"
+                            id="checkUserBookings"
                             value="Check booked slots"
                             style={{ fontSize: "2em", marginTop: "10px" }}
                             onClick={() => {

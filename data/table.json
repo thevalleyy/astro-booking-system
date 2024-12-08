@@ -1,5 +1,5 @@
 {
-    "updated": 1733672922338,
+    "updated": 1733675096225,
     "data": {
         "18:00": {},
         "18:20": {},
@@ -8,14 +8,22 @@
         "19:20": {},
         "19:40": {
             "0": {
-                "firstname": "johannes",
-                "lastname": "sndfk",
-                "email": "jogest06@gmail.com",
-                "bookedSlots": 4,
-                "time": 1733672922337
+                "firstname": "sdf",
+                "lastname": "sdf",
+                "email": "sdf@df.com",
+                "bookedSlots": 3,
+                "time": 1733675020226
             }
         },
-        "20:00": {},
+        "20:00": {
+            "0": {
+                "firstname": "sdf",
+                "lastname": "sdf",
+                "email": "sdf@df.com",
+                "bookedSlots": 2,
+                "time": 1733675096224
+            }
+        },
         "20:20": {},
         "20:40": {},
         "21:00": {}

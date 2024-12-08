@@ -20,6 +20,8 @@ const WebSocketClient = () => {
 
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
+            // trigger websocket error modal
+            document.getElementById("wsError")?.click();
         };
 
         ws.onclose = () => {

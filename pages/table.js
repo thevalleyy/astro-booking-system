@@ -189,7 +189,22 @@ const TimeTable = () => {
                 <p style={{ display: "none" }} id="var"></p>
                 <h1>Time Table - {updated}</h1>
                 <h1 className="backToHome">
-                    <a href="./admin"> Admin panel</a> <a href="."> Home</a>
+                    <button
+                        className="buttonList"
+                        onClick={() => {
+                            document.location.href = "./admin";
+                        }}
+                    >
+                        Admin panel
+                    </button>
+                    <button
+                        className="buttonList"
+                        onClick={() => {
+                            document.location.href = ".";
+                        }}
+                    >
+                        Home
+                    </button>
                 </h1>
                 <button
                     style={{ display: "none" }}
@@ -197,6 +212,13 @@ const TimeTable = () => {
                         markBookedSlots(setUpdated, "websocket");
                     }}
                     id="refreshButton"
+                ></button>
+                <button
+                    style={{ display: "none" }}
+                    onClick={() => {
+                        alert("the websocket connection failed. Live updates are disabled.");
+                    }}
+                    id="wsError"
                 ></button>
                 <table className="schedule">
                     <thead>

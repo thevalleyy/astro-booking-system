@@ -99,8 +99,6 @@ function addEntry(query) {
 
     // TODO: check if the user has already booked max slots
     // TODO: check if the user has already booked the same time slot
-    // TODO: mail confirmation
-    // TODO: visible error if ws fails
 
     try {
         const data = require("../../data/table.json")["data"];

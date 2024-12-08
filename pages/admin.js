@@ -6,19 +6,19 @@ const maxSlots = require("../config.json")["settings"]["slotsPerColumn"];
 import axios from "axios";
 
 const requestData = () => {
-    const password = document.getElementById("password").value;
+    const password = document.getElementById("password")?.value || sessionStorage.getItem("password");
     axios
         .post("/api/getAdminData", { password: password })
         .then((res) => {
             buildTable(res.data.message);
+            // save the passwort for this session
+            sessionStorage.setItem("password", password);
         })
         .catch((error) => {
             alert(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`);
         });
 };
 
-// TODO: Admin panel websocket refresh
-// TODO: admin panel cookie
 // TODO: repace alert() by custom modal
 
 const buildTable = (data) => {
@@ -38,7 +38,13 @@ const buildTable = (data) => {
     <h1>
     Admin Table - Last update: ${new Date(data["data"]["updated"]).toLocaleString()}
     <h1 class="backToHome">
-    <a href="./table"> Booking panel</a> <a href="."> Home</a>
+    <button className="buttonList" onClick="document.getElementById('refreshButton').click()">Refresh</button>
+    <button className="buttonList" onClick="document.location.href = './table'"> Booking panel</button> 
+    <button className="buttonList" onClick="document.location.href = '.'"> Home</button> 
+    <button className="buttonList" onClick="
+        sessionStorage.removeItem('password');
+        document.location.href = './admin';
+    "> Log out</button>
     </h1>`;
 
     // create table
@@ -106,7 +112,20 @@ const buildTable = (data) => {
 };
 
 export default function Home() {
-    useEffect(() => {}, []);
+    useEffect(() => {
+        const password = sessionStorage.getItem("password");
+
+        if (!password) return;
+
+        // use the password from the session storage
+        // display autologin for 2 seconds
+        try {
+            document.getElementById("textfield").textContent = "Autologin...";
+        } catch (e) {}
+        setTimeout(() => {
+            requestData();
+        }, 2000);
+    }, []);
     return (
         <>
             <Head>
@@ -120,13 +139,43 @@ export default function Home() {
                 <meta content={metaData.color} name="theme-color" />
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
-
+            <div style={{ display: "none" }}>
+                <button
+                    onClick={() => {
+                        requestData();
+                    }}
+                    id="refreshButton"
+                ></button>
+                <button
+                    onClick={() => {
+                        alert("the websocket connection failed. Live updates are disabled.");
+                    }}
+                    id="wsError"
+                ></button>
+            </div>
             <div className="fullscreen">
                 <h1 className="backToHome">
-                    <a href="./table"> Booking panel</a> <a href="."> Home</a>
+                    <button
+                        className="buttonList"
+                        onClick={() => {
+                            document.location.href = "./table";
+                        }}
+                    >
+                        Booking panel
+                    </button>
+                    <button
+                        className="buttonList"
+                        onClick={() => {
+                            document.location.href = "./";
+                        }}
+                    >
+                        Home
+                    </button>
                 </h1>
                 <br></br>
-                <h1 className="center-H">Identify yourself</h1>
+                <h1 className="center-H" id="textfield">
+                    Identify yourself
+                </h1>
                 <br></br>
                 <div className="nextToEachOther">
                     <form

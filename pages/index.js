@@ -33,7 +33,7 @@ export default function Home() {
                 <div className="nextToEachOther">
                     <button
                         type="button"
-                        style={{ fontSize: 30, margin: "10px" }}
+                        className="buttonReal"
                         onClick={() => {
                             window.location.href = "./table";
                         }}
@@ -42,7 +42,7 @@ export default function Home() {
                     </button>
                     <button
                         type="button"
-                        style={{ fontSize: 30, margin: "10px" }}
+                        className="buttonReal"
                         onClick={() => {
                             window.open(imprintURL, "_blank");
                         }}
@@ -51,7 +51,7 @@ export default function Home() {
                     </button>
                     <button
                         type="button"
-                        style={{ fontSize: 30, margin: "10px" }}
+                        className="buttonReal"
                         onClick={() => {
                             window.open("https://github.com/thevalleyy/astro-booking-system", "_blank");
                         }}

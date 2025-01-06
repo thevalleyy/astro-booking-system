@@ -23,8 +23,7 @@ const alertBox = (message, type, time) => {
         setTimeout(() => {
             notification.classList = "alert";
         }, time);
-    } // TODO: make the text fade out before the notification
-    // TODO: fix the spam timeout
+    }
 };
 
 /**
@@ -62,7 +61,7 @@ const bookSlots = (setUpdated) => {
         })
         .then((response) => {
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
-            document.getElementById("checkUserBookings")?.click(); //TODO: explain the color of the slots
+            document.getElementById("checkUserBookings")?.click();
             alertBox("Booking successful!", "success", 3000);
         })
         .catch((error) => {
@@ -222,7 +221,7 @@ const TimeTable = () => {
                         Home
                     </button>
                 </h1>
-                <button //TODO: so somethign against brute forcing
+                <button
                     style={{ display: "none" }}
                     onClick={() => {
                         markBookedSlots(setUpdated, "websocket");

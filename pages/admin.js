@@ -20,8 +20,7 @@ const alertBox = (message, type, time) => {
         setTimeout(() => {
             notification.classList = "alert";
         }, time);
-    } // TODO: make the text fade out before the notification
-    // TODO: fix the spam timeout
+    }
 };
 
 const requestData = () => {
@@ -135,8 +134,6 @@ const buildTable = (data) => {
         });
     });
 };
-// TODO: shift the table down to make space for the alert
-// TODO: color bookings form the same client in the same color
 export default function Home() {
     useEffect(() => {
         const password = sessionStorage.getItem("password");

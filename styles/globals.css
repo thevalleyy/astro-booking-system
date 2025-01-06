@@ -1,3 +1,6 @@
+/* TEmPORARY, easier to test this way */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 /* @font-face {
     font-family: "Windows95";
     src: url("font/windows95.woff2") format("woff2"), url("font/windows95.woff") format("woff");
@@ -13,7 +16,9 @@
 
 html,
 body {
-    background-color: #008081;
+    background-color: #231942;
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
 }
 
 span {
@@ -47,6 +52,7 @@ span {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: 16px;
 }
 
 .backToHome {
@@ -66,6 +72,7 @@ span {
     padding: 8px;
     text-align: center;
     background-color: #f2f2f2;
+    color: #000000; /* temporarily set to standard black */
 }
 
 .slot {
@@ -76,15 +83,15 @@ span {
 }
 
 .clicked {
-    background-color: #00ff00;
+    background-color: #6cf86c; 
 }
 
 .booked {
-    background-color: #ff0000;
+    background-color: #ff5f5f;
 }
 
 .bookedByClient {
-    background-color: #0000ff;
+    background-color: #8686f3;
 }
 
 .buttonList {
@@ -142,4 +149,43 @@ span {
 
 .closebtn:hover {
     color: black;
+}
+
+/* Added new css elements instead of replacing old ones for now */
+
+.buttonReal {
+    padding: 17px 40px;
+    border-radius: 15px;
+    cursor: pointer;
+    border: 0;
+    background-color: #b58ef2;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.buttonReal:hover {
+    background-color: #b58ef2;
+    color: hsl(0, 0%, 100%);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.buttonReal:active {
+    background-color: #b58ef2;
+    color: hsl(0, 0%, 100%);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: 100ms;
+}
+
+
+/* Phones, and other vertical devices */
+@media (max-width: 768px) {
+    .nextToEachOther {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }

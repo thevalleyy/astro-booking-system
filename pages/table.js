@@ -306,7 +306,7 @@ const TimeTable = () => {
                         <input
                             type="submit"
                             value="Book"
-                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            className="buttonReal"
                             onClick={() => {
                                 document.getElementById("var").textContent = "book";
                             }}
@@ -315,7 +315,7 @@ const TimeTable = () => {
                             type="submit"
                             id="checkUserBookings"
                             value="Check booked slots"
-                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            className="buttonReal"
                             onClick={() => {
                                 document.getElementById("var").textContent = "check";
                             }}
@@ -323,7 +323,7 @@ const TimeTable = () => {
                         <button
                             type="button"
                             id="clearSelection"
-                            style={{ fontSize: "2em", marginTop: "10px" }}
+                            className="buttonReal"
                             onClick={() => {
                                 const clickedSlots = document.getElementsByClassName("clicked");
                                 while (clickedSlots.length > 0) {

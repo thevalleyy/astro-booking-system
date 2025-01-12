@@ -60,11 +60,13 @@ const bookSlots = (setUpdated) => {
             timeSlot: timeSlot,
         })
         .then((response) => {
+            console.log(response.data);
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
             document.getElementById("checkUserBookings")?.click();
             alertBox("Booking successful!", "success", 3000);
         })
         .catch((error) => {
+            if (error?.response?.data.updated) setUpdated("Last update: " + new Date(error.response.data.updated).toLocaleString());
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 };

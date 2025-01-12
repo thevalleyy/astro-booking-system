@@ -4,6 +4,7 @@ Table.JS
       which results in setTimeout() of the old notification closing the new one
     * explain the color of the slots somewhere
     * do somethign against brute forcing
+    * waiting animation when booking is being processed, disable the button
 
 admin.JS
     * the same notification bug

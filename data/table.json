@@ -1,14 +1,95 @@
 {
-    "updated": 1735829007558,
+    "updated": 1736716204175,
     "data": {
         "18:00": {},
         "18:20": {},
         "18:40": {},
         "19:00": {},
-        "19:20": {},
-        "19:40": {},
-        "20:00": {},
-        "20:20": {},
+        "19:20": {
+            "0": {
+                "firstname": "johannes",
+                "lastname": "Steger",
+                "email": "jogest06@gmai.com",
+                "bookedSlots": 3,
+                "time": 1736714613224
+            },
+            "1": {
+                "firstname": "gd",
+                "lastname": "fd",
+                "email": "jogest06@gmai.com",
+                "bookedSlots": 3,
+                "time": 1736715047166
+            },
+            "2": {
+                "firstname": "fds",
+                "lastname": "fds",
+                "email": "jogest06@gmai.com",
+                "bookedSlots": 2,
+                "time": 1736715132005
+            },
+            "3": {
+                "firstname": "fds",
+                "lastname": "fds",
+                "email": "jogest06@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736715147545
+            }
+        },
+        "19:40": {
+            "0": {
+                "firstname": "sdf",
+                "lastname": "fl",
+                "email": "jogest06@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736715348781
+            },
+            "1": {
+                "firstname": "sdf",
+                "lastname": "sdf",
+                "email": "jogest06@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736715577324
+            },
+            "2": {
+                "firstname": "sdf",
+                "lastname": "sdf",
+                "email": "jogest06@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736715645227
+            }
+        },
+        "20:00": {
+            "0": {
+                "firstname": "Snus",
+                "lastname": "Haas",
+                "email": "snusi@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736715982947
+            },
+            "1": {
+                "firstname": "Snus",
+                "lastname": "Haas",
+                "email": "snusi@gmail.com",
+                "bookedSlots": 2,
+                "time": 1736716141104
+            },
+            "2": {
+                "firstname": "Snus",
+                "lastname": "Haas",
+                "email": "snusi@gmail.com",
+                "bookedSlots": 1,
+                "time": 1736716190329
+            }
+        },
+        "20:20": {
+            "0": {
+                "firstname": "Snus",
+                "lastname": "Haas",
+                "email": "jogest06@gmail.com",
+                "bookedSlots": 1,
+                "time": 1736716204174
+            }
+        },
         "20:40": {},
         "21:00": {}
     }

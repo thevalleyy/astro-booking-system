@@ -31,6 +31,17 @@ const alertBox = (message, type, time) => {
  * @param {Function} setUpdated The function to set the updated time
  */
 const bookSlots = (setUpdated) => {
+    // disable the button
+    document.getElementById("book").disabled = true;
+
+    const dotsArray = [".", "..", "...", "..", "."];
+    let i = 0;
+
+    const buttonTextInterval = setInterval(() => {
+        document.getElementById("book").value = "Book" + dotsArray[i];
+        i = (i + 1) % dotsArray.length;
+    }, 500);
+
     // send the data to the server and handle the response
     const firstname = document.getElementById("firstname").value.replace(/\s+/g, "");
     const lastname = document.getElementById("lastname").value.replace(/\s+/g, "");
@@ -60,14 +71,20 @@ const bookSlots = (setUpdated) => {
             timeSlot: timeSlot,
         })
         .then((response) => {
-            console.log(response.data);
-            setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
+            setUpdated("Last update: " + new Date(response.data.updated).toLocaleString());
+            alertBox(response.data.message, "success", 5000);
+            markBookedSlots(setUpdated, "client");
             document.getElementById("checkUserBookings")?.click();
-            alertBox("Booking successful!", "success", 3000);
+            document.getElementById("book").disabled = false;
+            document.getElementById("book").value = "Book";
+            clearInterval(buttonTextInterval);
         })
         .catch((error) => {
             if (error?.response?.data.updated) setUpdated("Last update: " + new Date(error.response.data.updated).toLocaleString());
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+            document.getElementById("book").disabled = false;
+            document.getElementById("book").value = "Book";
+            clearInterval(buttonTextInterval);
         });
 };
 
@@ -77,6 +94,8 @@ const bookSlots = (setUpdated) => {
  * @param {String} reason The reason for the requested update
  */
 const markBookedSlots = (setUpdated, reason) => {
+    if (reason == "websocket" && document.getElementById("book").disabled) return; // do not update if the book button is disabled
+
     // get number of booked slots for each time slot
     axios
         .get("/api/getBookings")
@@ -272,6 +291,7 @@ const TimeTable = () => {
                         ))}
                     </tbody>
                 </table>
+                <br></br>
                 <form
                     className="center-H"
                     onSubmit={(e) => {
@@ -306,6 +326,7 @@ const TimeTable = () => {
 
                     <div className="nextToEachOther">
                         <input
+                            id="book"
                             type="submit"
                             value="Book"
                             className="buttonReal"

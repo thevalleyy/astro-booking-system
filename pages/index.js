@@ -20,16 +20,83 @@ export default function Home() {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
 
-            <div className="fullscreen">
-                <br></br>
-                <h1 className="center-H">Welcome to the Astro Booking System</h1>
-                <br></br>
-                <h2 className="center-H">Here&#39;s how it works ... </h2>
-                <br></br>
-                <h3 className="center-H">Bla bla bla</h3>
-                <br></br>
-                <br></br>
-                <br></br>
+            <div className="fullscreen no-select">
+                <div className="center-H">
+                    <br></br>
+                    <h1>Welcome to the Astro Booking System</h1>
+                    <h2>Here&#39;s how it works ... </h2>
+                    <br></br>
+                    <h3 style={{ maxWidth: "80%" }}>
+                        On the <a href="./table">time schedule</a> page you can see the available time slots. You can book a time slot by clicking on
+                        it and filling out the form. You will receive a confirmation email after booking.
+                    </h3>
+                    <br></br>
+                    <br></br>
+                    <h2>Table explanation</h2>
+                    <br></br>
+                    <div className="nextToEachOther">
+                        <div className="center-H">
+                            <h3>Top row: Timeslots</h3>
+                            <h3>Other rows: Slots to book</h3>
+                        </div>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className="header" id="0">
+                                        18:00
+                                    </th>
+                                    <th className="header" id="1">
+                                        19:00
+                                    </th>
+                                    <th className="header" id="2">
+                                        20:00
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="slot booked"></td>
+                                    <td className="slot clicked"></td>
+                                    <td className="slot bookedByClient"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br></br>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td className="slot"></td>
+                                <td>
+                                    <h3 style={{ paddingLeft: "1em" }}>Free slot</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="slot clicked"></td>
+                                <td>
+                                    <h3 style={{ paddingLeft: "1em" }}>Selected by you</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="slot bookedByClient"></td>
+                                <td>
+                                    <h3 style={{ paddingLeft: "1em" }}>Booked by you</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="slot booked"></td>
+                                <td>
+                                    <h3 style={{ paddingLeft: "1em" }}>Booked by another user</h3>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br></br>
+                    <h3>That&#39;s it! Happy booking</h3>
+                    <br></br>
+                </div>
+
                 <div className="nextToEachOther">
                     <button
                         type="button"

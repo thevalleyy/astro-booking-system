@@ -203,6 +203,9 @@ async function addEntry(query) {
         };
     }
 
+    // wait 2 seconds to simulate a slow connection
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+
     return {
         code: 200,
         success: true,

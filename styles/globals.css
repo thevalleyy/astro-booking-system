@@ -1,5 +1,5 @@
 /* TEmPORARY, easier to test this way */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
 /* @font-face {
     font-family: "Windows95";
@@ -17,7 +17,7 @@
 html,
 body {
     background-color: #231942;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     color: #ffffff;
 }
 
@@ -40,11 +40,21 @@ span {
     height: 100vh;
 }
 
+td {
+    min-width: 1em;
+    height: 1em;
+}
+
 .center-H {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+.center-H br {
+    margin: 1rem 0;
 }
 
 .nextToEachOther {
@@ -83,7 +93,7 @@ span {
 }
 
 .clicked {
-    background-color: #6cf86c; 
+    background-color: #6cf86c;
 }
 
 .booked {
@@ -154,6 +164,7 @@ span {
 /* Added new css elements instead of replacing old ones for now */
 
 .buttonReal {
+    margin-top: 20px;
     padding: 17px 40px;
     border-radius: 15px;
     cursor: pointer;
@@ -179,7 +190,6 @@ span {
     transition: 100ms;
 }
 
-
 /* Phones, and other vertical devices */
 @media (max-width: 768px) {
     .nextToEachOther {
@@ -188,4 +198,9 @@ span {
         align-items: center;
         justify-content: center;
     }
+}
+
+/* clicked link */
+a:visited {
+    color: #ff0000;
 }

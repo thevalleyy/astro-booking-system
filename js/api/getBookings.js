@@ -2,9 +2,10 @@
  * Get the number of booked slots for a specific time slot
  * @returns An object with the time slots and the number of already booked slots
  */
-function getBookings() {
+export default async function getBookings() {
     try {
-        const table = require("../../data/table.json")["data"];
+        const json = await import("../../data/table.json");
+        const table = json.data;
         const response = {};
 
         // check the current index of booked slots for the time slot
@@ -16,10 +17,12 @@ function getBookings() {
             });
         });
 
+        const updated = json.updated;
+
         return {
             code: 200,
             success: true,
-            message: { updated: require("../../data/table.json").updated, data: response },
+            message: { updated: updated, data: response },
         };
     } catch (error) {
         console.error(error);
@@ -30,5 +33,3 @@ function getBookings() {
         };
     }
 }
-
-module.exports = getBookings;

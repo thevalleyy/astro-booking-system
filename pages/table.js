@@ -3,7 +3,7 @@ import Head from "next/head";
 import axios from "axios";
 
 import tableHeaders from "../js/tableHeaders.js";
-const config = require("../config.json");
+import config from "../config.json" with { type: "json" };
 const { slotsPerColumn } = config.settings;
 const { checks } = config.settings;
 const metaData = config["html-meta-data"];
@@ -14,7 +14,7 @@ const metaData = config["html-meta-data"];
  * @param {String} type The type of the message
  * @param {Number} time The time in ms to display the message
  */
-const alertBox = (message, type, time) => {
+function alertBox(message, type, time) {
     const notification = document.getElementsByClassName("alert")[0];
     notification.childNodes[1].innerText = message;
     notification.classList = `alert ${type} visible`;
@@ -24,13 +24,13 @@ const alertBox = (message, type, time) => {
             notification.classList = "alert";
         }, time);
     }
-};
+}
 
 /**
  * Request the server to book the selected slots
  * @param {Function} setUpdated The function to set the updated time
  */
-const bookSlots = (setUpdated) => {
+function bookSlots(setUpdated) {
     // disable the button
     document.getElementById("book").disabled = true;
 
@@ -50,12 +50,24 @@ const bookSlots = (setUpdated) => {
     // // transform the slots into an array of strings of their id
     const slotsArr = Array.from(document.getElementsByClassName("clicked")).map((slot) => slot.id);
 
-    if (slotsArr.length === 0) return alertBox("Please select at least one slot", "info", 3000);
+    if (slotsArr.length === 0) {
+        alertBox("Please select at least one slot", "info", 3000);
+        document.getElementById("book").disabled = false;
+        document.getElementById("book").value = "Book";
+        clearTimeout(buttonTextInterval);
+        return;
+    } 
 
     // // slots can only be booked in one column
     const firstColumn = slotsArr[0]?.split("_")[0] || "0";
     for (let i = 1; i < slotsArr.length; i++) {
-        if (slotsArr[i].split("_")[0] !== firstColumn) return alertBox("You can only book slots in one column", "info", 3000);
+        if (slotsArr[i].split("_")[0] !== firstColumn) {
+            alertBox("You can only book slots in one column", "info", 3000);
+            document.getElementById("book").disabled = false;
+            document.getElementById("book").value = "Book";
+            clearTimeout(buttonTextInterval);
+            return;
+        }
     }
 
     // get the time slot
@@ -86,14 +98,14 @@ const bookSlots = (setUpdated) => {
             document.getElementById("book").value = "Book";
             clearInterval(buttonTextInterval);
         });
-};
+}
 
 /**
  * Request the server to mark the booked slots
  * @param {Function} setUpdated The function to set the updated time
  * @param {String} reason The reason for the requested update
  */
-const markBookedSlots = (setUpdated, reason) => {
+function markBookedSlots(setUpdated, reason) {
     if (reason == "websocket" && document.getElementById("book").disabled) return; // do not update if the book button is disabled
 
     // get number of booked slots for each time slot
@@ -137,12 +149,12 @@ const markBookedSlots = (setUpdated, reason) => {
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
-};
+}
 
 /**
  * Request the server to return the booked slots for the client
  */
-const checkBookedSlots = () => {
+function checkBookedSlots() {
     axios
         .post("/api/getUserBookings", {
             firstname: document.getElementById("firstname").value.replace(/\s+/g, ""),
@@ -185,9 +197,9 @@ const checkBookedSlots = () => {
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
-};
+}
 
-const TimeTable = () => {
+export default function TimeTable() {
     const [updated, setUpdated] = useState("Fetching data...");
 
     // Generate the times for the table headers
@@ -367,6 +379,4 @@ const TimeTable = () => {
             </div>
         </>
     );
-};
-
-export default TimeTable;
+}

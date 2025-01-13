@@ -1,6 +1,7 @@
 {
   "name": "astro-booking-system",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "websocket": "node ./js/WebSocketServer.js",

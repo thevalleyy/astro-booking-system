@@ -1,6 +1,8 @@
-const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8080 });
-const key = require("../passwords.json")["websocketkey"];
+import { WebSocketServer } from "ws";
+const wss = new WebSocketServer({ port: 8080 });
+
+import passwords from "../passwords.json" with { type: "json" };
+const key = passwords["websocketkey"];
 
 // Handle client connections
 wss.on("connection", (socket) => {

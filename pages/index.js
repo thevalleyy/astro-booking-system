@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 
-const metaData = require("../config.json")["html-meta-data"];
-const { imprintURL } = require("../config.json").settings;
+import config from "../config.json" with { type: "json" };
+const metaData = config["html-meta-data"];
+const { imprintURL } = config.settings;
 
 export default function Home() {
     useEffect(() => {}, []);

@@ -1,11 +1,12 @@
-const checks = require("../../config.json")["settings"]["checks"];
+import config from "../../config.json" with { type: "json" };
+const checks = config.settings.checks;
 
 /**
  * Get the booked slots of a user
  * @param {Object} query The request body as an json object
  * @returns An object with the time slots and the number of already booked slots of a specified user
  */
-function getUserBookings(query) {
+export default async function getUserBookings(query) {
     if (!query["firstname"]) {
         return {
             code: 400,
@@ -70,7 +71,8 @@ function getUserBookings(query) {
     const email = query["email"].toLowerCase();
 
     try {
-        const data = require("../../data/table.json")["data"];
+        const table = await import("../../data/table.json")
+        const data = table.data;
 
         // find the user
         const bookedSlots = [];
@@ -110,5 +112,3 @@ function getUserBookings(query) {
         };
     }
 }
-
-module.exports = getUserBookings;

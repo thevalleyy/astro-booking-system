@@ -1,13 +1,6 @@
 /* TEmPORARY, easier to test this way */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
 
-/* @font-face {
-    font-family: "Windows95";
-    src: url("font/windows95.woff2") format("woff2"), url("font/windows95.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-} */
-
 * {
     touch-action: manipulation;
     padding: 0px;
@@ -90,7 +83,7 @@ td {
     border: 1px solid #000;
     padding: 8px;
     text-align: center;
-    background-color: #504848
+    background-color: #504848;
 }
 
 .clicked {

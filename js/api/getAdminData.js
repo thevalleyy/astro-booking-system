@@ -1,11 +1,12 @@
-const passKey = require("../../passwords.json")["adminkey"];
+import passwords from "../../passwords.json" with { type: "json" };
+const passKey = passwords["adminkey"];
 
 /**
  * Validates the admin password and returns the table data
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-function getAdminData(query) {
+export default async function getAdminData(query) {
     const password = query["password"];
 
     try {
@@ -16,8 +17,9 @@ function getAdminData(query) {
                 message: "Unauthorized",
             };
         }
-
-        var data = require("../../data/table.json");
+        const table = await import("../../data/table.json");
+        var data = table.data;
+        var updated = table.updated;
     } catch (error) {
         console.error(error);
         return {
@@ -30,8 +32,6 @@ function getAdminData(query) {
     return {
         code: 200,
         success: true,
-        message: { data },
+        message: { data, updated },
     };
 }
-
-module.exports = getAdminData;

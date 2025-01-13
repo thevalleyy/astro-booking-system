@@ -3,7 +3,7 @@ import { useEffect } from "react";
 /**
  * Create a WebSocket client that listens for messages from the server.
  */
-const WebSocketClient = () => {
+export default function WebSocketClient() {
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:8080");
 
@@ -32,6 +32,4 @@ const WebSocketClient = () => {
     }, []);
 
     return null;
-};
-
-export default WebSocketClient;
+}

@@ -1,20 +1,23 @@
-const fs = require("node:fs");
-const nodemailer = require("nodemailer");
-const getUserBookings = require("./getUserBookings.js");
+import fs from "node:fs";
+import nodemailer from "nodemailer";
+import getUserBookings from "./getUserBookings.js";
+import config from "../../config.json" with { type: "json" };
+import passwords from "../../passwords.json" with { type: "json" };
 
-const keys = Object.keys(require("../../config.json").settings.default);
-const checks = require("../../config.json").settings.checks;
-const slotsPerColumn = require("../../config.json").settings.slotsPerColumn;
-const validSlots = Object.keys(require("../../data/table.json").data);
-const confirmationEmailSettings = require("../../passwords.json").confirmationEmail;
-const mailSettings = require("../../config.json").mail;
+const keys = Object.keys(config.settings.default);
+const checks = config.settings.checks;
+const slotsPerColumn = config.settings.slotsPerColumn;
+const table = (await import("../../data/table.json"))
+const validSlots = Object.keys(table.data);
+const confirmationEmailSettings = passwords.confirmationEmail;
+const mailSettings = config.mail;
 
 /**
  * Validates and adds a new entry to the json file, sends a confirmation email and refreshes the websocket
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-async function addEntry(query) {
+export default async function addEntry(query) {
     for (let i = 0; i < keys.length; i++) {
         // check if all fields are present
         if (!query[keys[i]]) {
@@ -99,7 +102,7 @@ async function addEntry(query) {
     }
 
     try {
-        const data = require("../../data/table.json")["data"];
+        const data = table.data;
 
         // check the current index of booked slots for the time slot
         const placedBookings = data[query["timeSlot"]];
@@ -121,7 +124,8 @@ async function addEntry(query) {
         }
 
         // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
-        const bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
+        const bookingsResponse = await getUserBookings(query);
+        const bookings = bookingsResponse.message.bookedSlots; // [ [ '18:00', 4 ] ]
 
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one
@@ -165,7 +169,9 @@ async function addEntry(query) {
     }
 
     // send refresh signal to all clients
-    const key = require("../../passwords.json")["websocketkey"];
+    const passwords = await import("../../passwords.json");
+    const key = passwords.websocketkey;
+
     const ws = new WebSocket("ws://localhost:8080");
     ws.onerror = (error) => {
         console.error("WebSocket error:", error);
@@ -213,5 +219,3 @@ async function addEntry(query) {
         message: "Booking successful. You will receive a confirmation email shortly",
     };
 }
-
-module.exports = addEntry;

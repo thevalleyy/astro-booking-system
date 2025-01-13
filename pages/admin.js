@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-const metaData = require("../config.json")["html-meta-data"];
-const maxSlots = require("../config.json")["settings"]["slotsPerColumn"];
-
 import axios from "axios";
+
+import config from "../config.json" with { type: "json" };
+const metaData = config["html-meta-data"];
+const maxSlots = config.settings.slotsPerColumn;
 
 /**
  * Display an alert box
@@ -11,7 +12,7 @@ import axios from "axios";
  * @param {String} type The type of the message
  * @param {Number} time The time in ms to display the message
  */
-const alertBox = (message, type, time) => {
+function alertBox(message, type, time) {
     const notification = document.getElementsByClassName("alert")[0];
     notification.childNodes[1].innerText = message;
     notification.classList = `alert ${type} visible`;
@@ -21,11 +22,11 @@ const alertBox = (message, type, time) => {
             notification.classList = "alert";
         }, time);
     }
-};
+}
 
-const requestData = () => {
+async function requestData() {
     const password = document.getElementById("password")?.value || sessionStorage.getItem("password");
-    axios
+    await axios
         .post("/api/getAdminData", { password: password })
         .then((res) => {
             buildTable(res.data.message);
@@ -40,9 +41,10 @@ const requestData = () => {
             }
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
-};
+}
 
-const buildTable = (data) => {
+function buildTable(data) {
+    console.log(data);
     // delete the whole document
     const existingTable = document.querySelectorAll(".fullscreen");
     if (existingTable.length > 0) {
@@ -57,7 +59,7 @@ const buildTable = (data) => {
 
     fullscreen.innerHTML = `
     <h1>
-    Admin Table - Last update: ${new Date(data["data"]["updated"]).toLocaleString()}
+    Admin Table - Last update: ${new Date(data["updated"]).toLocaleString()}
     <h1 class="backToHome">
     <button className="buttonList" onClick="document.getElementById('refreshButton').click()">Refresh</button>
     <button className="buttonList" onClick="document.location.href = './table'"> Booking panel</button> 
@@ -76,7 +78,7 @@ const buildTable = (data) => {
     const thead = document.createElement("thead");
     const tbody = document.createElement("tbody");
 
-    const headers = Object.keys(data["data"]["data"]); // fucking genius
+    const headers = Object.keys(data["data"]); // fucking genius
 
     // create the headers
     const headerRow = document.createElement("tr");
@@ -97,7 +99,7 @@ const buildTable = (data) => {
             const td = document.createElement("td");
             td.className = "slot";
             td.id = `${index}_${i}`;
-            td.textContent = `${i+1}`;
+            td.textContent = `${i + 1}`;
             td.onclick = () => {
                 alertBox("Empty slot", "info", 2000);
             };
@@ -112,9 +114,9 @@ const buildTable = (data) => {
     document.body.appendChild(fullscreen);
 
     // color cells
-    Object.keys(data["data"]["data"]).forEach((timeslot) => {
-        Object.keys(data["data"]["data"][timeslot]).forEach((booking) => {
-            const slot = data["data"]["data"][timeslot][booking]; // sometimes I hate myself
+    Object.keys(data["data"]).forEach((timeslot) => {
+        Object.keys(data["data"][timeslot]).forEach((booking) => {
+            const slot = data["data"][timeslot][booking]; // sometimes I hate myself
 
             // find header
             const headers = table.querySelectorAll(".header");
@@ -133,7 +135,8 @@ const buildTable = (data) => {
             }
         });
     });
-};
+}
+
 export default function Home() {
     useEffect(() => {
         const password = sessionStorage.getItem("password");
@@ -146,7 +149,7 @@ export default function Home() {
             document.getElementById("textfield").textContent = "Autologin...";
         } catch (e) {}
         requestData();
-        alertBox("Auto logged in", "info", 2000)
+        alertBox("Auto logged in", "info", 2000);
     }, []);
     return (
         <>

@@ -1,7 +1,8 @@
-const config = require("./config.json");
-const cli = require("next/dist/cli/next-dev");
+import config from "./config.json" with { type: "json" };
+import cli from "next/dist/cli/next-dev.js";
+import generateTable from "./js/generateTable.js";
 
-require("./js/generateTable.js")();
+generateTable();
 
 cli.nextDev({
     port: config.settings.port,

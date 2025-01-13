@@ -121,7 +121,7 @@ async function addEntry(query) {
         }
 
         // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
-        bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
+        const bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
 
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one

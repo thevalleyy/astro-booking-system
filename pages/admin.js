@@ -97,7 +97,7 @@ const buildTable = (data) => {
             const td = document.createElement("td");
             td.className = "slot";
             td.id = `${index}_${i}`;
-            td.textContent = `${index} ${i}`;
+            td.textContent = `${i+1}`;
             td.onclick = () => {
                 alertBox("Empty slot", "info", 2000);
             };
@@ -145,9 +145,8 @@ export default function Home() {
         try {
             document.getElementById("textfield").textContent = "Autologin...";
         } catch (e) {}
-        setTimeout(() => {
-            requestData();
-        }, 2000);
+        requestData();
+        alertBox("Auto logged in", "info", 2000)
     }, []);
     return (
         <>
@@ -219,7 +218,7 @@ export default function Home() {
                         }}
                     >
                         <label htmlFor="name">Password:</label>
-                        <input type="text" id="password" name="paddword" required size="10" />
+                        <input type="password" id="password" name="paddword" required size="10" />
 
                         <input type="submit" value="Authenticate" style={{ fontSize: "2em", marginTop: "10px" }}></input>
                     </form>

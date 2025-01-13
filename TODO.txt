@@ -2,10 +2,11 @@ Table.JS
     * make the text fade out before the notification disappears
     * fix the possibility of closing the old opening a new notification, 
       which results in setTimeout() of the old notification closing the new one
-    * do somethign against vandalism
+    * when booking in build mode, the last updated time isnt displayed
 
 admin.JS
     * the same notification bug
+    * fix problem that occurs when the same person books 2 seperate slots
     * admin should be able to export a .txt or .json file with all the bookings
     * shift the table down to make space for the alert
     * color bookings form the same client in the same color
@@ -13,3 +14,9 @@ admin.JS
     * allow the admin to delete the bookings
     * allow the admin to add bookings
     * allow the admin to break up bookings into multiple slots
+
+List.JS
+    * display the bookings on a seperate webpage according to the current time
+
+General.JS
+    * transform code to esm style

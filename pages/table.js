@@ -284,7 +284,7 @@ const TimeTable = () => {
                                         id={`${colIndex}_${rowIndex}`}
                                         title="Click to select"
                                     >
-                                        {colIndex} {rowIndex}
+                                        {rowIndex + 1}
                                     </td>
                                 ))}
                             </tr>

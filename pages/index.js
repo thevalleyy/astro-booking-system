@@ -17,7 +17,9 @@ import cbmode from "@/js/cbmode";
 
 export default function Home() {
     useEffect(() => {
-        cbmode();
+                document.getElementById("cbmode").addEventListener("click", function () {
+                    cbmode();
+                });
     }, []);
 
     return (

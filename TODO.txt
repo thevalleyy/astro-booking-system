@@ -1,7 +1,6 @@
 Table.JS
     * make the text fade out before the notification disappears
     * when booking in build mode, the last updated time isnt displayed
-    * color blind mode for the table
 
 admin.JS
     * rewrite the whole admin code page according to the proposed suggestion

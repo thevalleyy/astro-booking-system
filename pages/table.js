@@ -83,7 +83,10 @@ function bookSlots(setUpdated) {
             markBookedSlots(setUpdated, "client");
             document.getElementById("checkUserBookings")?.click();
 
-            // TODO: write name, lastname and email to local storage
+            // write name, lastname and email to local storage
+            localStorage.setItem("firstname", firstname);
+            localStorage.setItem("lastname", lastname);
+            localStorage.setItem("email", email);
             // on page load, fill the input fields with the values from local storage
             // and checkBookedSlots()
         })
@@ -135,6 +138,8 @@ function markBookedSlots(setUpdated, reason) {
             if (clickedSlotsWereBooked) {
                 alertBox("Some of the slots you selected are no longer available. Please select other slots.", "info", 5000);
             }
+
+            cbmode();
         })
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
@@ -179,6 +184,8 @@ function checkBookedSlots() {
                 document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
                 document.getElementById(`${header.id}_${i}`).title = "Your booking";
             }
+
+            cbmode();
         })
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
@@ -193,8 +200,9 @@ export default function TimeTable() {
 
     useEffect(() => {
         markBookedSlots(setUpdated, "first");
-
-        cbmode();
+        document.getElementById("cbmode").addEventListener("click", function () {
+            cbmode();
+        });
     }, []);
 
     return (
@@ -277,6 +285,7 @@ export default function TimeTable() {
                                         onClick={() => {
                                             if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("booked")) return;
                                             document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
+                                            cbmode();
                                         }}
                                         key={`${rowIndex}_${colIndex}`}
                                         id={`${colIndex}_${rowIndex}`}
@@ -361,6 +370,8 @@ export default function TimeTable() {
                                     bookedByClientSlots[0].title = "Already booked";
                                     bookedByClientSlots[0].classList.remove("bookedByClient");
                                 }
+
+                                cbmode();
                             }}
                         >
                             Clear selection

@@ -1,7 +1,11 @@
+// packages
 import React from "react";
 import Head from "next/head";
 
+// files
 import config from "../config.json" with { type: "json" };
+
+// variables
 const metaData = config["html-meta-data"];
 const { imprintURL } = config.settings;
 const maxSlots = config.settings.checks.maxBookedSlots;

@@ -1,71 +1,62 @@
+// packages
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
+// files
 import tableHeaders from "../js/tableHeaders.js";
+import alertBox from "@/js/alertBox.js";
 import config from "../config.json" with { type: "json" };
+
+// variables
 const { slotsPerColumn } = config.settings;
 const { checks } = config.settings;
 const metaData = config["html-meta-data"];
 
-/**
- * Display an alert box
- * @param {String} message The message to display
- * @param {String} type The type of the message
- * @param {Number} time The time in ms to display the message
- */
-function alertBox(message, type, time) {
-    const notification = document.getElementsByClassName("alert")[0];
-    notification.childNodes[1].innerText = message;
-    notification.classList = `alert ${type} visible`;
+// functions
+function bookAnimation(action = "start") {
+    const dotsArray = [".", "..", "...", ".."];
+    const button = document.getElementById("book");
+    const originalValue = button.value.replaceAll(".", "");
 
-    if (time) {
-        setTimeout(() => {
-            notification.classList = "alert";
-        }, time);
+    if (action == "start") {
+        let i = 0;
+        button.disabled = true;
+
+        window.buttonTextInterval = setInterval(() => {
+            button.value = originalValue + dotsArray[i];
+            i = (i + 1) % dotsArray.length;
+        }, 500);
+    } else {
+        button.disabled = false;
+        button.value = originalValue;
+        clearInterval(window.buttonTextInterval);
     }
 }
 
-/**
- * Request the server to book the selected slots
- * @param {Function} setUpdated The function to set the updated time
- */
 function bookSlots(setUpdated) {
-    // disable the button
-    document.getElementById("book").disabled = true;
-
-    const dotsArray = [".", "..", "...", "..", "."];
-    let i = 0;
-
-    const buttonTextInterval = setInterval(() => {
-        document.getElementById("book").value = "Book" + dotsArray[i];
-        i = (i + 1) % dotsArray.length;
-    }, 500);
+    bookAnimation("start");
 
     // send the data to the server and handle the response
     const firstname = document.getElementById("firstname").value.replace(/\s+/g, "");
     const lastname = document.getElementById("lastname").value.replace(/\s+/g, "");
     const email = document.getElementById("email").value.replace(/\s+/g, "");
 
-    // // transform the slots into an array of strings of their id
+    // transform the slots into an array of strings of their id
     const slotsArr = Array.from(document.getElementsByClassName("clicked")).map((slot) => slot.id);
 
     if (slotsArr.length === 0) {
         alertBox("Please select at least one slot", "info", 3000);
-        document.getElementById("book").disabled = false;
-        document.getElementById("book").value = "Book";
-        clearTimeout(buttonTextInterval);
+        bookAnimation("stop");
         return;
-    } 
+    }
 
-    // // slots can only be booked in one column
-    const firstColumn = slotsArr[0]?.split("_")[0] || "0";
+    // slots can only be booked in one column
+    const firstColumn = slotsArr[0].split("_")[0] || "0";
     for (let i = 1; i < slotsArr.length; i++) {
         if (slotsArr[i].split("_")[0] !== firstColumn) {
             alertBox("You can only book slots in one column", "info", 3000);
-            document.getElementById("book").disabled = false;
-            document.getElementById("book").value = "Book";
-            clearTimeout(buttonTextInterval);
+            bookAnimation("stop");
             return;
         }
     }
@@ -83,38 +74,34 @@ function bookSlots(setUpdated) {
             timeSlot: timeSlot,
         })
         .then((response) => {
-            setUpdated("Last update: " + new Date(response.data.updated).toLocaleString());
+            bookAnimation("stop");
             alertBox(response.data.message, "success", 5000);
+            setUpdated("Last update: " + new Date(response.data.updated).toLocaleString());
+
             markBookedSlots(setUpdated, "client");
             document.getElementById("checkUserBookings")?.click();
-            document.getElementById("book").disabled = false;
-            document.getElementById("book").value = "Book";
-            clearInterval(buttonTextInterval);
+
+            // TODO: write name, lastname and email to local storage
+            // on page load, fill the input fields with the values from local storage
+            // and checkBookedSlots()
         })
         .catch((error) => {
             if (error?.response?.data.updated) setUpdated("Last update: " + new Date(error.response.data.updated).toLocaleString());
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
-            document.getElementById("book").disabled = false;
-            document.getElementById("book").value = "Book";
-            clearInterval(buttonTextInterval);
+            bookAnimation("stop");
         });
 }
 
-/**
- * Request the server to mark the booked slots
- * @param {Function} setUpdated The function to set the updated time
- * @param {String} reason The reason for the requested update
- */
+
 function markBookedSlots(setUpdated, reason) {
-    if (reason == "websocket" && document.getElementById("book").disabled) return; // do not update if the book button is disabled
+    if (reason == "websocket" && document.getElementById("book").disabled) return; 
+    // do not update if the book button is disabled, because the client will update the slots after the booking
 
     // get number of booked slots for each time slot
     axios
         .get("/api/getBookings")
         .then((response) => {
-            // remove all clicked or booke slots
             if (reason == "client") {
-                // only remove the clicked slots if the client booked a slot
                 const clickedSlots = document.getElementsByClassName("clicked");
                 while (clickedSlots.length > 0) {
                     clickedSlots[0].classList.remove("clicked");
@@ -125,9 +112,11 @@ function markBookedSlots(setUpdated, reason) {
                     bookedSlots[0].classList.remove("booked");
                 }
             }
+
             // color the booked slots
             const slots = response.data.message.data;
             let clickedSlotsWereBooked = false;
+
             Object.keys(slots).forEach((key) => {
                 for (let i = 0; i < slots[key]; i++) {
                     const index = Object.keys(slots).indexOf(key);
@@ -151,9 +140,7 @@ function markBookedSlots(setUpdated, reason) {
         });
 }
 
-/**
- * Request the server to return the booked slots for the client
- */
+
 function checkBookedSlots() {
     axios
         .post("/api/getUserBookings", {
@@ -162,10 +149,10 @@ function checkBookedSlots() {
             email: document.getElementById("email").value.replace(/\s+/g, ""),
         })
         .then((response) => {
-            document.getElementById("clearSelection").click(); // clear the selection
+            document.getElementById("clearSelection").click();
             const { bookedSlots } = response.data.message;
 
-            if (bookedSlots.length === 0) return alertBox("You have not booked any slots", "info", 3000);
+            if (bookedSlots.length === 0) return alertBox("You have not booked any slots yet", "info", 3000);
 
             // remove all clicked slots
             const clickedSlots = document.getElementsByClassName("clicked");
@@ -180,24 +167,25 @@ function checkBookedSlots() {
             }
 
             // color the booked slots
-            // [["18:00", 2], ["19:00", 1]]
-            bookedSlots.forEach((slot) => {
-                // find the header with the time
-                const headers = document.getElementsByClassName("header");
-                const header = Array.from(headers).find((header) => header.textContent === slot[0]);
+            // ["18:00", 2] -> the api will return only one array
 
-                // color the slots
-                for (let i = 0; i < slot[1]; i++) {
-                    document.getElementById(`${header.id}_${i}`).classList.add("bookedByClient");
-                    document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
-                    document.getElementById(`${header.id}_${i}`).title = "Your booking";
-                }
-            });
+            // find the header with the time
+            const headers = document.getElementsByClassName("header");
+            const header = Array.from(headers).find((header) => header.textContent === bookedSlots[0]);
+
+            // color the slots
+            for (let i = 0; i < bookedSlots[1]; i++) {
+                document.getElementById(`${header.id}_${i}`).classList.add("bookedByClient");
+                document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
+                document.getElementById(`${header.id}_${i}`).title = "Your booking";
+            }
+            
         })
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 }
+
 
 export default function TimeTable() {
     const [updated, setUpdated] = useState("Fetching data...");
@@ -212,7 +200,7 @@ export default function TimeTable() {
     return (
         <>
             <Head>
-                <title>astro-booking-system - schedule</title>
+                <title>astro-booking-system - Time Table</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />
@@ -235,10 +223,13 @@ export default function TimeTable() {
                     <span>This is an alert box.</span>
                 </div>
                 <p style={{ display: "none" }} id="var"></p>
-                <h1>Time Table - {updated}</h1>
+                <div className="center-H">
+                    <h1>Time Table</h1>
+                    <h2>{updated}</h2>
+                </div>
+                
                 <h1 className="backToHome">
                     <button
-                        className="buttonList"
                         onClick={() => {
                             document.location.href = "./admin";
                         }}
@@ -246,12 +237,11 @@ export default function TimeTable() {
                         Admin panel
                     </button>
                     <button
-                        className="buttonList"
                         onClick={() => {
                             document.location.href = ".";
                         }}
                     >
-                        Home
+                        Homepage
                     </button>
                 </h1>
                 <button
@@ -274,7 +264,7 @@ export default function TimeTable() {
                             {times.map((time, index) => (
                                 <th
                                     className="header"
-                                    key={`${time}`} // Added a unique key
+                                    key={`${time}`}
                                     id={index}
                                 >
                                     {time}

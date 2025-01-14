@@ -1,5 +1,5 @@
 // packages
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 
 // files
@@ -11,7 +11,15 @@ const { imprintURL } = config.settings;
 const maxSlots = config.settings.checks.maxBookedSlots;
 const mail = config.settings.adminMail;
 
+// functions
+import cbmode from "@/js/cbmode";
+
+
 export default function Home() {
+    useEffect(() => {
+        cbmode();
+    }, []);
+
     return (
         <>
             <Head>
@@ -75,6 +83,10 @@ export default function Home() {
                                 </tr>
                             </tbody>
                         </table>
+                        <div>
+                            <input type="checkbox" id="cbmode"></input>
+                            <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I'm colorblind</h4>
+                        </div>
                     </div>
                     <br></br>
                     <table>

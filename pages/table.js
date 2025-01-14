@@ -14,6 +14,8 @@ const { checks } = config.settings;
 const metaData = config["html-meta-data"];
 
 // functions
+import cbmode from "@/js/cbmode.js";
+
 function bookAnimation(action = "start") {
     const dotsArray = [".", "..", "...", ".."];
     const button = document.getElementById("book");
@@ -92,9 +94,8 @@ function bookSlots(setUpdated) {
         });
 }
 
-
 function markBookedSlots(setUpdated, reason) {
-    if (reason == "websocket" && document.getElementById("book").disabled) return; 
+    if (reason == "websocket" && document.getElementById("book").disabled) return;
     // do not update if the book button is disabled, because the client will update the slots after the booking
 
     // get number of booked slots for each time slot
@@ -140,7 +141,6 @@ function markBookedSlots(setUpdated, reason) {
         });
 }
 
-
 function checkBookedSlots() {
     axios
         .post("/api/getUserBookings", {
@@ -179,13 +179,11 @@ function checkBookedSlots() {
                 document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
                 document.getElementById(`${header.id}_${i}`).title = "Your booking";
             }
-            
         })
         .catch((error) => {
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 }
-
 
 export default function TimeTable() {
     const [updated, setUpdated] = useState("Fetching data...");
@@ -195,6 +193,8 @@ export default function TimeTable() {
 
     useEffect(() => {
         markBookedSlots(setUpdated, "first");
+
+        cbmode();
     }, []);
 
     return (
@@ -227,7 +227,7 @@ export default function TimeTable() {
                     <h1>Time Table</h1>
                     <h2>{updated}</h2>
                 </div>
-                
+
                 <h1 className="backToHome">
                     <button
                         onClick={() => {
@@ -262,11 +262,7 @@ export default function TimeTable() {
                     <thead>
                         <tr>
                             {times.map((time, index) => (
-                                <th
-                                    className="header"
-                                    key={`${time}`}
-                                    id={index}
-                                >
+                                <th className="header" key={`${time}`} id={index}>
                                     {time}
                                 </th>
                             ))}
@@ -293,6 +289,11 @@ export default function TimeTable() {
                         ))}
                     </tbody>
                 </table>
+                <br></br>
+                <div className="center-H nextToEachOther">
+                    <input type="checkbox" id="cbmode"></input>
+                    <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I'm colorblind</h4>
+                </div>
                 <br></br>
                 <form
                     className="center-H"

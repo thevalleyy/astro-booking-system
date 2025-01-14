@@ -203,25 +203,25 @@ const TimeTable = () => {
                     <span>This is an alert box.</span>
                 </div>
                 <p style={{ display: "none" }} id="var"></p>
-                <h1>Time Table - {updated}</h1>
-                <h1 className="backToHome">
-                    <button
-                        className="buttonList"
-                        onClick={() => {
-                            document.location.href = "./admin";
-                        }}
-                    >
-                        Admin panel
-                    </button>
-                    <button
-                        className="buttonList"
-                        onClick={() => {
-                            document.location.href = ".";
-                        }}
-                    >
-                        Home
-                    </button>
+                <h1 className="scheduleHeader">Time Table - {updated}
+                        <button
+                          className="scheduleHeaderButton"
+                         onClick={() => {
+                                document.location.href = "./admin";
+                            }}
+                        >
+                            Admin panel
+                        </button>
+                        <button
+                            className="scheduleHeaderButton"
+                            onClick={() => {
+                                document.location.href = ".";
+                            }}
+                        >
+                            Home
+                        </button>
                 </h1>
+                
                 <button //TODO: so somethign against brute forcing
                     style={{ display: "none" }}
                     onClick={() => {

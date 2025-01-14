@@ -87,7 +87,7 @@ export default function Home() {
                         </table>
                         <div>
                             <input type="checkbox" id="cbmode"></input>
-                            <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I'm colorblind</h4>
+                            <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I&#39;m colorblind</h4>
                         </div>
                     </div>
                     <br></br>
@@ -120,7 +120,7 @@ export default function Home() {
                         </tbody>
                     </table>
                     <br></br>
-                    <h3>That's it! Happy booking!</h3>
+                    <h3>That&#39;s it! Happy booking!</h3>
                     <br></br>
                 </div>
 

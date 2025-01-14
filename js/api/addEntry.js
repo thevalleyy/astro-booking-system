@@ -183,34 +183,34 @@ export default async function addEntry(query) {
 
     // At this point, the entry has been added to the json file
     // Send confirmation E-Mail to user
-    // try {
-    //     const transporter = nodemailer.createTransport(confirmationEmailSettings);
+    try {
+        const transporter = nodemailer.createTransport(confirmationEmailSettings);
 
-    //     let confirmationMailText = mailSettings.mailText
-    //         .replace("!FIRSTNAME", query["firstname"])
-    //         .replace("!BOOKEDSLOTS", query["bookedSlots"])
-    //         .replace("!TIMESLOT", query["timeSlot"]);
-    //     const info = await transporter.sendMail({
-    //         from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
-    //         to: query["email"],
-    //         subject: mailSettings.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
-    //         text: confirmationMailText,
-    //     });
+        let confirmationMailText = mailSettings.mailText
+            .replace("!FIRSTNAME", query["firstname"])
+            .replace("!BOOKEDSLOTS", query["bookedSlots"])
+            .replace("!TIMESLOT", query["timeSlot"]);
+        const info = await transporter.sendMail({
+            from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
+            to: query["email"],
+            subject: mailSettings.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
+            text: confirmationMailText,
+        });
 
-    //     console.log("Message sent: %s", info.messageId);
-    //     transporter.close();
-    // } catch (error) {
-    //     console.error(error);
-    //     return {
-    //         code: 500,
-    //         success: false,
-    //         updated: Date.now(),
-    //         message: "Your booking was successful, but the confirmation email could not be sent.",
-    //     };
-    // }
+        console.log("Message sent: %s", info.messageId);
+        transporter.close();
+    } catch (error) {
+        console.error(error);
+        return {
+            code: 500,
+            success: false,
+            updated: Date.now(),
+            message: "Your booking was successful, but the confirmation email could not be sent.",
+        };
+    }
 
     // wait 2 seconds to simulate a slow connection
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return {
         code: 200,

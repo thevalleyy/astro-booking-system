@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Head from "next/head";
 
 import config from "../config.json" with { type: "json" };
 const metaData = config["html-meta-data"];
 const { imprintURL } = config.settings;
+const maxSlots = config.settings.checks.maxBookedSlots;
+const mail = config.settings.adminMail;
 
 export default function Home() {
-    useEffect(() => {}, []);
     return (
         <>
             <Head>
-                <title>astro-booking-system - home</title>
+                <title>Astro Booking System - Home</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />
@@ -21,29 +22,35 @@ export default function Home() {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
 
-            <div className="fullscreen no-select">
+            <div className="fullscreen">
                 <div className="center-H">
                     <br></br>
                     <h1>Welcome to the Astro Booking System</h1>
-                    <h2>Here&#39;s how it works ... </h2>
+                    <h2>How it works:</h2>
                     <br></br>
-                    <h3 style={{ maxWidth: "80%" }}>
-                        On the <a href="./table">time schedule</a> page you can see the available time slots. You can book a time slot by clicking on
-                        it and filling out the form. You will receive a confirmation email after booking.
+                    <h3>
+                        On the time schedule page, you can view all slots. You can book a free one by clicking on it and filling out the form. A confirmation email will be sent to you after booking.
                     </h3>
                     <br></br>
+                    <h3>
+                        Note: You can book a maximum of <span className="highlighted">{maxSlots} slots</span>.
+                    </h3>
+                    <h3>
+                        Once you choose a time slot, you can only book slots within that time frame.
+                    </h3>
+                    <h3>
+                        If there are any issues, please contact the admin at <a href={mail}> {mail}</a>.
+                    </h3>
                     <br></br>
-                    <h2>Table explanation</h2>
+                    <h2>Table Explanation:</h2>
                     <br></br>
                     <div className="nextToEachOther">
-                        <div className="center-H">
-                            <h3>Top row: Timeslots</h3>
-                            <h3>Other rows: Slots to book</h3>
-                        </div>
-
                         <table>
                             <thead>
                                 <tr>
+                                    <th>
+                                        <h3 style={{ paddingRight: "1em", float: "right" }}>Time slots</h3>
+                                    </th>
                                     <th className="header" id="0">
                                         18:00
                                     </th>
@@ -57,6 +64,7 @@ export default function Home() {
                             </thead>
                             <tbody>
                                 <tr>
+                                    <h3 style={{ paddingRight: "1em", float: "right" }}>Slots to book</h3>
                                     <td className="slot booked"></td>
                                     <td className="slot clicked"></td>
                                     <td className="slot bookedByClient"></td>
@@ -94,7 +102,7 @@ export default function Home() {
                         </tbody>
                     </table>
                     <br></br>
-                    <h3>That&#39;s it! Happy booking</h3>
+                    <h3>That's it! Happy booking!</h3>
                     <br></br>
                 </div>
 
@@ -106,7 +114,7 @@ export default function Home() {
                             window.location.href = "./table";
                         }}
                     >
-                        Time schedule & booking
+                        Time Schedule & Booking
                     </button>
                     <button
                         type="button"
@@ -124,7 +132,7 @@ export default function Home() {
                             window.open("https://github.com/thevalleyy/astro-booking-system", "_blank");
                         }}
                     >
-                        Free and open source on GitHub
+                        Free and Open Source on GitHub
                     </button>
                 </div>
             </div>

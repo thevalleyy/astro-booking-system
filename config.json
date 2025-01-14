@@ -2,6 +2,7 @@
     "settings": {
         "port": 3000,
         "imprintURL": "https://example.com/imprint",
+        "adminMail": "admin@expample.com",
         "start": "18:00",
         "end": "21:00",
         "increment": "00:20",

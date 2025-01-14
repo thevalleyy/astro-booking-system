@@ -3,8 +3,10 @@ Table.JS
     * fix the possibility of closing the old opening a new notification, 
       which results in setTimeout() of the old notification closing the new one
     * when booking in build mode, the last updated time isnt displayed
+    * color blind mode for the table
 
 admin.JS
+    * rewrite the whole admin code page according to the proposed suggestion
     * the same notification bug
     * fix problem that occurs when the same person books 2 seperate slots
     * admin should be able to export a .txt or .json file with all the bookings
@@ -18,8 +20,6 @@ admin.JS
 List.JS
     * display the bookings on a seperate webpage according to the current time
 
-General.JS
-    * transform code to esm style
 
 Credits
  This favicon was generated using the following graphics from Twitter Twemoji:

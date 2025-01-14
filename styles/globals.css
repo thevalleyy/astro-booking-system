@@ -50,12 +50,20 @@ td {
     margin: 1rem 0;
 }
 
+.center-H h3 {
+    max-width: 60vw;
+}
+
 .nextToEachOther {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 16px;
+}
+
+.highlighted {
+    color: #ff0000;
 }
 
 .backToHome {
@@ -87,7 +95,7 @@ td {
 }
 
 .clicked {
-    background-color: #6cf86c;
+    background-color: #61cc61;
 }
 
 .booked {
@@ -195,6 +203,11 @@ td {
 }
 
 /* clicked link */
-a:visited {
+a:visited,
+a:link {
     color: #ff0000;
+}
+
+a:hover {
+    color: #c00000;
 }

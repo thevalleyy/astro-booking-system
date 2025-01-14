@@ -268,7 +268,7 @@ export default function TimeTable() {
                     }}
                     id="wsError"
                 ></button>
-                <table className="schedule">
+                <table className="schedule no-select">
                     <thead>
                         <tr>
                             {times.map((time, index) => (

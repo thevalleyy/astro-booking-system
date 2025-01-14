@@ -180,6 +180,7 @@ function checkBookedSlots() {
 
             // color the slots
             for (let i = 0; i < bookedSlots[1]; i++) {
+                document.getElementById(`${header.id}_${i}`).classList.remove("booked");
                 document.getElementById(`${header.id}_${i}`).classList.add("bookedByClient");
                 document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
                 document.getElementById(`${header.id}_${i}`).title = "Your booking";
@@ -203,6 +204,15 @@ export default function TimeTable() {
         document.getElementById("cbmode").addEventListener("click", function () {
             cbmode();
         });
+
+        // on page load, fill the input fields with the values from local storage
+        document.getElementById("firstname").value = localStorage.getItem("firstname") || "";
+        document.getElementById("lastname").value = localStorage.getItem("lastname") || "";
+        document.getElementById("email").value = localStorage.getItem("email") || "";
+
+        // check if the user has booked any slots
+        document.getElementById("checkUserBookings").click();
+
     }, []);
 
     return (
@@ -368,6 +378,7 @@ export default function TimeTable() {
                                 const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
                                 while (bookedByClientSlots.length > 0) {
                                     bookedByClientSlots[0].title = "Already booked";
+                                    bookedByClientSlots[0].classList.add("booked");
                                     bookedByClientSlots[0].classList.remove("bookedByClient");
                                 }
 

@@ -129,17 +129,17 @@ export default async function addEntry(query) {
 
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one
-            if (bookings[0][0] !== query["timeSlot"]) {
+            if (bookings[0] !== query["timeSlot"]) {
                 // user has bookings and tries to book in another time slot
                 return {
                     code: 400,
                     success: false,
-                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}`,
+                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[1]} slots in ${bookings[0]}`,
                 };
             }
 
             // user exceeds max booking limit
-            if (bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+            if (bookings[1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
                 return {
                     code: 400,
                     success: false,

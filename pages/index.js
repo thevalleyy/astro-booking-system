@@ -68,7 +68,7 @@ export default function Home() {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <h3 style={{ paddingRight: "1em", float: "right" }}>Slots to book</h3>
+                                    <td><h3 style={{ paddingRight: "1em", float: "right" }}>Slots to book</h3></td>
                                     <td className="slot booked"></td>
                                     <td className="slot clicked"></td>
                                     <td className="slot bookedByClient"></td>

@@ -10,8 +10,11 @@ export default function alertBox(message, type, time) {
     notification.classList = `alert ${type} visible`;
 
     if (time) {
+        const random = Math.random().toString(36).substring(2, 10);
+        notification.id = random;
         setTimeout(() => {
-            notification.classList = "alert";
+            const notification = document.getElementById(random);
+            if (notification) notification.classList = "alert";
         }, time);
     }
 }

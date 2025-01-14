@@ -17,8 +17,9 @@ export default function FourOhFour() {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
             <div className="fullscreen no-select center-H">
-                <h1>How did you manage to do that?</h1>                
-                <h2>This page does not exist</h2>
+                <h1 style={{ fontSize: "5em" }}>404</h1>
+                <h1>How did you manage to do that?</h1>
+                <h2>This page does not exist :(</h2>
                 <div className="nextToEachOther">
                     <button
                         className="buttonReal"
@@ -41,7 +42,7 @@ export default function FourOhFour() {
                         <span className="btn-text">Home</span>
                     </button>
                 </div>
-                </div>
+            </div>
         </>
     );
 }

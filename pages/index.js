@@ -12,7 +12,7 @@ const maxSlots = config.settings.checks.maxBookedSlots;
 const mail = config.settings.adminMail;
 
 // functions
-import cbmode from "@/js/cbmode";
+import cbmode from "../js/cbmode";
 
 
 export default function Home() {

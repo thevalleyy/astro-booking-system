@@ -5,7 +5,7 @@ import axios from "axios";
 
 // files
 import tableHeaders from "../js/tableHeaders.js";
-import alertBox from "@/js/alertBox.js";
+import alertBox from "../js/alertBox.js";
 import config from "../config.json" with { type: "json" };
 
 // variables
@@ -14,7 +14,7 @@ const { checks } = config.settings;
 const metaData = config["html-meta-data"];
 
 // functions
-import cbmode from "@/js/cbmode.js";
+import cbmode from "../js/cbmode.js";
 
 function bookAnimation(action = "start") {
     const dotsArray = [".", "..", "...", ".."];

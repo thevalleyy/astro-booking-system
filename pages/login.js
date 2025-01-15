@@ -8,39 +8,33 @@ const metaData = config["html-meta-data"];
 const title = config.settings.title;
 
 async function requestData(autologin = false) {
-    const password = document.getElementById("password")?.value || sessionStorage.getItem("password");
+    const password = document.getElementById("password")?.value || localStorage.getItem("password");
     await axios
-        .post("/api/getAdminData", { password: password })
+        .post("/api/login", { password: password })
         .then((res) => {
             // the password is correct
-            sessionStorage.setItem("password", password);
+            localStorage.setItem("password", password);
             if (autologin) {
                 alertBox("You have been logged in automatically.", "success");
             } else {
-                alertBox("You have been logged in.", "success");
+                alertBox("Logged in.", "success");
             }
 
             // window.location.href = "./admin";
         })
         .catch((error) => {
-            if (sessionStorage.getItem("password") && error?.response?.data.code === 401) {
-                // wrong autologin password
-                sessionStorage.removeItem("password");
-                alertBox("Autologin failed due to an invalid password. Please enter it manually.", "error");
-                return;
-            }
+            if (error?.response?.data.code === 401) localStorage.removeItem("password"); 
+            if (autologin) return alertBox("Autologin failed due to an invalid password. Please enter it manually.", "error");
+
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
         });
 }
 
 export default function Home() {
     useEffect(() => {
-        const password = sessionStorage.getItem("password");
+        const password = localStorage.getItem("password");
         if (!password) return;
         requestData(true);
-
-        // inform the user when failed
-        // inform also when successfull on the admin page
     }, []);
     return (
         <>

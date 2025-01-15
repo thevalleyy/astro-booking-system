@@ -12,6 +12,9 @@ admin.JS
     * allow the admin to delete the bookings
     * allow the admin to add bookings
     * allow the admin to break up bookings into multiple slots
+    * disable/enable the booking
+    * maybe cookies instead of session storage
+    * cb mode for admin aswell
 
 List.JS
     * display the bookings on a seperate webpage according to the current time

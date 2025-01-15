@@ -73,7 +73,7 @@ export default async function getUserBookings(query) {
     try {
         const table = await import("../../data/table.json")
         const data = table.data;
-
+        // console.log(data)
         // find the user
         const bookedSlots = [];
 

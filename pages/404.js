@@ -1,12 +1,13 @@
 import Head from "next/head";
 import config from "../config.json" with { type: "json" };
 const metaData = config["html-meta-data"];
+const title = config.settings.title;
 
 export default function FourOhFour() {
     return (
         <>
             <Head>
-                <title>404 - Not Found</title>
+                <title>{`${title} – Not Found`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />

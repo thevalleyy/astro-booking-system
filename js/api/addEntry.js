@@ -148,17 +148,19 @@ export default async function addEntry(query) {
             }
         }
 
+        const date = Date.now();
+
         data[query["timeSlot"]][currentIndex] = {
             firstname: query["firstname"],
             lastname: query["lastname"],
             email: query["email"],
             bookedSlots: Number(query["bookedSlots"]),
-            time: Date.now(),
+            time: date,
         };
 
         // backup file before writing
-        fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
-        fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
+        fs.copyFileSync("./data/table.json", `./data/backup/table_${date}.json`);
+        fs.writeFileSync("./data/table.json", JSON.stringify({ updated: date, data: data }, null, 4));
     } catch (error) {
         console.error(error);
         return {
@@ -202,8 +204,8 @@ export default async function addEntry(query) {
     } catch (error) {
         console.error(error);
         return {
-            code: 500,
-            success: false,
+            code: 200,
+            success: true,
             updated: Date.now(),
             message: "Your booking was successful, but the confirmation email could not be sent.",
         };

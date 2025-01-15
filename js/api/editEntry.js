@@ -5,7 +5,8 @@ import config from "../../config.json" with { type: "json" };
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
 const slotsPerColumn = config.settings.slotsPerColumn;
-const validSlots = Object.keys((await import("../../data/table.json", { with: { type: "json" } })).data);
+const table = await import("../../data/table.json");
+const validSlots = Object.keys(table.data)
 
 /**
  * Validates and edits an entry in the json file and refreshes the websocket
@@ -13,7 +14,7 @@ const validSlots = Object.keys((await import("../../data/table.json", { with: { 
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-export default async function addEntry(query) {
+export default async function editEntry(query) {
     for (let i = 0; i < keys.length; i++) {
         // check if all fields are present
         if (!query[keys[i]]) {
@@ -185,7 +186,8 @@ export default async function addEntry(query) {
     }
 
     // send refresh signal to all clients
-    const key = await import("../../passwords.json", { with: { type: "json" } })["websocketkey"];
+    const passwords = await import("../../passwords.json");
+    const key = passwords.websocketkey;
 
     const ws = new WebSocket("ws://localhost:8080");
     ws.onerror = (error) => {

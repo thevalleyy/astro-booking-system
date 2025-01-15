@@ -1,6 +1,7 @@
 {
     "settings": {
         "port": 3000,
+        "title": "Astro Booking System",
         "imprintURL": "https://example.com/imprint",
         "adminMail": "admin@expample.com",
         "start": "18:00",

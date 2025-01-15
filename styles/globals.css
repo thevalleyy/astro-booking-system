@@ -174,7 +174,8 @@ td {
 /* Added new css elements instead of replacing old ones for now */
 
 .buttonReal {
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 17px 40px;
     border-radius: 15px;
     cursor: pointer;

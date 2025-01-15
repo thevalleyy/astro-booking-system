@@ -5,6 +5,7 @@ import axios from "axios";
 import config from "../config.json" with { type: "json" };
 const metaData = config["html-meta-data"];
 const maxSlots = config.settings.slotsPerColumn;
+const title = config.settings.title;
 
 /**
  * Display an alert box
@@ -154,7 +155,7 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>astro-booking-system - admin</title>
+            <title>{`${title} – Admin`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />

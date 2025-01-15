@@ -12,6 +12,7 @@ import config from "../config.json" with { type: "json" };
 const { slotsPerColumn } = config.settings;
 const { checks } = config.settings;
 const metaData = config["html-meta-data"];
+const title = config.settings.title;
 
 // functions
 import cbmode from "../js/cbmode.js";
@@ -218,7 +219,7 @@ export default function TimeTable() {
     return (
         <>
             <Head>
-                <title>astro-booking-system - Time Table</title>
+            <title>{`${title} – Time Schedule`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />

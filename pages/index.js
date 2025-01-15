@@ -10,6 +10,7 @@ const metaData = config["html-meta-data"];
 const { imprintURL } = config.settings;
 const maxSlots = config.settings.checks.maxBookedSlots;
 const mail = config.settings.adminMail;
+const title = config.settings.title;
 
 // functions
 import cbmode from "../js/cbmode";
@@ -25,7 +26,7 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Astro Booking System - Home</title>
+                <title>{`${title} – Home`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />

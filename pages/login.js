@@ -8,12 +8,16 @@ const metaData = config["html-meta-data"];
 const title = config.settings.title;
 
 async function requestData(autologin = false) {
-    const password = document.getElementById("password")?.value || localStorage.getItem("password");
+    const cookieString = document.cookie;
+    const cookies = Object.fromEntries(cookieString.split("; ").map(cookie => cookie.split("=")));
+
+
+    const password = document.getElementById("password")?.value || cookies.password;
     await axios
         .post("/api/login", { password: password })
         .then((res) => {
             // the password is correct
-            localStorage.setItem("password", password);
+            document.cookie = `password=${password}; path=/; max-age=` + 60 * 60 * 24 * 7 + ";"; // Cookie valid for 1 week
             if (autologin) {
                 alertBox("You have been logged in automatically.", "success");
             } else {
@@ -23,7 +27,7 @@ async function requestData(autologin = false) {
             // window.location.href = "./admin";
         })
         .catch((error) => {
-            if (error?.response?.data.code === 401) localStorage.removeItem("password"); 
+            if (error?.response?.data.code === 401) document.cookie = "password=; Path=/; Max-Age=0;";
             if (autologin) return alertBox("Autologin failed due to an invalid password. Please enter it manually.", "error");
 
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
@@ -32,7 +36,10 @@ async function requestData(autologin = false) {
 
 export default function Home() {
     useEffect(() => {
-        const password = localStorage.getItem("password");
+        const cookieString = document.cookie;
+        const cookies = Object.fromEntries(cookieString.split("; ").map(cookie => cookie.split("=")));
+
+        const password = cookies.password;
         if (!password) return;
         requestData(true);
     }, []);

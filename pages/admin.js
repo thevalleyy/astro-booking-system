@@ -2,154 +2,41 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
 
+import alertBox from "../js/alertBox";
+import passwords from "../passwords.json" with { type: "json" };
 import config from "../config.json" with { type: "json" };
+
 const metaData = config["html-meta-data"];
 const maxSlots = config.settings.slotsPerColumn;
 const title = config.settings.title;
+const passkey = passwords.adminkey;
 
-/**
- * Display an alert box
- * @param {String} message The message to display
- * @param {String} type The type of the message
- * @param {Number} time The time in ms to display the message
- */
-function alertBox(message, type, time) {
-    const notification = document.getElementsByClassName("alert")[0];
-    notification.childNodes[1].innerText = message;
-    notification.classList = `alert ${type} visible`;
 
-    if (time) {
-        setTimeout(() => {
-            notification.classList = "alert";
-        }, time);
-    }
-}
+export async function getServerSideProps(context) {
+    const { req } = context;
+    console.log(req);
 
-async function requestData() {
-    const password = document.getElementById("password")?.value || sessionStorage.getItem("password");
-    await axios
-        .post("/api/getAdminData", { password: password })
-        .then((res) => {
-            buildTable(res.data.message);
-            // save the passwort for this session
-            sessionStorage.setItem("password", password);
-        })
-        .catch((error) => {
-            if (sessionStorage.getItem("password") && error?.response?.data.code === 401) {
-                sessionStorage.removeItem("password");
-                window.location.reload();
-                return;
-            }
-            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
-        });
-}
+    const password = localStorage.getItem("password") || "";
+    if (!password || password !== adminkey) {
+        // invalid password
+        localStorage.removeItem("password");
 
-function buildTable(data) {
-    console.log(data);
-    // delete the whole document
-    const existingTable = document.querySelectorAll(".fullscreen");
-    if (existingTable.length > 0) {
-        existingTable.forEach((table) => {
-            table.remove();
-        });
+        return {
+            redirect: {
+                destination: "/login",
+                permanent: false,
+            },
+        };
     }
 
-    // create new fullscreen
-    const fullscreen = document.createElement("div");
-    fullscreen.className = "fullscreen";
-
-    fullscreen.innerHTML = `
-    <h1>
-    Admin Table - Last update: ${new Date(data["updated"]).toLocaleString()}
-    <h1 class="backToHome">
-    <button className="buttonList" onClick="document.getElementById('refreshButton').click()">Refresh</button>
-    <button className="buttonList" onClick="document.location.href = './table'"> Booking panel</button> 
-    <button className="buttonList" onClick="document.location.href = '.'"> Home</button> 
-    <button className="buttonList" onClick="
-        sessionStorage.removeItem('password');
-        document.location.href = './admin';
-    "> Log out</button>
-    </h1>`;
-
-    // create table
-    const table = document.createElement("table");
-    table.className = "schedule";
-
-    // inizialize thead and tbody
-    const thead = document.createElement("thead");
-    const tbody = document.createElement("tbody");
-
-    const headers = Object.keys(data["data"]); // fucking genius
-
-    // create the headers
-    const headerRow = document.createElement("tr");
-    headers.forEach((header, index) => {
-        const th = document.createElement("th");
-        th.className = "header";
-        th.id = index;
-        th.appendChild(document.createTextNode(header));
-        headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    // create empty cells
-    for (let i = 0; i < maxSlots; i++) {
-        const tr = document.createElement("tr");
-        Array.from(table.querySelectorAll(".header")).forEach((header, index) => {
-            const td = document.createElement("td");
-            td.className = "slot";
-            td.id = `${index}_${i}`;
-            td.textContent = `${i + 1}`;
-            td.onclick = () => {
-                alertBox("Empty slot", "info", 2000);
-            };
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    }
-
-    table.appendChild(tbody);
-
-    fullscreen.appendChild(table);
-    document.body.appendChild(fullscreen);
-
-    // color cells
-    Object.keys(data["data"]).forEach((timeslot) => {
-        Object.keys(data["data"][timeslot]).forEach((booking) => {
-            const slot = data["data"][timeslot][booking]; // sometimes I hate myself
-
-            // find header
-            const headers = table.querySelectorAll(".header");
-            const header = Array.from(headers).find((header) => header.textContent === timeslot);
-
-            // color the slots
-            for (let i = 0; i < slot.bookedSlots; i++) {
-                const slotElement = document.getElementById(`${header.id}_${i}`);
-                slotElement.classList.add("bookedByClient");
-                slotElement.onclick = () => {
-                    alertBox(
-                        `Client: ${slot.firstname} ${slot.lastname}\nEmail: ${slot.email} \nBooked at ${new Date(slot.time).toLocaleString()}`,
-                        "info"
-                    );
-                };
-            }
-        });
-    });
+    return {
+        props: {},
+    };
 }
 
 export default function Home() {
     useEffect(() => {
-        const password = sessionStorage.getItem("password");
-
-        if (!password) return;
-
-        // use the password from the session storage
-        // display autologin for 2 seconds
-        try {
-            document.getElementById("textfield").textContent = "Autologin...";
-        } catch (e) {}
-        requestData();
+        // TODO: display autologin when autologged in
         alertBox("Auto logged in", "info", 2000);
     }, []);
     return (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import axios from "axios";
+import cookie from "cookie";
 
 import alertBox from "../js/alertBox";
 import passwords from "../passwords.json" with { type: "json" };
@@ -9,17 +10,23 @@ import config from "../config.json" with { type: "json" };
 const metaData = config["html-meta-data"];
 const maxSlots = config.settings.slotsPerColumn;
 const title = config.settings.title;
-const passkey = passwords.adminkey;
+const adminkey = passwords.adminkey;
 
 
 export async function getServerSideProps(context) {
-    const { req } = context;
-    console.log(req);
+    const { req, res } = context;
+    const cookies = cookie.parse(req.headers.cookie || "");
+    const password = cookies.password || "";
 
-    const password = localStorage.getItem("password") || "";
     if (!password || password !== adminkey) {
         // invalid password
-        localStorage.removeItem("password");
+        res.setHeader("Set-Cookie", cookie.serialize("password", "", {
+            path: "/",
+            expires: new Date(0), 
+            httpOnly: true, 
+            secure: true, 
+            sameSite: "strict",
+        }));
 
         return {
             redirect: {
@@ -36,8 +43,7 @@ export async function getServerSideProps(context) {
 
 export default function Home() {
     useEffect(() => {
-        // TODO: display autologin when autologged in
-        alertBox("Auto logged in", "info", 2000);
+        alertBox("Logged in", "success", 2000);
     }, []);
     return (
         <>

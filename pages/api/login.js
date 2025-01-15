@@ -5,6 +5,5 @@ export default async function handler(req, res) {
     request(req);
 
     // pass elemtents to the function
-    const result = await login(JSON.parse(JSON.stringify(req.body)));
-    res.status(result.code).json(result);
+    await login(req, res, JSON.parse(JSON.stringify(req.body)));
 }

@@ -2,6 +2,7 @@ Table.JS
     * make the text fade out before the notification disappears
     * when booking in build mode, the last updated time isnt displayed
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
+    * explain table color on the table itself
  
 admin.JS
     * rewrite the whole admin code page according to the proposed suggestion
@@ -13,8 +14,8 @@ admin.JS
     * allow the admin to add bookings
     * allow the admin to break up bookings into multiple slots
     * disable/enable the booking
-    * maybe cookies instead of session storage
     * cb mode for admin aswell
+    * cookie should be renewed on autologin
 
 List.JS
     * display the bookings on a seperate webpage according to the current time

@@ -206,14 +206,14 @@ export default function TimeTable() {
             cbmode();
         });
 
-        // on page load, fill the input fields with the values from local storage
-        document.getElementById("firstname").value = localStorage.getItem("firstname") || "";
-        document.getElementById("lastname").value = localStorage.getItem("lastname") || "";
-        document.getElementById("email").value = localStorage.getItem("email") || "";
-
-        // check if the user has booked any slots
-        document.getElementById("checkUserBookings").click();
-
+        if (document.getElementById("email")) {
+            // the has booked some slots before, so fill in their information
+            // and check their booked slots
+             document.getElementById("firstname").value = localStorage.getItem("firstname") || "";
+             document.getElementById("lastname").value = localStorage.getItem("lastname") || "";
+             document.getElementById("email").value = localStorage.getItem("email") || "";
+             document.getElementById("checkUserBookings").click();
+        }
     }, []);
 
     return (
@@ -295,6 +295,7 @@ export default function TimeTable() {
                                         className="slot"
                                         onClick={() => {
                                             if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("booked")) return;
+                                            if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("bookedByUser")) return;
                                             document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
                                             cbmode();
                                         }}

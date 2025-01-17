@@ -15,7 +15,6 @@ admin.JS
     * allow the admin to break up bookings into multiple slots
     * disable/enable the booking
     * cb mode for admin aswell
-    * cookie should be renewed on autologin
 
 List.JS
     * display the bookings on a seperate webpage according to the current time

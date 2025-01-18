@@ -1,21 +1,23 @@
-const fs = require("node:fs");
-const nodemailer = require("nodemailer");
-const getUserBookings = require("./getUserBookings.js");
+import fs from "node:fs";
+import nodemailer from "nodemailer";
+import getUserBookings from "./getUserBookings.js";
+import config from "../../config.json" with { type: "json" };
+import passwords from "../../passwords.json" with { type: "json" };
 
-const keys = Object.keys(require("../../config.json")["settings"]["default"]);
-const checks = require("../../config.json")["settings"]["checks"];
-const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"];
-const validSlots = Object.keys(require("../../data/table.json")["data"]);
-const confirmationEmailSettings = require("../../passwords.json")["confirmationEmail"];
-const mailSender = require("../../passwords.json")["sender"];
-const passwords = require("../../passwords.json")["default"];
+const keys = Object.keys(config.settings.default);
+const checks = config.settings.checks;
+const slotsPerColumn = config.settings.slotsPerColumn;
+const table = (await import("../../data/table.json"))
+const validSlots = Object.keys(table.data);
+const confirmationEmailSettings = passwords.confirmationEmail;
+const mailSettings = config.mail;
 
 /**
  * Validates and adds a new entry to the json file, sends a confirmation email and refreshes the websocket
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-function addEntry(query) {
+export default async function addEntry(query) {
     for (let i = 0; i < keys.length; i++) {
         // check if all fields are present
         if (!query[keys[i]]) {
@@ -100,7 +102,7 @@ function addEntry(query) {
     }
 
     try {
-        const data = require("../../data/table.json")["data"];
+        const data = table.data;
 
         // check the current index of booked slots for the time slot
         const placedBookings = data[query["timeSlot"]];
@@ -122,8 +124,9 @@ function addEntry(query) {
         }
 
         // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
-        bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
-        
+        const bookingsResponse = await getUserBookings(query);
+        const bookings = bookingsResponse.message.bookedSlots; // [ [ '18:00', 4 ] ]
+
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one
             if (bookings[0][0] !== query["timeSlot"]) {
@@ -131,32 +134,32 @@ function addEntry(query) {
                 return {
                     code: 400,
                     success: false,
-                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}` 
-                }
+                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}`,
+                };
             }
 
             // user exceeds max booking limit
-            if(bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+            if (bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
                 return {
                     code: 400,
                     success: false,
-                    message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`
-                }
+                    message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`,
+                };
             }
         }
 
         data[query["timeSlot"]][currentIndex] = {
-                firstname: query["firstname"],
-                lastname: query["lastname"],
-                email: query["email"],
-                bookedSlots: Number(query["bookedSlots"]),
-                time: Date.now(),
+            firstname: query["firstname"],
+            lastname: query["lastname"],
+            email: query["email"],
+            bookedSlots: Number(query["bookedSlots"]),
+            time: Date.now(),
         };
 
         // backup file before writing
         fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
-        } catch (error) {
+    } catch (error) {
         console.error(error);
         return {
             code: 500,
@@ -166,7 +169,9 @@ function addEntry(query) {
     }
 
     // send refresh signal to all clients
-    const key = require("../../passwords.json")["websocketkey"];
+    const passwords = await import("../../passwords.json");
+    const key = passwords.websocketkey;
+
     const ws = new WebSocket("ws://localhost:8080");
     ws.onerror = (error) => {
         console.error("WebSocket error:", error);
@@ -178,36 +183,39 @@ function addEntry(query) {
 
     // At this point, the entry has been added to the json file
     // Send confirmation E-Mail to user
-    const transporter = nodemailer.createTransport(confirmationEmailSettings);
+    try {
+        const transporter = nodemailer.createTransport(confirmationEmailSettings);
 
-    async function main() {
-        let confirmationMailText = passwords.mailText.replace("!BOOKEDSLOTS", query["bookedSlots"])
-        confirmationMailText.replace("!TIMESLOT", query["timeSlot"]);
+        let confirmationMailText = mailSettings.mailText
+            .replace("!FIRSTNAME", query["firstname"])
+            .replace("!BOOKEDSLOTS", query["bookedSlots"])
+            .replace("!TIMESLOT", query["timeSlot"]);
         const info = await transporter.sendMail({
-            from: `"${mailSender}" <${confirmationEmailSettings.auth.user}>`,
+            from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
             to: query["email"],
-            subject: passwords.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
+            subject: mailSettings.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
             text: confirmationMailText,
         });
 
         console.log("Message sent: %s", info.messageId);
         transporter.close();
-    }
-
-    main().catch((error) => {
+    } catch (error) {
         console.error(error);
         return {
             code: 500,
             success: false,
-            message: "Your booking was successful, but we could not send you a confirmation email.",
+            updated: Date.now(),
+            message: "Your booking was successful, but the confirmation email could not be sent.",
         };
-    });
+    }
+
+    // wait 2 seconds to simulate a slow connection
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     return {
         code: 200,
         success: true,
-        message: { updated: Date.now() },
+        updated: Date.now(),
+        message: "Booking successful. You will receive a confirmation email shortly",
     };
 }
-
-module.exports = addEntry;

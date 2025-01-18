@@ -1,11 +1,11 @@
-const fs = require("node:fs");
-const config = require("../config.json");
+import fs from "node:fs";
+import config from "../config.json" with { type: "json" };
 
 /**
  * Write a log file with the request information
  * @param {Request} req The request object
  */
-async function writeLog(req) {
+export default async function writeLog(req) {
     if (!config.log.enabled) return;
 
     // create log folder if it doesn't exist
@@ -22,5 +22,3 @@ async function writeLog(req) {
         if (err) console.warn(err);
     });
 }
-
-module.exports = writeLog;

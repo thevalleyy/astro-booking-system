@@ -1,10 +1,11 @@
-const fs = require("node:fs");
-const getUserBookings = require("./getUserBookings.js");
+import fs from "node:fs";
+import getUserBookings from "./getUserBookings.js";
+import config from "../../config.json" with { type: "json" };
 
-const keys = Object.keys(require("../../config.json")["settings"]["default"]);
-const checks = require("../../config.json")["settings"]["checks"];
-const slotsPerColumn = require("../../config.json")["settings"]["slotsPerColumn"];
-const validSlots = Object.keys(require("../../data/table.json")["data"]);
+const keys = Object.keys(config.settings.default);
+const checks = config.settings.checks;
+const slotsPerColumn = config.settings.slotsPerColumn;
+const validSlots = Object.keys((await import("../../data/table.json", { with: { type: "json" } })).data);
 
 /**
  * Validates and edits an entry in the json file and refreshes the websocket
@@ -12,7 +13,7 @@ const validSlots = Object.keys(require("../../data/table.json")["data"]);
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-function addEntry(query) {
+export default async function addEntry(query) {
     for (let i = 0; i < keys.length; i++) {
         // check if all fields are present
         if (!query[keys[i]]) {
@@ -95,28 +96,28 @@ function addEntry(query) {
             message: "Invalid time slot",
         };
     }
-    if(!Number(query["shouldEntryBeDeleted"]) == 0 || !Number(query["shouldEntryBeDeleted"]) == 1) {
+    if (!Number(query["shouldEntryBeDeleted"]) == 0 || !Number(query["shouldEntryBeDeleted"]) == 1) {
         return {
             code: 400,
             success: false,
-            message: "Invalid value for shouldEntryBeDeleted. Must be 0 or 1."
-        }
+            message: "Invalid value for shouldEntryBeDeleted. Must be 0 or 1.",
+        };
     }
 
     try {
-        const data = require("../../data/table.json")["data"];
+        const data = await import("../../data/table.json", { with: { type: "json" } })["data"];
 
         // check the current index of booked slots for the time slot
         const placedBookings = data[query["timeSlot"]];
-        const currentIndex = Number(query["SlotIndex"])//Object.keys(placedBookings).length;
+        const currentIndex = Number(query["SlotIndex"]); //Object.keys(placedBookings).length;
 
         // check if the slot index is valid
-        if(currentIndex < 0 || currentIndex > slotsPerColumn) {
+        if (currentIndex < 0 || currentIndex > slotsPerColumn) {
             return {
                 code: 400,
                 success: false,
-                message: "Invalid slot index"
-            }
+                message: "Invalid slot index",
+            };
         }
 
         // are there enough slots available?
@@ -136,7 +137,7 @@ function addEntry(query) {
 
         // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
         bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
-        
+
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one
             if (bookings[0][0] !== query["timeSlot"]) {
@@ -144,38 +145,37 @@ function addEntry(query) {
                 return {
                     code: 400,
                     success: false,
-                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}` 
-                }
+                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}`,
+                };
             }
 
             // user exceeds max booking limit
-            if(bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+            if (bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
                 return {
                     code: 400,
                     success: false,
-                    message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`
-                }
+                    message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`,
+                };
             }
         }
 
         // should the entry be deleted?
-        if(Number(query["shouldEntryBeDeleted"]) == 0) {
+        if (Number(query["shouldEntryBeDeleted"]) == 0) {
             data[query["timeSlot"]][currentIndex] = {
-                    firstname: query["firstname"],
-                    lastname: query["lastname"],
-                    email: query["email"],
-                    bookedSlots: Number(query["bookedSlots"]),
-                    time: Date.now(),
+                firstname: query["firstname"],
+                lastname: query["lastname"],
+                email: query["email"],
+                bookedSlots: Number(query["bookedSlots"]),
+                time: Date.now(),
             };
-        }
-        else {
+        } else {
             delete data[query["timeSlot"]][currentIndex];
         }
 
         // backup file before writing
         fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
-        } catch (error) {
+    } catch (error) {
         console.error(error);
         return {
             code: 500,
@@ -185,7 +185,8 @@ function addEntry(query) {
     }
 
     // send refresh signal to all clients
-    const key = require("../../passwords.json")["websocketkey"];
+    const key = await import("../../passwords.json", { with: { type: "json" } })["websocketkey"];
+
     const ws = new WebSocket("ws://localhost:8080");
     ws.onerror = (error) => {
         console.error("WebSocket error:", error);
@@ -210,5 +211,3 @@ function addEntry(query) {
         message: { updated: Date.now() },
     };
 }
-
-module.exports = addEntry;

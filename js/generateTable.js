@@ -1,13 +1,14 @@
-const generateTableHeaders = require("./tableHeaders.js");
-const fs = require("node:fs");
+import generateTableHeaders from "./tableHeaders.js";
+import fs from "node:fs";
 
 /**
  * Generates a json table at data/table.json based on the config file
  *
  * Note that this function has to be called from the root directory of the project!
  */
-function generateTable() {
-    const config = require("../config.json");
+export default async function generateTable() {
+    const { default: config } = await import("../config.json", { with: { type: "json" } });
+
     const headers = generateTableHeaders(config.settings.start, config.settings.end, config.settings.increment);
 
     const table = {
@@ -30,5 +31,3 @@ function generateTable() {
         }
     });
 }
-
-module.exports = generateTable;

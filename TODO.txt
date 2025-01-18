@@ -1,0 +1,30 @@
+Table.JS
+    * make the text fade out before the notification disappears
+    * fix the possibility of closing the old opening a new notification, 
+      which results in setTimeout() of the old notification closing the new one
+    * when booking in build mode, the last updated time isnt displayed
+
+admin.JS
+    * the same notification bug
+    * fix problem that occurs when the same person books 2 seperate slots
+    * admin should be able to export a .txt or .json file with all the bookings
+    * shift the table down to make space for the alert
+    * color bookings form the same client in the same color
+    * allow the admin to edit the bookings
+    * allow the admin to delete the bookings
+    * allow the admin to add bookings
+    * allow the admin to break up bookings into multiple slots
+
+List.JS
+    * display the bookings on a seperate webpage according to the current time
+
+General.JS
+    * transform code to esm style
+
+Credits
+ This favicon was generated using the following graphics from Twitter Twemoji:
+
+- Graphics Title: 2728.svg
+- Graphics Author: Copyright 2020 Twitter, Inc and other contributors (https://github.com/twitter/twemoji)
+- Graphics Source: https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg
+- Graphics License: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)

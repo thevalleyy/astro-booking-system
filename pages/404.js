@@ -1,5 +1,5 @@
 import Head from "next/head";
-const config = require("../config.json");
+import config from "../config.json" with { type: "json" };
 const metaData = config["html-meta-data"];
 
 export default function FourOhFour() {
@@ -16,16 +16,13 @@ export default function FourOhFour() {
                 <meta content={metaData.color} name="theme-color" />
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
-            <div className="center fullscreen">
-                <p className="no-select">How did you manage to do that? :)</p>
-                <br></br>
-                <p className="no-select">This page does not exist</p>
-                <p className="no-select"></p>
-                <div className="no-select btns">
+            <div className="fullscreen no-select center-H">
+                <h1>How did you manage to do that?</h1>                
+                <h2>This page does not exist</h2>
+                <div className="nextToEachOther">
                     <button
-                        className="btn"
+                        className="buttonReal"
                         id="backbutton"
-                        style={{ marginRight: "2px", marginLeft: "auto" }}
                         type="submit"
                         onClick={() => {
                             history.go(-1);
@@ -34,9 +31,8 @@ export default function FourOhFour() {
                         <span className="btn-text">Back</span>
                     </button>
                     <button
-                        className="btn"
+                        className="buttonReal"
                         id="homebutton"
-                        style={{ marginRight: "2px" }}
                         type="submit"
                         onClick={() => {
                             window.location.href = "/";
@@ -45,7 +41,7 @@ export default function FourOhFour() {
                         <span className="btn-text">Home</span>
                     </button>
                 </div>
-            </div>
+                </div>
         </>
     );
 }

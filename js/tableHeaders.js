@@ -5,7 +5,7 @@
  * @param {String} inc Increment time in HH:MM format
  * @returns Returns an array of time strings
  */
-function createTableHeaders(start = "18:00", end = "21:00", inc = "00:20") {
+export default function createTableHeaders(start = "18:00", end = "21:00", inc = "00:20") {
     const headers = [];
     const startJoined = start.split(":").join("");
     const endJoined = end.split(":").join("");
@@ -23,5 +23,3 @@ function createTableHeaders(start = "18:00", end = "21:00", inc = "00:20") {
 
     return headers;
 }
-
-module.exports = createTableHeaders;

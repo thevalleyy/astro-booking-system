@@ -24,7 +24,11 @@
     "mail": {
         "sender": "Abend der offenen Sternwarte",
         "mailSubject": "Confirmation for booking !BOOKEDSLOTS slot(s) for the Astro Abend",
-        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking of !BOOKEDSLOTS slot(s) at !TIMESLOT and hope you have a great time. :) \n\nSincerely\nthe Astroteam"
+        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking of !BOOKEDSLOTS slot(s) at !TIMESLOT and hope you have a great time. :) \n\nSincerely\nthe Astroteam",
+        "editMailSubject": "Edit to your booking for the Astro Abend",
+        "editMailText": "Hello !FIRSTNAME, \n\nwe confirm an edit to your booking of !BOOKEDSLOTS slot(s) at !TIMESLOT.\nYour new updated information:\nName: !NEWFIRSTNAME !NEWLASTNAME\nE-Mail: !NEWEMAIL\nbooked slots: !NEWBOOKEDSLOTS \n\nSincerely\nthe Astroteam",
+        "deleteMailSubject": "Cancellation of your booking for the Astro Abend",
+        "deleteMailText": "Hello !FIRSTNAME, \n\nwe confirm the cancellation of your booking of !BOOKEDSLOTS slot(s) at !TIMESLOT.\n\nSincerely\nthe Astroteam"
     },
     "log": {
         "enabled": false,

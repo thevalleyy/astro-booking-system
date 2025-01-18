@@ -262,6 +262,7 @@ export default function TimeTable() {
                     >
                         Homepage
                     </button>
+                </h1>
                 <h1 className="scheduleHeader">Time Table - {updated}
                         <button
                           className="scheduleHeaderButton"

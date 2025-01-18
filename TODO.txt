@@ -19,6 +19,9 @@ admin.JS
 List.JS
     * display the bookings on a seperate webpage according to the current time
 
+INDEX.js
+    * credit ourselves
+
 
 Credits
  This favicon was generated using the following graphics from Twitter Twemoji:
@@ -27,3 +30,5 @@ Credits
 - Graphics Author: Copyright 2020 Twitter, Inc and other contributors (https://github.com/twitter/twemoji)
 - Graphics Source: https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg
 - Graphics License: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+
+- font credits missing

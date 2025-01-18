@@ -6,7 +6,7 @@ import axios from "axios";
 // files
 import tableHeaders from "../js/tableHeaders.js";
 import alertBox from "../js/alertBox.js";
-import config from "../config.json" with { type: "json" };
+import config from "../config.json"; // with { type: "json" };
 
 // variables
 const { slotsPerColumn } = config.settings;
@@ -209,17 +209,17 @@ export default function TimeTable() {
         if (document.getElementById("email")) {
             // the has booked some slots before, so fill in their information
             // and check their booked slots
-             document.getElementById("firstname").value = localStorage.getItem("firstname") || "";
-             document.getElementById("lastname").value = localStorage.getItem("lastname") || "";
-             document.getElementById("email").value = localStorage.getItem("email") || "";
-             document.getElementById("checkUserBookings").click();
+            document.getElementById("firstname").value = localStorage.getItem("firstname") || "";
+            document.getElementById("lastname").value = localStorage.getItem("lastname") || "";
+            document.getElementById("email").value = localStorage.getItem("email") || "";
+            document.getElementById("checkUserBookings").click();
         }
     }, []);
 
     return (
         <>
             <Head>
-            <title>{`${title} – Time Schedule`}</title>
+                <title>{`${title} – Time Schedule`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />
@@ -246,9 +246,9 @@ export default function TimeTable() {
                     <h1>Time Table</h1>
                     <h2>{updated}</h2>
                 </div>
-
-                <h1 className="backToHome">
+                <h1 className="scheduleHeader">
                     <button
+                        className="scheduleHeaderButton"
                         onClick={() => {
                             document.location.href = "./admin";
                         }}
@@ -256,30 +256,13 @@ export default function TimeTable() {
                         Admin panel
                     </button>
                     <button
+                        className="scheduleHeaderButton"
                         onClick={() => {
                             document.location.href = ".";
                         }}
                     >
-                        Homepage
+                        Home
                     </button>
-                </h1>
-                <h1 className="scheduleHeader">Time Table - {updated}
-                        <button
-                          className="scheduleHeaderButton"
-                         onClick={() => {
-                                document.location.href = "./admin";
-                            }}
-                        >
-                            Admin panel
-                        </button>
-                        <button
-                            className="scheduleHeaderButton"
-                            onClick={() => {
-                                document.location.href = ".";
-                            }}
-                        >
-                            Home
-                        </button>
                 </h1>
                 <button
                     style={{ display: "none" }}
@@ -329,86 +312,135 @@ export default function TimeTable() {
                     </tbody>
                 </table>
                 <br></br>
-                <div className="center-H nextToEachOther">
-                    <input type="checkbox" id="cbmode"></input>
-                    <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I&#39;m colorblind</h4>
-                </div>
-                <br></br>
-                <form
-                    className="center-H"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        switch (document.getElementById("var").textContent) {
-                            case "book":
-                                bookSlots(setUpdated);
-                                break;
-                            case "check":
-                                checkBookedSlots();
-                                break;
-                            default:
-                                break;
-                        }
-                    }}
-                >
-                    <label htmlFor="name">Firstname:</label>
-                    <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
 
-                    <label htmlFor="name">Lastname:</label>
-                    <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
-
-                    <label htmlFor="name">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-                        size="30"
-                        required
-                    />
-
-                    <div className="nextToEachOther">
-                        <input
-                            id="book"
-                            type="submit"
-                            value="Book"
-                            className="buttonReal"
-                            onClick={() => {
-                                document.getElementById("var").textContent = "book";
-                            }}
-                        ></input>
-                        <input
-                            type="submit"
-                            id="checkUserBookings"
-                            value="Check booked slots"
-                            className="buttonReal"
-                            onClick={() => {
-                                document.getElementById("var").textContent = "check";
-                            }}
-                        ></input>
-                        <button
-                            type="button"
-                            id="clearSelection"
-                            className="buttonReal"
-                            onClick={() => {
-                                const clickedSlots = document.getElementsByClassName("clicked");
-                                while (clickedSlots.length > 0) {
-                                    clickedSlots[0].classList.remove("clicked");
-                                }
-
-                                const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
-                                while (bookedByClientSlots.length > 0) {
-                                    bookedByClientSlots[0].title = "Already booked";
-                                    bookedByClientSlots[0].classList.add("booked");
-                                    bookedByClientSlots[0].classList.remove("bookedByClient");
-                                }
-
-                                cbmode();
-                            }}
-                        >
-                            Clear selection
-                        </button>
+                <div className="nextToEachOther">
+                    <div>
+                        <h3 className="center-H">Legend</h3>
+                        <br></br>
+                        <div className="legend no-select">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ opacity: 0 }}></td>
+                                        <td>
+                                            <p className="slotColor">Empty slot</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ opacity: 0 }}>🎯</td>
+                                        <td>
+                                            <p className="clickedColor">Selected by you</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ opacity: 0 }}>✨</td>
+                                        <td>
+                                            <p className="bookedByClientColor">Booked by you</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ opacity: 0 }}>⚠️</td>
+                                        <td>
+                                            <p className="bookedColor">Booked by someone else</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </form>
+                    <div>
+                        <h3 className="center-H">Colorblind mode</h3>
+                        <br></br>
+                        <input type="checkbox" id="cbmode"></input>
+                        <h4
+                            className="no-select"
+                            onClick={() => {
+                                document.getElementById("cbmode").click();
+                            }}
+                            style={{ cursor: "pointer" }}
+                        >
+                            I&#39;m colorblind
+                        </h4>
+                    </div>
+                    <form
+                        className="center-H"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            switch (document.getElementById("var").textContent) {
+                                case "book":
+                                    bookSlots(setUpdated);
+                                    break;
+                                case "check":
+                                    checkBookedSlots();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }}
+                    >
+                        <div className="nextToEachOther">
+                            <div>
+                                <label htmlFor="name">Firstname:</label>
+                                <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
+
+                                <label htmlFor="name">Lastname:</label>
+                                <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
+
+                                <label htmlFor="name">Email:</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                                    size="30"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    id="book"
+                                    type="submit"
+                                    value="Book"
+                                    className="buttonReal"
+                                    onClick={() => {
+                                        document.getElementById("var").textContent = "book";
+                                    }}
+                                ></input>
+                                <input
+                                    type="submit"
+                                    id="checkUserBookings"
+                                    value="Check booked slots"
+                                    className="buttonReal"
+                                    onClick={() => {
+                                        document.getElementById("var").textContent = "check";
+                                    }}
+                                ></input>
+                                <button
+                                    type="button"
+                                    id="clearSelection"
+                                    className="buttonReal"
+                                    onClick={() => {
+                                        const clickedSlots = document.getElementsByClassName("clicked");
+                                        while (clickedSlots.length > 0) {
+                                            clickedSlots[0].classList.remove("clicked");
+                                        }
+
+                                        const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
+                                        while (bookedByClientSlots.length > 0) {
+                                            bookedByClientSlots[0].title = "Already booked";
+                                            bookedByClientSlots[0].classList.add("booked");
+                                            bookedByClientSlots[0].classList.remove("bookedByClient");
+                                        }
+
+                                        cbmode();
+                                    }}
+                                >
+                                    Clear selection
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </>
     );

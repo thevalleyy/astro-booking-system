@@ -40,9 +40,9 @@ export default function Home() {
             <div className="fullscreen">
                 <div className="center-H">
                     <br></br>
-                    <h1>Welcome to the Astro Booking System</h1>
-                    <h2>How it works:</h2>
+                    <h1>Welcome to the <span className="highlighted">Astro Booking System</span></h1>
                     <br></br>
+                    <h2>This is how it works:</h2>
                     <h3>
                         On the time schedule page, you can view all slots. You can book a free one by clicking on it and filling out the form. A confirmation email will be sent to you after booking.
                     </h3>
@@ -58,7 +58,6 @@ export default function Home() {
                     </h3>
                     <br></br>
                     <h2>Table Explanation:</h2>
-                    <br></br>
                     <div className="nextToEachOther">
                         <table>
                             <thead>

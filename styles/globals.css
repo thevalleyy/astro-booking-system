@@ -34,8 +34,8 @@ span {
 }
 
 td {
-    min-width: 1em;
-    height: 1em;
+    min-width: 1.4em;
+    height: 1.2em;
 }
 
 .center-H {
@@ -58,6 +58,10 @@ td {
     justify-content: center;
     padding: 1em;
     gap: 16px;
+}
+
+.highlighted {
+    color: #ff0000;
 }
 
 .schedule {
@@ -97,8 +101,16 @@ td {
     background-color: #504848;
 }
 
+/* Style for slot emojis */
+.emoji {
+    font-size: 1em;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .clicked {
-    background-color: #6cf86c;
+    background-color: #61cc61;
 }
 
 .booked {
@@ -169,7 +181,8 @@ td {
 /* Added new css elements instead of replacing old ones for now */
 
 .buttonReal {
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 17px 40px;
     border-radius: 15px;
     cursor: pointer;
@@ -206,6 +219,11 @@ td {
 }
 
 /* clicked link */
-a:visited {
+a:visited,
+a:link {
     color: #ff0000;
+}
+
+a:hover {
+    color: #c00000;
 }

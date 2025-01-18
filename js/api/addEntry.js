@@ -129,17 +129,17 @@ export default async function addEntry(query) {
 
         if (bookings.length > 0) {
             // user has already booked a time slot and requests another one
-            if (bookings[0][0] !== query["timeSlot"]) {
+            if (bookings[0] !== query["timeSlot"]) {
                 // user has bookings and tries to book in another time slot
                 return {
                     code: 400,
                     success: false,
-                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}`,
+                    message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[1]} slots in ${bookings[0]}`,
                 };
             }
 
             // user exceeds max booking limit
-            if (bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
+            if (bookings[1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
                 return {
                     code: 400,
                     success: false,
@@ -148,17 +148,19 @@ export default async function addEntry(query) {
             }
         }
 
+        const date = Date.now();
+
         data[query["timeSlot"]][currentIndex] = {
             firstname: query["firstname"],
             lastname: query["lastname"],
             email: query["email"],
             bookedSlots: Number(query["bookedSlots"]),
-            time: Date.now(),
+            time: date,
         };
 
         // backup file before writing
-        fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
-        fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
+        fs.copyFileSync("./data/table.json", `./data/backup/table_${date}.json`);
+        fs.writeFileSync("./data/table.json", JSON.stringify({ updated: date, data: data }, null, 4));
     } catch (error) {
         console.error(error);
         return {
@@ -202,8 +204,8 @@ export default async function addEntry(query) {
     } catch (error) {
         console.error(error);
         return {
-            code: 500,
-            success: false,
+            code: 200,
+            success: true,
             updated: Date.now(),
             message: "Your booking was successful, but the confirmation email could not be sent.",
         };

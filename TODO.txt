@@ -1,12 +1,11 @@
 Table.JS
     * make the text fade out before the notification disappears
-    * fix the possibility of closing the old opening a new notification, 
-      which results in setTimeout() of the old notification closing the new one
     * when booking in build mode, the last updated time isnt displayed
-
+    * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
+    * explain table color on the table itself
+ 
 admin.JS
-    * the same notification bug
-    * fix problem that occurs when the same person books 2 seperate slots
+    * rewrite the whole admin code page according to the proposed suggestion
     * admin should be able to export a .txt or .json file with all the bookings
     * shift the table down to make space for the alert
     * color bookings form the same client in the same color
@@ -14,12 +13,12 @@ admin.JS
     * allow the admin to delete the bookings
     * allow the admin to add bookings
     * allow the admin to break up bookings into multiple slots
+    * disable/enable the booking
+    * cb mode for admin aswell
 
 List.JS
     * display the bookings on a seperate webpage according to the current time
 
-General.JS
-    * transform code to esm style
 
 Credits
  This favicon was generated using the following graphics from Twitter Twemoji:

@@ -25,7 +25,7 @@ export default async function getAdminData(query) {
         return {
             code: 500,
             success: false,
-            message: "Error writing to file. See server console for more information.",
+            message: "Error reading file. See server console for more information.",
         };
     }
 

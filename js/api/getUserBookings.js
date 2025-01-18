@@ -73,7 +73,7 @@ export default async function getUserBookings(query) {
     try {
         const table = await import("../../data/table.json")
         const data = table.data;
-
+        // console.log(data)
         // find the user
         const bookedSlots = [];
 
@@ -84,18 +84,11 @@ export default async function getUserBookings(query) {
                     data[slot][booking].lastname.toLowerCase() === lastname &&
                     data[slot][booking].email.toLowerCase() === email
                 ) {
-                    let found = false;
-                    bookedSlots.forEach((element) => {
-                        if (element[0] === slot) {
-                            element[1] += data[slot][booking].bookedSlots;
-                            found = true;
-                            return;
-                        }
-                    });
-                    if (found) return;
-                    bookedSlots.push([slot, data[slot][booking].bookedSlots]);
+                    bookedSlots[0] = slot;
+                    bookedSlots[1] = bookedSlots[1] ? bookedSlots[1] + data[slot][booking].bookedSlots : data[slot][booking].bookedSlots;
                 }
             });
+            if (bookedSlots[0]) return; // break the loop if the user was found
         });
 
         return {

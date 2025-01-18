@@ -13,11 +13,14 @@ export default async function getBookings() {
             response[timeslot] = 0;
 
             Object.keys(table[timeslot]).forEach((booking) => {
+                // console.log(timeslot, booking, table[timeslot][booking]["bookedSlots"]);
                 response[timeslot] += table[timeslot][booking]["bookedSlots"];
             });
         });
 
         const updated = json.updated;
+
+        // console.log(response);
 
         return {
             code: 200,

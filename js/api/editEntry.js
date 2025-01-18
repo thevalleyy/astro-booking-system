@@ -2,7 +2,6 @@ import fs from "node:fs";
 import getUserBookings from "./getUserBookings.js";
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
-import config from "../../config.json" with { type: "json" };
 
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;

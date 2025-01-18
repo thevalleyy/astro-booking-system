@@ -6,7 +6,7 @@ import axios from "axios";
 // files
 import tableHeaders from "../js/tableHeaders.js";
 import alertBox from "../js/alertBox.js";
-import config from "../config.json"; // with { type: "json" };
+import config from "../config.json" with { type: "json" };
 
 // variables
 const { slotsPerColumn } = config.settings;
@@ -311,8 +311,6 @@ export default function TimeTable() {
                         ))}
                     </tbody>
                 </table>
-                <br></br>
-
                 <div className="nextToEachOther">
                     <div>
                         <h3 className="center-H">Legend</h3>
@@ -380,13 +378,18 @@ export default function TimeTable() {
                     >
                         <div className="nextToEachOther">
                             <div>
-                                <label htmlFor="name">Firstname:</label>
+                                <h3>Input your data</h3>
+                                <label htmlFor="firstname">Firstname: </label>
                                 <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
 
-                                <label htmlFor="name">Lastname:</label>
+                                <br></br>
+
+                                <label htmlFor="lastname">Lastname: </label>
                                 <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
 
-                                <label htmlFor="name">Email:</label>
+                                <br></br>
+
+                                <label htmlFor="email">Email: </label>
                                 <input
                                     type="email"
                                     id="email"
@@ -396,7 +399,7 @@ export default function TimeTable() {
                                     required
                                 />
                             </div>
-                            <div>
+                            <div className="center-H">
                                 <input
                                     id="book"
                                     type="submit"

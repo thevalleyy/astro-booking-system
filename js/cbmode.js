@@ -14,11 +14,13 @@ export default function cbmode() {
             slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨/g, "").trim() + emoji;
         }
 
-        const legend = document.getElementsByClassName("legend")[0].children[0].children[0]; // table
-        if (legend) {
-            // cycle through all its children and add the emoji
-            for (let j = 0; j < legend.children.length; j++) {
-                legend.children[j].children[0].style.opacity = 1;
+        if (document.getElementsByClassName("legend").length > 0) {
+            const legend = document.getElementsByClassName("legend")[0].children[0].children[0]; // table
+            if (legend) {
+                // cycle through all its children and add the emoji
+                for (let j = 0; j < legend.children.length; j++) {
+                    legend.children[j].children[0].style.opacity = 1;
+                }
             }
         }
     } else {
@@ -27,11 +29,13 @@ export default function cbmode() {
             slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨/g, "").trim();
         }
 
-        const legend = document.getElementsByClassName("legend")[0].children[0].children[0]; // table
-        if (legend) {
-            // cycle through all its children and add the emoji
-            for (let j = 0; j < legend.children.length; j++) {
-                legend.children[j].children[0].style.opacity = 0;
+        if (document.getElementsByClassName("legend").length > 0) {
+            const legend = document.getElementsByClassName("legend")[0].children[0].children[0]; // table
+            if (legend) {
+                // cycle through all its children and add the emoji
+                for (let j = 0; j < legend.children.length; j++) {
+                    legend.children[j].children[0].style.opacity = 0;
+                }
             }
         }
     }

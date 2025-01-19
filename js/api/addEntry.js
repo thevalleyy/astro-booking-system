@@ -128,8 +128,6 @@ export default async function addEntry(query) {
         const bookings = bookingsResponse.message.bookedSlots; // [ '18:00', 4, 0 ] -> slot, number, index
         const date = Date.now();
 
-        console.log(bookings)
-
         if (bookings.length > 0) { // user has already booked something
             if (bookings[0] !== query["timeSlot"]) {
                 // user has bookings and tries to book in another time slot

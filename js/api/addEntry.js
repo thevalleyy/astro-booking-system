@@ -125,10 +125,12 @@ export default async function addEntry(query) {
 
         // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
         const bookingsResponse = await getUserBookings(query);
-        const bookings = bookingsResponse.message.bookedSlots; // [ [ '18:00', 4 ] ]
+        const bookings = bookingsResponse.message.bookedSlots; // [ '18:00', 4, 0 ] -> slot, number, index
+        const date = Date.now();
 
-        if (bookings.length > 0) {
-            // user has already booked a time slot and requests another one
+        console.log(bookings)
+
+        if (bookings.length > 0) { // user has already booked something
             if (bookings[0] !== query["timeSlot"]) {
                 // user has bookings and tries to book in another time slot
                 return {
@@ -146,18 +148,25 @@ export default async function addEntry(query) {
                     message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`,
                 };
             }
+
+            data[bookings[0]][bookings[2]] = {
+                firstname: query["firstname"],
+                lastname: query["lastname"],
+                email: query["email"],
+                bookedSlots: Number(query["bookedSlots"]) + bookings[1],
+                time: date,
+            };
+        } else {
+            // user books for the first time
+            data[query["timeSlot"]][currentIndex] = {
+                firstname: query["firstname"],
+                lastname: query["lastname"],
+                email: query["email"],
+                bookedSlots: Number(query["bookedSlots"]),
+                time: date,
+            };
         }
-
-        const date = Date.now();
-
-        data[query["timeSlot"]][currentIndex] = {
-            firstname: query["firstname"],
-            lastname: query["lastname"],
-            email: query["email"],
-            bookedSlots: Number(query["bookedSlots"]),
-            time: date,
-        };
-
+        
         // backup file before writing
         fs.copyFileSync("./data/table.json", `./data/backup/table_${date}.json`);
         fs.writeFileSync("./data/table.json", JSON.stringify({ updated: date, data: data }, null, 4));

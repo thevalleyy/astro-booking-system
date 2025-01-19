@@ -78,14 +78,16 @@ export default async function getUserBookings(query) {
         const bookedSlots = [];
 
         Object.keys(data).forEach((slot) => {
-            Object.keys(data[slot]).forEach((booking) => {
+            Object.keys(data[slot]).forEach((booking, index) => {
                 if (
                     data[slot][booking].firstname.toLowerCase() === firstname &&
                     data[slot][booking].lastname.toLowerCase() === lastname &&
                     data[slot][booking].email.toLowerCase() === email
                 ) {
                     bookedSlots[0] = slot;
-                    bookedSlots[1] = bookedSlots[1] ? bookedSlots[1] + data[slot][booking].bookedSlots : data[slot][booking].bookedSlots;
+                    bookedSlots[1] = data[slot][booking].bookedSlots;
+                    bookedSlots[2] = Object.keys(data[slot])[index];
+                    return; // break if the user was found
                 }
             });
             if (bookedSlots[0]) return; // break the loop if the user was found

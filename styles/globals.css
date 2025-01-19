@@ -51,7 +51,7 @@ td {
 }
 
 .center-H br {
-    margin: 1rem 0;
+    margin: 1em 0;
     padding: 0.5em;
 }
 
@@ -62,6 +62,10 @@ td {
     justify-content: center;
     padding: 1em;
     gap: 16px;
+}
+
+.settingsElement {
+    padding-right: 2em;
 }
 
 .highlighted {
@@ -118,6 +122,10 @@ td {
 
 .slotColor {
     background-color: #504848;
+}
+
+.legend {
+    width: 25vw;
 }
 
 .legend p {

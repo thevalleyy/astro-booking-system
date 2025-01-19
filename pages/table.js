@@ -148,6 +148,8 @@ function markBookedSlots(setUpdated, reason) {
 }
 
 function checkBookedSlots() {
+    document.getElementById("refreshButton").click();
+
     axios
         .post("/api/getUserBookings", {
             firstname: document.getElementById("firstname").value.replace(/\s+/g, ""),
@@ -311,11 +313,11 @@ export default function TimeTable() {
                         ))}
                     </tbody>
                 </table>
-                <div className="nextToEachOther">
-                    <div>
+                <div className="nextToEachOther" style={{ alignItems: "baseline", float: "left" }}>
+                    <div className="settingsElement">
                         <h3 className="center-H">Legend</h3>
                         <br></br>
-                        <div className="legend no-select">
+                        <div className="legend no-select center-H">
                             <table>
                                 <tbody>
                                     <tr>
@@ -346,49 +348,51 @@ export default function TimeTable() {
                             </table>
                         </div>
                     </div>
-                    <div>
+                    <div className="settingsElement">
                         <h3 className="center-H">Colorblind mode</h3>
-                        <br></br>
-                        <input type="checkbox" id="cbmode"></input>
-                        <h4
-                            className="no-select"
-                            onClick={() => {
-                                document.getElementById("cbmode").click();
-                            }}
-                            style={{ cursor: "pointer" }}
-                        >
-                            I&#39;m colorblind
-                        </h4>
-                    </div>
-                    <form
-                        className="center-H"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            switch (document.getElementById("var").textContent) {
-                                case "book":
-                                    bookSlots(setUpdated);
-                                    break;
-                                case "check":
-                                    checkBookedSlots();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
                         <div className="nextToEachOther">
+                            <input type="checkbox" id="cbmode"></input>
+                            <h4
+                                className="no-select"
+                                onClick={() => {
+                                    document.getElementById("cbmode").click();
+                                }}
+                                style={{ cursor: "pointer" }}
+                            >
+                                I&#39;m colorblind
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <form
+                    className="center-H"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        switch (document.getElementById("var").textContent) {
+                            case "book":
+                                bookSlots(setUpdated);
+                                break;
+                            case "check":
+                                checkBookedSlots();
+                                break;
+                            default:
+                                break;
+                        }
+                    }}
+                >
+                    <div className="nextToEachOther" style={{ alignItems: "baseline", paddingLeft: "20vw" }}>
+                        <div className="settingsElement">
+                            <h3 className="center-H">Input your data</h3>
+                            <br style={{margin: 0, padding: 0}}></br>
                             <div>
-                                <h3>Input your data</h3>
                                 <label htmlFor="firstname">Firstname: </label>
                                 <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
-
-                                <br></br>
-
+                            </div>
+                            <div>
                                 <label htmlFor="lastname">Lastname: </label>
                                 <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
-
-                                <br></br>
-
+                            </div>
+                            <div>
                                 <label htmlFor="email">Email: </label>
                                 <input
                                     type="email"
@@ -399,51 +403,54 @@ export default function TimeTable() {
                                     required
                                 />
                             </div>
-                            <div className="center-H">
-                                <input
-                                    id="book"
-                                    type="submit"
-                                    value="Book"
-                                    className="buttonReal"
-                                    onClick={() => {
-                                        document.getElementById("var").textContent = "book";
-                                    }}
-                                ></input>
-                                <input
-                                    type="submit"
-                                    id="checkUserBookings"
-                                    value="Check booked slots"
-                                    className="buttonReal"
-                                    onClick={() => {
-                                        document.getElementById("var").textContent = "check";
-                                    }}
-                                ></input>
-                                <button
-                                    type="button"
-                                    id="clearSelection"
-                                    className="buttonReal"
-                                    onClick={() => {
-                                        const clickedSlots = document.getElementsByClassName("clicked");
-                                        while (clickedSlots.length > 0) {
-                                            clickedSlots[0].classList.remove("clicked");
-                                        }
-
-                                        const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
-                                        while (bookedByClientSlots.length > 0) {
-                                            bookedByClientSlots[0].title = "Already booked";
-                                            bookedByClientSlots[0].classList.add("booked");
-                                            bookedByClientSlots[0].classList.remove("bookedByClient");
-                                        }
-
-                                        cbmode();
-                                    }}
-                                >
-                                    Clear selection
-                                </button>
-                            </div>
+                            <br></br>
+                            <input
+                                id="book"
+                                type="submit"
+                                value="Book"
+                                className="buttonReal"
+                                onClick={() => {
+                                    document.getElementById("var").textContent = "book";
+                                }}
+                            ></input>
                         </div>
-                    </form>
-                </div>
+                        
+                        <div className="center-H settingsElement" style={{ alignItems: "end"}}>
+                        <br style={{margin: 0, padding: 0}}></br>
+                            <input
+                                type="submit"
+                                id="checkUserBookings"
+                                value="Check booked slots"
+                                className="buttonReal"
+                                onClick={() => {
+                                    document.getElementById("var").textContent = "check";
+                                }}
+                            ></input>
+                            <button
+                                type="button"
+                                id="clearSelection"
+                                className="buttonReal"
+                                onClick={() => {
+                                    const clickedSlots = document.getElementsByClassName("clicked");
+                                    while (clickedSlots.length > 0) {
+                                        clickedSlots[0].classList.remove("clicked");
+                                    }
+
+                                    const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
+                                    while (bookedByClientSlots.length > 0) {
+                                        bookedByClientSlots[0].title = "Already booked";
+                                        bookedByClientSlots[0].classList.add("booked");
+                                        bookedByClientSlots[0].classList.remove("bookedByClient");
+                                    }
+
+                                    cbmode();
+                                }}
+                            >
+                                Clear selection
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </>
     );

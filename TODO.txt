@@ -3,8 +3,6 @@ Table.JS
     * when booking in build mode, the last updated time isnt displayed
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
     * explain table color on the table itself
-    * check booked slots shoud refresh 
-    * fix check booked slots
  
 admin.JS
     * rewrite the whole admin code page according to the proposed suggestion

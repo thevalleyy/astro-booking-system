@@ -13,6 +13,8 @@ const slotsPerColumn = config.settings.slotsPerColumn;
 const title = config.settings.title;
 const adminkey = passwords.adminkey;
 
+// functions
+import cbmode from "../js/cbmode.js";
 
 export async function getServerSideProps(context) {
     const { req, res } = context;

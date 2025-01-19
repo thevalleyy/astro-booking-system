@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import getUserBookings from "./getUserBookings.js";
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
 
@@ -144,7 +143,7 @@ export default async function editEntry(query) {
             }
 
             // are enough total slots availible
-            if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
+            if (slotsBooked + Number(query["bookedSlots"]) > slotsPerlumn) {
                 return {
                     code: 400,
                     success: false,

@@ -15,8 +15,8 @@
             "bookedSlots": 0
         },
         "checks": {
-            "lastname": 30,
-            "firstname": 30,
+            "lastname": 50,
+            "firstname": 50,
             "email": true,
             "maxBookedSlots": 5
         }

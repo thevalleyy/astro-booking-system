@@ -252,18 +252,18 @@ export default function TimeTable() {
                     <button
                         className="scheduleHeaderButton"
                         onClick={() => {
-                            document.location.href = "./admin";
-                        }}
-                    >
-                        Admin panel
-                    </button>
-                    <button
-                        className="scheduleHeaderButton"
-                        onClick={() => {
                             document.location.href = ".";
                         }}
                     >
                         Home
+                    </button>
+                    <button
+                        className="scheduleHeaderButton"
+                        onClick={() => {
+                            document.location.href = "./login";
+                        }}
+                    >
+                        Admin panel
                     </button>
                 </h1>
                 <button

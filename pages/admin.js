@@ -147,6 +147,14 @@ export default function Home() {
                 <button
                     className="scheduleHeaderButton"
                     onClick={() => {
+                        document.location.href = ".";
+                    }}
+                >
+                    Home
+                </button>
+                <button
+                    className="scheduleHeaderButton"
+                    onClick={() => {
                         document.location.href = "./table";
                     }}
                 >
@@ -155,10 +163,21 @@ export default function Home() {
                 <button
                     className="scheduleHeaderButton"
                     onClick={() => {
-                        document.location.href = ".";
+                        axios
+                            .get("/api/logout")
+                            .then((response) => {
+                                if (response.data.success) {
+                                    document.location.href = "./login";
+                                } else {
+                                    alertBox("Error logging out", "error");
+                                }
+                            })
+                            .catch((error) => {
+                                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                            });
                     }}
                 >
-                    Home
+                    Log out
                 </button>
             </h1>
 

@@ -1,23 +1,20 @@
 Table.JS
     * make the text fade out before the notification disappears
-    * when booking in build mode, the last updated time isnt displayed
+    * when booking in build mode, the last updated time isnt displayed - test if this still happens
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
  
 admin.JS
-    * rewrite the whole admin code page according to the proposed suggestion
     * admin should be able to export a .txt or .json file with all the bookings
-    * shift the table down to make space for the alert
     * color bookings form the same client in the same color
-    * allow the admin to edit the bookings
-    * allow the admin to delete the bookings
-    * allow the admin to add bookings
+    * admin should be able to delete a booking
+    * admin should be able to edit a booking
+    * admin should be able to add a booking
     * disable/enable the booking
-    * cb mode for admin aswell
 
 List.JS
     * display the bookings on a seperate webpage according to the current time
 
-INDEX.js
+INDEX.JS
     * credit ourselves
 
 

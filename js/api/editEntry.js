@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
+import cookie from "cookie";
 
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
@@ -12,14 +13,18 @@ const mailSettings = config.mail;
 
 /**
  * Validates and edits an entry in the json file and refreshes the websocket
- * Needs: adminkey, timeSlot, SlotIndex, firstname, lastname, email, bookedSlots and shouldEntryBeDeleted to edit the entry
+ * Needs: timeSlot, SlotIndex, firstname, lastname, email, bookedSlots and shouldEntryBeDeleted to edit the entry
  * @param {Object} query The request body as an json object
  * @returns An object with a http status code, a success flag and a message
  */
-export default async function editEntry(query) {
+export default async function editEntry(req, query) {
 
     //check admin login credentials
     const passKey = passwords["adminkey"];
+
+    //get cookie
+    const cookies = cookie.parse(req.headers.cookie) || "";
+    const password = cookies.password;
 
     try {
         if (password !== passKey) {
@@ -85,7 +90,7 @@ export default async function editEntry(query) {
                 };
             }
         }
-
+        /*
         if (isNaN(query["bookedSlots"]) || Number(query["bookedSlots"]) < 0) {
             // check if bookedSlots is a number
             return {
@@ -103,6 +108,7 @@ export default async function editEntry(query) {
                 message: `Too many booked slots. Maximum is ${checks.maxBookedSlots}`,
             };
         }
+        */
 
         if (!validSlots.includes(query["timeSlot"])) {
             // check if timeSlot is valid
@@ -179,10 +185,7 @@ export default async function editEntry(query) {
             */
 
             const old_firstname = data[query["timeSlot"]][currentIndex].firstname;
-            const old_lastname = data[query["timeSlot"]][currentIndex].lastname;
-            const old_email = data[query["timeSlot"]][currentIndex].email;
             const old_bookedSlots = data[query["timeSlot"]][currentIndex].bookedSlots;
-            const old_time = data[query["timeSlot"]][currentIndex].time;
 
             // should the entry be deleted?
             if (Number(query["shouldEntryBeDeleted"]) == 0) {

@@ -267,6 +267,15 @@ td {
     transition: 100ms;
 }
 
+.labelInputField {
+    background-color: #ffffff;
+    padding-left: 3px;
+}
+
+::placeholder {
+    padding-left: 3px;
+}
+
 /* Phones, and other vertical devices */
 @media (max-width: 768px) {
     .nextToEachOther {

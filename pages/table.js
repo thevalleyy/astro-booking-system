@@ -389,16 +389,15 @@ export default function TimeTable() {
                             <h3 className="center-H">Input your data</h3>
                             <br style={{margin: 0, padding: 0}}></br>
                             <div>
-                                <label htmlFor="firstname">Firstname: </label>
-                                <input type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="10" />
+                                <input className="labelInputField" placeholder="Firstname" type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="30" />
                             </div>
                             <div>
-                                <label htmlFor="lastname">Lastname: </label>
-                                <input type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="10" />
+                                <input className="labelInputField" placeholder="Lastname" type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="30" />
                             </div>
                             <div>
-                                <label htmlFor="email">Email: </label>
                                 <input
+                                    className="labelInputField"
+                                    placeholder="Email Adress"
                                     type="email"
                                     id="email"
                                     name="email"

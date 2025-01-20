@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { promises as fsl } from "node:fs"
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
 import cookie from "cookie";
@@ -6,7 +7,7 @@ import cookie from "cookie";
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
 const slotsPerColumn = config.settings.slotsPerColumn;
-const table = await import("../../data/table.json");
+const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
 const validSlots = Object.keys(table.data)
 const confirmationEmailSettings = passwords.confirmationEmail;
 const mailSettings = config.mail;
@@ -127,7 +128,7 @@ export default async function editEntry(req, query) {
         }
 
         try {
-            const data = await import("../../data/table.json", { with: { type: "json" } })["data"];
+            const data = JSON.parse(await fsl.readFile("./data/table.json", "utf-8")).data;
 
             // check the current index of booked slots for the time slot
             const placedBookings = data[query["timeSlot"]];
@@ -252,7 +253,7 @@ export default async function editEntry(req, query) {
         }
 
         // send refresh signal to all clients
-        const passwords = await import("../../passwords.json");
+        const passwords = JSON.parse(await fsl.readFile(".passwords.json", "utf-8"));
         const key = passwords.websocketkey;
 
         const ws = new WebSocket("ws://localhost:8080");

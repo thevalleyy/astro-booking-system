@@ -1,3 +1,4 @@
+import {promises as fsl} from "node:fs";
 import fs from "node:fs";
 import nodemailer from "nodemailer";
 import getUserBookings from "./getUserBookings.js";
@@ -7,7 +8,7 @@ import passwords from "../../passwords.json" with { type: "json" };
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
 const slotsPerColumn = config.settings.slotsPerColumn;
-const table = (await import("../../data/table.json"))
+const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
 const validSlots = Object.keys(table.data);
 const confirmationEmailSettings = passwords.confirmationEmail;
 const mailSettings = config.mail;
@@ -178,7 +179,7 @@ export default async function addEntry(query) {
     }
 
     // send refresh signal to all clients
-    const passwords = await import("../../passwords.json");
+    const passwords = JSON.parse(await fsl.readFile("./passwords.json", "utf-8"));
     const key = passwords.websocketkey;
 
     const ws = new WebSocket("ws://localhost:8080");

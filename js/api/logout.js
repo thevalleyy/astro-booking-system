@@ -14,7 +14,7 @@ export default async function login(req, res) {
                 path: "/",
                 expires: new Date(0),
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
             })
         );

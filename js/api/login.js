@@ -32,7 +32,7 @@ export default async function login(req, res, query) {
                     path: "/",
                     expires: new Date(0),
                     httpOnly: true,
-                    secure: true,
+                    secure: process.env.NODE_ENV === "production",
                     sameSite: "strict",
                 })
             );
@@ -48,7 +48,7 @@ export default async function login(req, res, query) {
                 path: "/",
                 maxAge: 60 * 60 * 24 * 7, // 1 week
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
             })
         );

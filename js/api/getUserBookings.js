@@ -1,3 +1,4 @@
+import { promises as fs } from "node:fs";
 import config from "../../config.json" with { type: "json" };
 const checks = config.settings.checks;
 
@@ -71,7 +72,7 @@ export default async function getUserBookings(query) {
     const email = query["email"].toLowerCase();
 
     try {
-        const table = await import("../../data/table.json")
+        const table = JSON.parse(await fs.readFile("./data/table.json", "utf-8"));
         const data = table.data;
         // console.log(data)
         // find the user

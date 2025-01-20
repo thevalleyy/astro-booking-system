@@ -1,3 +1,5 @@
+import { promises as fs } from "node:fs";
+
 import passwords from "../../passwords.json" with { type: "json" };
 const passKey = passwords["adminkey"];
 
@@ -17,7 +19,8 @@ export default async function getAdminData(query) {
                 message: "Unauthorized",
             };
         }
-        const table = await import("../../data/table.json");
+
+        const table = JSON.parse(await fs.readFile("./data/table.json", "utf-8"));
         var data = table.data;
         var updated = table.updated;
     } catch (error) {

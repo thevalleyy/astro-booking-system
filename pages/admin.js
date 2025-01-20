@@ -21,6 +21,8 @@ export async function getServerSideProps(context) {
     const cookies = cookie.parse(req.headers.cookie || "");
     const password = cookies.password || "";
 
+    console.log(process.env.NODE_ENV);
+
     if (!password || password !== adminkey) {
         // invalid password
         res.setHeader(
@@ -29,7 +31,7 @@ export async function getServerSideProps(context) {
                 path: "/",
                 expires: new Date(0),
                 httpOnly: true,
-                secure: true,
+                secure: process.env.NODE_ENV === "production",
                 sameSite: "strict",
             })
         );
@@ -43,7 +45,7 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {},
+        props: {}
     };
 }
 

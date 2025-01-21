@@ -16,9 +16,7 @@
     "axios": "^1.7.9",
     "concurrently": "^9.1.2",
     "cookie": "^1.0.2",
-    "cross-env": "^7.0.3",
     "next": "15.1.5",
-    "node-check-updates": "^0.1.9",
     "nodemailer": "^6.9.16",
     "prompt-sync": "^4.2.0",
     "react": "19.0.0",
@@ -26,6 +24,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.1.5"
   }

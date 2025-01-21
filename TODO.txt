@@ -2,17 +2,22 @@ Table.JS
     * make the text fade out before the notification disappears
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
     * https://github.com/heineiuo/isomorphic-ws
+    * remove check booked slots
+    * clear selection -> only selected slots
  
 admin.JS
-    * color bookings form the same client in the same color
     * admin should be able to delete a booking
     * admin should be able to edit a booking
     * admin should be able to add a booking
-    * disable/enable the booking
+    * disable/enable the booking checkbox
+    * cbmode for admin
+    * Admin API -> get all bookings
 
 List.JS
     * display the bookings on a seperate webpage according to the current time
     
+INDEX.JS
+    * explanation -> no "unbooking" possible
 
 Translation
 

@@ -111,6 +111,7 @@ td {
     text-align: center;
     background-color: #504848;
     transition: background-color 0.3s ease;
+    transition: color 0.3s ease;
     height: 2em;
     width: 2em;
 }
@@ -295,4 +296,30 @@ a:link {
 
 a:hover {
     color: #c00000;
+}
+
+.booked1 {
+    background-color: #6272a4;
+    transition: background-color 0.3s ease;
+}
+
+.booked1:hover {
+    background-color: #4f5f8f;
+    transition: background-color 0.3s ease;
+}
+
+.booked2 {
+    background-color: #bd93f9;
+    transition: background-color 0.3s ease;
+}
+
+.booked2:hover {
+    background-color: #a37ff3;
+    transition: background-color 0.3s ease;
+}
+
+.selected {
+    color: #00fff2;
+    font-weight: bold;
+    background-color: #ff0000 !important;
 }

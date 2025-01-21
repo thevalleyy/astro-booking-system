@@ -1,12 +1,11 @@
+import { promises as fs } from "node:fs";
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import cookie from "cookie";
 import axios from "axios";
 
-import alertBox from "../js/alertBox";
 import passwords from "../passwords.json" with { type: "json" };
 import config from "../config.json" with { type: "json" };
-import table from "../data/table.json" with { type: "json" };
 
 const metaData = config["html-meta-data"];
 const slotsPerColumn = config.settings.slotsPerColumn;
@@ -15,6 +14,7 @@ const adminkey = passwords.adminkey;
 
 // functions
 import cbmode from "../js/cbmode.js";
+import alertBox from "../js/alertBox";
 
 export async function getServerSideProps(context) {
     const { req, res } = context;
@@ -42,8 +42,11 @@ export async function getServerSideProps(context) {
         };
     }
 
+    // read table.json  
+    const table = JSON.parse(await fs.readFile("data/table.json", "utf-8"));
+
     return {
-        props: {}
+        props: {table: table},
     };
 }
 
@@ -67,34 +70,62 @@ function bookAnimation(action = "start") {
     }
 }
 
-function markBookedSlots(setUpdated, reason) {
-    // get number of booked slots for each time slot
-    axios
-        .get("/api/getBookings")
-        .then((response) => {
-            // color the booked slots
-            const slots = response.data.message.data;
+function markBookedSlots(table, setUpdated) {
+    try {
+        const booked1 = document.getElementsByClassName("booked1");
+        while (booked1.length > 0) {
+            booked1[0].classList.remove("booked1");
+        }
 
-            Object.keys(slots).forEach((key) => {
-                for (let i = 0; i < slots[key]; i++) {
-                    const index = Object.keys(slots).indexOf(key);
-                    document.getElementById(`${index}_${i}`).classList.add("booked");
+        const booked2 = document.getElementsByClassName("booked2");
+        while (booked2.length > 0) {
+            booked2[0].classList.remove("booked2");
+        }
+
+        const timeslots = Object.keys(table.data);
+        let currentState = 1;
+
+        timeslots.forEach((timeslot) => {
+            const bookings = Object.keys(table.data[timeslot]);
+            bookings.forEach((booking) => {
+                const index = Object.keys(table.data).indexOf(timeslot);
+                let bookedSlots = table.data[timeslot][booking].bookedSlots;
+                if (bookedSlots <= 0) return; // does the booking have slots booked in the first place?
+
+                for (let i = 0; i < slotsPerColumn; i++) {
+                    if (bookedSlots <= 0) break; // all slots are colored now
+                    const slot = document.getElementsByTagName("tr")[i + 1].children[index];
+
+                    if (slot.classList.contains("booked1") || slot.classList.contains("booked2")) continue;
+                    slot.classList.add(`booked${currentState}`);
+
+                    // add the timeslot and index of booking as id
+                    slot.id = `${timeslot}_${booking}`;
+
+                    bookedSlots--;
                 }
-            });
 
-            setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
-            cbmode();
-        })
-        .catch((error) => {
-            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                currentState = currentState == 1 ? 2 : 1; // switch booking color
+            });
         });
+
+        setUpdated("Last update: " + new Date(table.updated).toLocaleString());
+    } catch (error) {
+        console.error(error);
+        alertBox("Error marking booked slots. See console for more information", "error");
+    }
 }
 
-export default function Home() {
+
+function action() {
+    const action = document.querySelector("select").value;
+
+}
+
+export default function Home({table}) {
     const [updated, setUpdated] = useState("Fetching data...");
 
     useEffect(() => {
-        markBookedSlots(setUpdated, "first");
         document.getElementById("cbmode").addEventListener("click", function () {
             cbmode();
         });
@@ -106,11 +137,13 @@ export default function Home() {
             const navigationEntry = navigationEntries[0];
             if (navigationEntry.type != "reload") {
                 if (document.getElementById("firstLoad").innerText == "true") {
-                alertBox("Logged in", "success", 2000);
-                document.getElementById("firstLoad").innerText = "false";
+                    alertBox("Logged in", "success", 2000);
+                    document.getElementById("firstLoad").innerText = "false";
+                }
             }
         }
-        }
+
+        markBookedSlots(table, setUpdated);
     }, []);
     return (
         <>
@@ -138,7 +171,9 @@ export default function Home() {
             </div>
 
             <p style={{ display: "none" }} id="var"></p>
-            <p style={{ display: "none" }} id="firstLoad">true</p>
+            <p style={{ display: "none" }} id="firstLoad">
+                true
+            </p>
             <div className="center-H">
                 <h1>Time Table</h1>
                 <h2>{updated}</h2>
@@ -184,7 +219,7 @@ export default function Home() {
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    markBookedSlots(setUpdated, "websocket");
+                    markBookedSlots(table, setUpdated);
                 }}
                 id="refreshButton"
             ></button>
@@ -200,7 +235,7 @@ export default function Home() {
                 <thead>
                     <tr>
                         {Object.keys(table.data).map((time, index) => (
-                            <th className="header" key={`${time}`} id={index}>
+                            <th className="header" key={`${index}`} id={time}>
                                 {time}
                             </th>
                         ))}
@@ -210,15 +245,11 @@ export default function Home() {
                     {[...Array(slotsPerColumn)].map((_, rowIndex) => (
                         <tr key={`row_${rowIndex}`}>
                             {Object.keys(table.data).map((element, colIndex) => (
-                                <td
-                                    className="slot"
-                                    onClick={() => {
-                                        // TODO: trigger window
+                                <td className="slot" key={`${rowIndex}_${colIndex}`} id={`${colIndex}_${rowIndex}`} title="Click to manage" 
+                                    onClick={(e) => {
                                         cbmode();
+                                        e.currentTarget.classList.toggle("selected");
                                     }}
-                                    key={`${rowIndex}_${colIndex}`}
-                                    id={`${colIndex}_${rowIndex}`}
-                                    title="Click to manage"
                                 >
                                     {rowIndex + 1}
                                 </td>
@@ -242,6 +273,7 @@ export default function Home() {
                     </h4>
                 </div>
                 <button
+                    style={{ marginRight: "10vw"}}
                     className="buttonReal"
                     onClick={() => {
                         // download table.json
@@ -254,6 +286,18 @@ export default function Home() {
                     }}
                 >
                     Download table.json
+                </button>
+                <label htmlFor="cars">Action</label>
+                
+                <select>
+                    <option value="inspect">Inspect</option>
+                    <option value="edit">Edit</option>
+                    <option value="add">Add</option>
+                    <option value="remove">Remove</option>
+                </select>
+
+                <button className="buttonReal" onClick={() => {action()}}>
+                    Go!
                 </button>
             </div>
         </>

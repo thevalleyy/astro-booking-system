@@ -7,10 +7,10 @@ const passKey = passwords["adminkey"];
  * This function validates the login credentials
  * @param {Object} req The request object
  * @param {Object} res The response object
- * @param {Object} query The request body as an json object
  * @returns An object with a success flag and a message
  */
-export default async function login(req, res, query) {
+export default async function login(req, res) {
+    const query = req.body;
     let password = query["password"];
 
     try {

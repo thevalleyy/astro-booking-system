@@ -1,17 +1,20 @@
 import { promises as fs } from "node:fs";
+import cookie from "cookie";
 
 import passwords from "../../passwords.json" with { type: "json" };
 const passKey = passwords["adminkey"];
 
 /**
  * Validates the admin password and returns the table data
- * @param {Object} query The request body as an json object
+ * @param {Object} req The request object
+ * @param {Object} res The response object
  * @returns An object with a http status code, a success flag and a message
  */
-export default async function getAdminData(query) {
-    const password = query["password"];
-
+export default async function getAdminData(req, res) {
     try {
+        const cookies = cookie.parse(req.headers.cookie || "");
+        const password = cookies.password || "";
+
         if (password !== passKey) {
             return {
                 code: 401,
@@ -20,9 +23,7 @@ export default async function getAdminData(query) {
             };
         }
 
-        const table = JSON.parse(await fs.readFile("./data/table.json", "utf-8"));
-        var data = table.data;
-        var updated = table.updated;
+        var table = JSON.parse(await fs.readFile("./data/table.json", "utf-8"));
     } catch (error) {
         console.error(error);
         return {
@@ -35,6 +36,6 @@ export default async function getAdminData(query) {
     return {
         code: 200,
         success: true,
-        message: { data, updated },
+        message: { table },
     };
 }

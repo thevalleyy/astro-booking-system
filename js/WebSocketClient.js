@@ -20,7 +20,7 @@ export default function WebSocketClient() {
 
         ws.onerror = (error) => {
             console.error("WebSocket error:", error);
-            // trigger websocket error modal
+            // trigger websocket error notification
             document.getElementById("wsError")?.click();
         };
 

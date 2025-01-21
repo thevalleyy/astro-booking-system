@@ -25,7 +25,6 @@ export default async function login(req, res, query) {
         }
 
         if (password !== passKey) { // wrong password, delete cookie
-            console.log("removing cookie")
             res.setHeader(
                 "Set-Cookie",
                 cookie.serialize("password", "", {
@@ -41,7 +40,6 @@ export default async function login(req, res, query) {
             return;
         }
         // correct password
-        console.log("setting cookie")
         res.setHeader(
             "Set-Cookie",
             cookie.serialize("password", password, {

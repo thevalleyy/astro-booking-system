@@ -21,8 +21,6 @@ export async function getServerSideProps(context) {
     const cookies = cookie.parse(req.headers.cookie || "");
     const password = cookies.password || "";
 
-    console.log(process.env.NODE_ENV);
-
     if (!password || password !== adminkey) {
         // invalid password
         res.setHeader(

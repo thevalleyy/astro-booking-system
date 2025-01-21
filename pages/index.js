@@ -54,7 +54,7 @@ export default function Home() {
                         Once you choose a time slot, you can only book slots within that time frame.
                     </h3>
                     <h3>
-                        If there are any issues, please contact the admin at <a href={mail}> {mail}</a>.
+                        If there are any issues, please contact the admin at <a href={`mailto:${mail}`}> {mail}</a>.
                     </h3>
                     <br></br>
                     <h2>Table Explanation:</h2>

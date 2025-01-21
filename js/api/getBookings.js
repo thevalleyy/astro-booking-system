@@ -1,4 +1,4 @@
-import { promises as fs} from "node:fs";
+import { promises as fs } from "node:fs";
 
 /**
  * Get the number of booked slots for a specific time slot
@@ -6,7 +6,7 @@ import { promises as fs} from "node:fs";
  */
 export default async function getBookings() {
     try {
-        const json = JSON.parse(await fs.readFile("./data/table.json", "utf-8"))
+        const json = JSON.parse(await fs.readFile("./data/table.json", "utf-8"));
         const table = json.data;
         const response = {};
 
@@ -21,7 +21,7 @@ export default async function getBookings() {
         });
 
         const updated = json.updated;
-        
+
         return {
             code: 200,
             success: true,

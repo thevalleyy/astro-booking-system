@@ -106,8 +106,6 @@ function markBookedSlots(setUpdated, reason) {
     axios
         .get("/api/getBookings")
         .then((response) => {
-            console.log(response)
-
             if (reason == "client") {
                 const clickedSlots = document.getElementsByClassName("clicked");
                 while (clickedSlots.length > 0) {
@@ -136,8 +134,6 @@ function markBookedSlots(setUpdated, reason) {
                     }
                 }
             });
-
-            // console.log(response.data, new Date(response.data.message.updated).toLocaleString());
 
             setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
             if (clickedSlotsWereBooked) {

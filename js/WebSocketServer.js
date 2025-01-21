@@ -32,10 +32,13 @@ wss.on("connection", (socket) => {
         console.log("\x1b[35mWS > Received message: " + data);
 
         // broadcast just the message to all clients
-        wss.clients.forEach(function each(client) {
-            if (client !== wss && client.readyState === WebSocket.OPEN) {
-                client.send(parts[1]);
-            }
-        });
+        // wait 1 second before sending
+        setTimeout(() => {
+            wss.clients.forEach(function each(client) {
+                if (client !== wss && client.readyState === WebSocket.OPEN) {
+                    client.send(parts[1]);
+                }
+            });
+        }, 1000);
     });
 });

@@ -1,6 +1,5 @@
 Table.JS
     * make the text fade out before the notification disappears
-    * when booking in build mode, the last updated time isnt displayed - test if this still happens
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
  
 admin.JS
@@ -13,17 +12,17 @@ admin.JS
 
 List.JS
     * display the bookings on a seperate webpage according to the current time
+    
 
-INDEX.JS
-    * credit ourselves
-
+Translation
 
 Credits
- This favicon was generated using the following graphics from Twitter Twemoji:
+* credit ourselves
+* favicon credits
+* font credits
 
+ This favicon was generated using the following graphics from Twitter Twemoji:
 - Graphics Title: 2728.svg
 - Graphics Author: Copyright 2020 Twitter, Inc and other contributors (https://github.com/twitter/twemoji)
 - Graphics Source: https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg
 - Graphics License: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
-
-- font credits missing

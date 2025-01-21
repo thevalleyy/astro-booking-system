@@ -4,13 +4,14 @@ export default function cbmode() {
         for (let i = 0; i < slots.length; i++) {
             // Enable colorblind mode
             let emoji = "";
-            if (slots[i].classList.contains("booked")) {
+            if (slots[i].classList.contains("bookedByClient")) {
+                emoji = "✨";
+            } else if (slots[i].classList.contains("booked")) {
                 emoji = "⚠️";
             } else if (slots[i].classList.contains("clicked")) {
                 emoji = "🎯";
-            } else if (slots[i].classList.contains("bookedByClient")) {
-                emoji = "✨";
             }
+
             slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨/g, "").trim() + emoji;
         }
 

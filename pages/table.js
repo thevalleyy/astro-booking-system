@@ -118,6 +118,7 @@ function markBookedSlots(setUpdated, reason) {
                 }
             }
 
+
             // color the booked slots
             const slots = response.data.message.data;
             let clickedSlotsWereBooked = false;

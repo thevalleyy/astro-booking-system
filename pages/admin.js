@@ -228,17 +228,33 @@ export default function Home() {
                 </tbody>
             </table>
             <br></br>
-            <div className="center-H nextToEachOther">
-                <input type="checkbox" id="cbmode"></input>
-                <h4
-                    className="no-select"
+            <div className="nextToEachOther">
+                <div className="nextToEachOther">
+                    <input type="checkbox" id="cbmode"></input>
+                    <h4
+                        className="no-select"
+                        onClick={() => {
+                            document.getElementById("cbmode").click();
+                        }}
+                        style={{ cursor: "pointer" }}
+                    >
+                        I&#39;m colorblind
+                    </h4>
+                </div>
+                <button
+                    className="buttonReal"
                     onClick={() => {
-                        document.getElementById("cbmode").click();
+                        // download table.json
+                        const element = document.createElement("a");
+                        const file = new Blob([JSON.stringify(table, null, 4)], { type: "text/plain" });
+                        element.href = URL.createObjectURL(file);
+                        element.download = `table${new Date().toISOString()}.json`;
+                        document.body.appendChild(element); // Required for this to work in FireFox
+                        element.click();
                     }}
-                    style={{ cursor: "pointer" }}
                 >
-                    I&#39;m colorblind
-                </h4>
+                    Download table.json
+                </button>
             </div>
         </>
     );

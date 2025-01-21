@@ -1,9 +1,9 @@
 Table.JS
     * make the text fade out before the notification disappears
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
+    * https://github.com/heineiuo/isomorphic-ws
  
 admin.JS
-    * admin should be able to export a .txt or .json file with all the bookings
     * color bookings form the same client in the same color
     * admin should be able to delete a booking
     * admin should be able to edit a booking

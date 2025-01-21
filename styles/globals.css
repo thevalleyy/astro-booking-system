@@ -131,6 +131,7 @@ td {
 .legend p {
     min-height: 1.5em;
     padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
 .clicked {

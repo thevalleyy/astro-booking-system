@@ -560,6 +560,9 @@ export default function Home() {
                 >
                     Inspect selected slots
                 </button>
+                <button className="buttonReal"> 
+                    ?
+                </button>
             </div>
         </>
     );

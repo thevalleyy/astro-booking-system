@@ -1,5 +1,6 @@
 {
     "settings": {
+        "enabled": false,
         "port": 3000,
         "title": "Astro Booking System",
         "imprintURL": "https://example.com/imprint",

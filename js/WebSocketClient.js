@@ -15,6 +15,9 @@ export default function WebSocketClient() {
             if (message.data === "refresh") {
                 console.log("Refresh signal received");
                 document.getElementById("refreshButton")?.click(); // Click the refresh button
+            } else if (message.data === "reload") {
+                console.log("Reload signal received");
+                if (window.location.pathname == "/table") window.location.reload();
             }
         };
 

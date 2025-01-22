@@ -96,7 +96,6 @@ async function markBookedSlots(setUpdated, reason) {
         return;
     }
 
-
     try {
         const booked1 = document.getElementsByClassName("booked1");
         while (booked1.length > 0) {
@@ -153,15 +152,63 @@ async function markBookedSlots(setUpdated, reason) {
     }
 }
 
+async function switchModes() {
+    try {
+        await axios
+            .post("/api/changeState")
+            .then((res) => {
+                if (res.data.success) {
+                    window.location.reload();
+                } else {
+                    alertBox(res.data.message, "error");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                return;
+            });
+    } catch (error) {
+        console.error(error);
+        alertBox("Error switching modes. See console for more information", "error");
+    }
+}
+
+async function getState() {
+    try {
+        await axios
+            .get("/api/getState")
+            .then((res) => {
+                const state = res.data.enabled;
+                if (state) {
+                    document.getElementById("switchText").innerText = "Disable booking"
+                    document.getElementById("switchColor").innerHTML = `<span style="color: green">Enabled</span>`;
+                } else {
+                    document.getElementById("switchText").innerText = "Enable booking"
+                    document.getElementById("switchColor").innerHTML = `<span style="color: red">Disabled</span>`;
+                }
+                
+            })
+            .catch((error) => {
+                console.log(error);
+                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                return;
+            });
+    } catch (error) {
+        console.error(error);
+        alertBox("Error getting state. See console for more information", "error");
+    }
+}
+
 function action() {
     const action = document.querySelector("select").value;
-    console.log(action)
+    console.log(action);
 }
 
 export default function Home() {
     const [updated, setUpdated] = useState("Fetching data...");
-
     const times = createTableHeaders();
+    let clickedAgain = false;
 
     useEffect(() => {
         document.getElementById("cbmode").addEventListener("click", function () {
@@ -181,6 +228,7 @@ export default function Home() {
             }
         }
 
+        getState();
         markBookedSlots(setUpdated);
     }, []);
     return (
@@ -257,14 +305,14 @@ export default function Home() {
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    markBookedSlots(setUpdated)
+                    markBookedSlots(setUpdated);
                 }}
                 id="refreshButton"
             ></button>
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    alertBox("The websocket connection failed. Live updates are disabled.", "error", 5000);
+                    alertBox("The websocket connection failed. Live updates are disabled.", "error");
                 }}
                 id="wsError"
             ></button>
@@ -315,7 +363,7 @@ export default function Home() {
                     </h4>
                 </div>
                 <button
-                    style={{ marginRight: "10vw" }}
+                    style={{ marginRight: "2vw" }}
                     className="buttonReal"
                     onClick={() => {
                         markBookedSlots(setUpdated, "dl");
@@ -323,8 +371,46 @@ export default function Home() {
                 >
                     Download table.json
                 </button>
+                <div style={{ marginRight: "2vw" }}>
+                    <div className="nextToEachOther">
+                        <input
+                            className="switch"
+                            id="switch"
+                            type="checkbox"
+                            onClick={() => {
+                                document.getElementById("switch").checked = false;
+                                if (clickedAgain) {
+                                    switchModes();
+                                } else {
+                                    alertBox("Are you sure you want to switch modes? If yes, click the button again within 5 seconds.", "info", 5000);
+                                    clickedAgain = true;
+                                    setTimeout(() => {
+                                        clickedAgain = false;
+                                    }, 5000);
+                                }
+                            }}
+                        ></input>
+                        <h4
+                            className="no-select"
+                            id="switchText"
+                            onClick={() => {
+                                document.getElementById("switch").click();
+                            }}
+                            style={{ cursor: "pointer" }}
+                        >
+                        {/* Text will be set by getState() */}
+                        </h4>
+                    </div>
+                    <h4>
+                        Current State:{" "}
+                        <span
+                        id="switchColor"
+                        >
+                            {/* innerHTML will be set by getState() */}
+                        </span>
+                    </h4>
+                </div>
                 <label htmlFor="cars">Action</label>
-
                 <select>
                     <option value="inspect">Inspect</option>
                     <option value="edit">Edit</option>

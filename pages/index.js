@@ -1,5 +1,5 @@
 // packages
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 
 // files
@@ -17,10 +17,34 @@ import cbmode from "../js/cbmode";
 
 
 export default function Home() {
+    const [showUI, setShowUI] = useState(null);
+
     useEffect(() => {
                 document.getElementById("cbmode").addEventListener("click", function () {
                     cbmode();
                 });
+
+                setShowUI(
+                    <div>
+                        <link
+                            rel="stylesheet"
+                            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+                            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+                            crossOrigin="anonymous"
+                        ></link>
+        
+                        <ul>
+                            <li>
+                                <a href="https://github.com/thevalleyy/astro-booking-system" draggable="false" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="./credits" draggable="false" target="_blank">
+                                    <i class="far fa-copyright"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                );
     }, []);
 
     return (
@@ -37,7 +61,6 @@ export default function Home() {
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
 
-            <div className="fullscreen">
                 <div className="center-H">
                     <br></br>
                     <h1>Welcome to the <span className="highlighted">Astro Booking System</span></h1>
@@ -52,6 +75,9 @@ export default function Home() {
                     </h3>
                     <h3>
                         Once you choose a time slot, you can only book slots within that time frame.
+                    </h3>
+                    <h3>
+                        Remember: Once you book a slot, you <span className="highlighted">can&#39;t unbook</span> it.
                     </h3>
                     <h3>
                         If there are any issues, please contact the admin at <a href={`mailto:${mail}`}> {mail}</a>.
@@ -143,17 +169,11 @@ export default function Home() {
                     >
                         Imprint
                     </button>
-                    <button
-                        type="button"
-                        className="buttonReal"
-                        onClick={() => {
-                            window.open("https://github.com/thevalleyy/astro-booking-system", "_blank");
-                        }}
-                    >
-                        Free and Open Source on GitHub
-                    </button>
                 </div>
-            </div>
+                {showUI}
+                <div className="credits no-select">
+                    © 2025 <a href="https://github.com/Dodorex-code" target="_blank">Dodorex</a>, <a href="https://github.com/thevalleyy" target="_blank">thevalleyy</a>, <a href="https://github.com/Xanover" target="_blank">Xanover</a>. This project is licensed unter the <a href="https://github.com/thevalleyy/astro-booking-system/blob/main/LICENSE" target="_blank">GNU General Public License v3.0</a>.
+                </div>
         </>
     );
 }

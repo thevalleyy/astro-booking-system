@@ -118,7 +118,6 @@ function markBookedSlots(setUpdated, reason) {
                 }
             }
 
-
             // color the booked slots
             const slots = response.data.message.data;
             let clickedSlotsWereBooked = false;
@@ -197,14 +196,46 @@ function checkBookedSlots() {
         });
 }
 
+async function getState(setEnabled) {
+    try {
+        await axios
+            .get("/api/getState")
+            .then((res) => {
+                const state = res.data.enabled;
+                setEnabled(state);
+
+                // give all slots the disabled class
+                if (!state) {
+                    const slots = document.getElementsByClassName("slot");
+                    for (let i = 0; i < slots.length; i++) {
+                        slots[i].classList.remove("clicked");
+                        slots[i].classList.add("disabled");
+                    }
+                }
+                
+            })
+            .catch((error) => {
+                console.log(error);
+                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                return;
+            });
+    } catch (error) {
+        console.error(error);
+        alertBox("Error getting state. See console for more information", "error");
+    }
+}
+
 export default function TimeTable() {
     const [updated, setUpdated] = useState("Fetching data...");
+    const [enabled, setEnabled] = useState(true);
 
     // Generate the times for the table headers
     const times = createTableHeaders();
 
     useEffect(() => {
         markBookedSlots(setUpdated, "first");
+        getState(setEnabled);
+
         document.getElementById("cbmode").addEventListener("click", function () {
             cbmode();
         });
@@ -277,7 +308,7 @@ export default function TimeTable() {
                 <button
                     style={{ display: "none" }}
                     onClick={() => {
-                        alertBox("Websocket connection failed. Live updates are disabled.", "error", 5000);
+                        alertBox("Websocket connection failed. Live updates are disabled.", "error");
                     }}
                     id="wsError"
                 ></button>
@@ -294,23 +325,35 @@ export default function TimeTable() {
                     <tbody>
                         {[...Array(slotsPerColumn)].map((_, rowIndex) => (
                             <tr key={`row_${rowIndex}`}>
-                                {times.map((element, colIndex) => (
-                                    <td
-                                        className="slot"
-                                        onClick={() => {
+                            {times.map((element, colIndex) => (
+                                <td
+                                className="slot"
+                                    {...(enabled ? {
+                                        // booking is enabled
+                                        onClick: () => {
                                             if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("booked")) return;
                                             if (document.getElementById(`${colIndex}_${rowIndex}`).classList.contains("bookedByUser")) return;
                                             document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
                                             cbmode();
-                                        }}
-                                        key={`${rowIndex}_${colIndex}`}
-                                        id={`${colIndex}_${rowIndex}`}
-                                        title="Click to select"
-                                    >
-                                        {rowIndex + 1}
-                                    </td>
-                                ))}
-                            </tr>
+                                        },
+                                        title: "Click to select",
+
+                                    } : {
+                                        // booking is disabled
+                                        onClick: () => {
+                                            alertBox("Booking is currently disabled", "info", 3000);
+                                        },
+                                        title: "Booking is disabled",
+                                        style: { cursor: "not-allowed" }
+                                    })}
+                                    key={`${rowIndex}_${colIndex}`}
+                                    id={`${colIndex}_${rowIndex}`}
+                                >
+                                    {rowIndex + 1}
+                                </td>
+                            ))}
+                        </tr>
+                        
                         ))}
                     </tbody>
                 </table>
@@ -384,12 +427,32 @@ export default function TimeTable() {
                     <div className="nextToEachOther" style={{ alignItems: "baseline", paddingLeft: "20vw" }}>
                         <div className="settingsElement">
                             <h3 className="center-H">Input your data</h3>
-                            <br style={{margin: 0, padding: 0}}></br>
+                            <br style={{ margin: 0, padding: 0 }}></br>
                             <div>
-                                <input className="labelInputField" placeholder="Firstname" type="text" id="firstname" name="firstname" required minLength="2" maxLength={checks.firstname} size="30" />
+                                <input
+                                    className="labelInputField"
+                                    placeholder="Firstname"
+                                    type="text"
+                                    id="firstname"
+                                    name="firstname"
+                                    required
+                                    minLength="2"
+                                    maxLength={checks.firstname}
+                                    size="30"
+                                />
                             </div>
                             <div>
-                                <input className="labelInputField" placeholder="Lastname" type="text" id="lastname" name="lastname" required minLength="2" maxLength={checks.lastname} size="30" />
+                                <input
+                                    className="labelInputField"
+                                    placeholder="Lastname"
+                                    type="text"
+                                    id="lastname"
+                                    name="lastname"
+                                    required
+                                    minLength="2"
+                                    maxLength={checks.lastname}
+                                    size="30"
+                                />
                             </div>
                             <div>
                                 <input
@@ -405,22 +468,31 @@ export default function TimeTable() {
                             </div>
                             <br></br>
                             <input
+                                {...(enabled ? {
+                                    // booking is enabled
+                                    value: "Book",
+                                    disabled: false
+                                } : { 
+                                    // booking is disabled
+                                    style: { cursor: "not-allowed" },
+                                    value: "Booking is disabled",
+                                    disabled: true
+                                })}
+
                                 id="book"
                                 type="submit"
-                                value="Book"
                                 className="buttonReal"
                                 onClick={() => {
                                     document.getElementById("var").textContent = "book";
                                 }}
                             ></input>
                         </div>
-                        
-                        <div className="center-H settingsElement" style={{ alignItems: "end"}}>
-                        <br style={{margin: 0, padding: 0}}></br>
+
+                        <div className="center-H settingsElement" style={{ alignItems: "end" }}>
+                            <br style={{ margin: 0, padding: 0 }}></br>
                             <input
-                                style={{ display: "none"}}
-                                
-                                /** 
+                                style={{ display: "none" }}
+                                /**
                                  * this button might aswell be displayed, but it could confuse the user
                                  * it will request the api (getUserBookings) and color the slots that the user has booked
                                  * however, this is already done on page load

@@ -1,7 +1,12 @@
+thevalleyy:
+README.txt 
+    * add one
+    * docs
+    * licence
+
 Table.JS
-    * make the text fade out before the notification disappears
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
-    * https://github.com/heineiuo/isomorphic-ws
+    * https://github.com/heineiuo/isomorphic-ws -> if ws is not working
  
 admin.JS
     * admin should be able to delete a booking
@@ -9,23 +14,11 @@ admin.JS
     * admin should be able to add a booking
     * disable/enable the booking checkbox
     * cbmode for admin
-    * Admin API -> get all bookings
 
 List.JS
     * display the bookings on a seperate webpage according to the current time
-    
-INDEX.JS
-    * explanation -> no "unbooking" possible
 
-Translation
 
-Credits
-* credit ourselves
-* favicon credits
-* font credits
+Dodorex: Translation
+Xanover: make the text fade out before the notification disappears
 
- This favicon was generated using the following graphics from Twitter Twemoji:
-- Graphics Title: 2728.svg
-- Graphics Author: Copyright 2020 Twitter, Inc and other contributors (https://github.com/twitter/twemoji)
-- Graphics Source: https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg
-- Graphics License: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)

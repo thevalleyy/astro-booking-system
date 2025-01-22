@@ -60,7 +60,7 @@ export default function Home() {
                 ></button>
                 <button
                     onClick={() => {
-                        alertBox("The websocket connection failed. Live updates are disabled.", "error", 5000);
+                        alertBox("The websocket connection failed. Live updates are disabled.", "error");
                     }}
                     id="wsError"
                 ></button>

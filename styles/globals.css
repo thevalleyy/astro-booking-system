@@ -121,6 +121,11 @@ td {
     transition: background-color 0.3s ease;
 }
 
+.slot.disabled:not(.booked):not(.bookedByClient) {
+    background-color: #3f3f3f;
+    color: #7f7f7f;
+}
+
 .slotColor {
     background-color: #504848;
 }
@@ -355,4 +360,78 @@ a:hover {
 
 .booked2.selected:hover {
     background-color: #7c486d;
+}
+
+.credits {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin-bottom: 1vh;
+    text-align: center;
+}
+
+@media (max-width: 820px) {
+    .credits {
+        position: static;
+    }
+}
+
+ul {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    right: 0;
+    bottom: 1vh;
+    opacity: 0.8;
+    z-index: 1000;
+}
+
+ul li {
+    list-style: none;
+    margin: 0 1vh;
+}
+
+ul li a {
+    position: relative;
+    display: block;
+    width: 45px; /* 25% smaller width */
+    height: 45px; /* 25% smaller height */
+    text-align: center;
+    line-height: 48px; /* 25% smaller line-height */
+    background: #333;
+    border-radius: 20%;
+    font-size: 26.5px;
+    color: #666;
+    transition: 0.5s;
+    margin-top: 10px;
+}
+
+ul li a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20%;
+    background: #f1fa8c;
+    transition: 0.7s;
+    transform: scale(0);
+    opacity: 1;
+    z-index: -1;
+}
+
+ul li a:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #f1fa8c;
+    opacity: 0;
+    z-index: 1;
+}
+
+.switch {
+    cursor: pointer;
 }

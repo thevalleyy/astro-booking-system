@@ -78,7 +78,7 @@ function bookSlots(setUpdated) {
         })
         .then((response) => {
             bookAnimation("stop");
-            alertBox(response.data.message, "success", 5000);
+            alertBox(response.data.message, "success", 10000);
             setUpdated("Last update: " + new Date(response.data.updated).toLocaleString());
 
             markBookedSlots(setUpdated, "client");

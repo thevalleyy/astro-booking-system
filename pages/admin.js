@@ -294,10 +294,14 @@ export default function Home({table}) {
                     <option value="edit">Edit</option>
                     <option value="add">Add</option>
                     <option value="remove">Remove</option>
+                    <option value="expand">Expand</option>
                 </select>
 
                 <button className="buttonReal" onClick={() => {action()}}>
                     Go!
+                </button>
+                <button className="buttonReal"> 
+                    ?
                 </button>
             </div>
         </>

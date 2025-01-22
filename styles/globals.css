@@ -319,7 +319,40 @@ a:hover {
 }
 
 .selected {
-    color: #00fff2;
+    animation: alternateColors 1s infinite;
+    color: blue;
     font-weight: bold;
-    background-color: #ff0000 !important;
+    background-color: #c00000;
+}
+
+@keyframes alternateColors {
+    0% {
+        color: blue;
+    }
+    50% {
+        color: yellow;
+    }
+    100% {
+        color: blue;
+    }
+}
+
+.selected:hover {
+    background-color: #ff0000;
+}
+
+.booked1.selected {
+    background-color: #cf70bb;
+}
+
+.booked1.selected:hover {
+    background-color: #bc61b6;
+}
+
+.booked2.selected {
+    background-color: #88557b;
+}
+
+.booked2.selected:hover {
+    background-color: #7c486d;
 }

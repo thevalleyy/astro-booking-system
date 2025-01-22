@@ -4,7 +4,7 @@ import Head from "next/head";
 import axios from "axios";
 
 // files
-import tableHeaders from "../js/tableHeaders.js";
+import createTableHeaders from "../js/tableHeaders.js";
 import alertBox from "../js/alertBox.js";
 import config from "../config.json" with { type: "json" };
 
@@ -201,7 +201,7 @@ export default function TimeTable() {
     const [updated, setUpdated] = useState("Fetching data...");
 
     // Generate the times for the table headers
-    const times = tableHeaders();
+    const times = createTableHeaders();
 
     useEffect(() => {
         markBookedSlots(setUpdated, "first");
@@ -418,6 +418,15 @@ export default function TimeTable() {
                         <div className="center-H settingsElement" style={{ alignItems: "end"}}>
                         <br style={{margin: 0, padding: 0}}></br>
                             <input
+                                style={{ display: "none"}}
+                                
+                                /** 
+                                 * this button might aswell be displayed, but it could confuse the user
+                                 * it will request the api (getUserBookings) and color the slots that the user has booked
+                                 * however, this is already done on page load
+                                 * if you want to display it, remove the style attribute
+                                 **/
+
                                 type="submit"
                                 id="checkUserBookings"
                                 value="Check booked slots"
@@ -434,13 +443,6 @@ export default function TimeTable() {
                                     const clickedSlots = document.getElementsByClassName("clicked");
                                     while (clickedSlots.length > 0) {
                                         clickedSlots[0].classList.remove("clicked");
-                                    }
-
-                                    const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
-                                    while (bookedByClientSlots.length > 0) {
-                                        bookedByClientSlots[0].title = "Already booked";
-                                        bookedByClientSlots[0].classList.add("booked");
-                                        bookedByClientSlots[0].classList.remove("bookedByClient");
                                     }
 
                                     cbmode();

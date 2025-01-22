@@ -1,4 +1,3 @@
-import { promises as fs } from "node:fs";
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import cookie from "cookie";
@@ -6,6 +5,7 @@ import axios from "axios";
 
 import passwords from "../passwords.json" with { type: "json" };
 import config from "../config.json" with { type: "json" };
+import createTableHeaders from "../js/tableHeaders.js";
 
 const metaData = config["html-meta-data"];
 const slotsPerColumn = config.settings.slotsPerColumn;
@@ -42,11 +42,8 @@ export async function getServerSideProps(context) {
         };
     }
 
-    // read table.json  
-    const table = JSON.parse(await fs.readFile("data/table.json", "utf-8"));
-
     return {
-        props: {table: table},
+        props: {},
     };
 }
 
@@ -70,7 +67,36 @@ function bookAnimation(action = "start") {
     }
 }
 
-function markBookedSlots(table, setUpdated) {
+async function markBookedSlots(setUpdated, reason) {
+    if (reason == "dl") {
+        try {
+            await axios
+                .get("/api/getAdminData")
+                .then((res) => {
+                    const table = res.data.message.table;
+                    const blob = new Blob([JSON.stringify(table, null, 4)], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "table.json" + new Date().toISOString().replace(/:/g, "-") + ".json";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                    return;
+                });
+        } catch (error) {
+            console.error(error);
+            alertBox("Error downloading table.json. See console for more information", "error");
+        }
+        return;
+    }
+
+
     try {
         const booked1 = document.getElementsByClassName("booked1");
         while (booked1.length > 0) {
@@ -82,48 +108,60 @@ function markBookedSlots(table, setUpdated) {
             booked2[0].classList.remove("booked2");
         }
 
-        const timeslots = Object.keys(table.data);
-        let currentState = 1;
+        await axios
+            .post("/api/getAdminData")
+            .then((res) => {
+                const table = res.data.message.table;
 
-        timeslots.forEach((timeslot) => {
-            const bookings = Object.keys(table.data[timeslot]);
-            bookings.forEach((booking) => {
-                const index = Object.keys(table.data).indexOf(timeslot);
-                let bookedSlots = table.data[timeslot][booking].bookedSlots;
-                if (bookedSlots <= 0) return; // does the booking have slots booked in the first place?
+                const timeslots = Object.keys(table.data);
+                let currentState = 1;
 
-                for (let i = 0; i < slotsPerColumn; i++) {
-                    if (bookedSlots <= 0) break; // all slots are colored now
-                    const slot = document.getElementsByTagName("tr")[i + 1].children[index];
+                timeslots.forEach((timeslot) => {
+                    const bookings = Object.keys(table.data[timeslot]);
+                    bookings.forEach((booking) => {
+                        const index = Object.keys(table.data).indexOf(timeslot);
+                        let bookedSlots = table.data[timeslot][booking].bookedSlots;
+                        if (bookedSlots <= 0) return; // does the booking have slots booked in the first place?
 
-                    if (slot.classList.contains("booked1") || slot.classList.contains("booked2")) continue;
-                    slot.classList.add(`booked${currentState}`);
+                        for (let i = 0; i < slotsPerColumn; i++) {
+                            if (bookedSlots <= 0) break; // all slots are colored now
+                            const slot = document.getElementsByTagName("tr")[i + 1].children[index];
 
-                    // add the timeslot and index of booking as id
-                    slot.id = `${timeslot}_${booking}`;
+                            if (slot.classList.contains("booked1") || slot.classList.contains("booked2")) continue;
+                            slot.classList.add(`booked${currentState}`);
 
-                    bookedSlots--;
-                }
+                            // add the timeslot and index of booking as id
+                            slot.id = `${timeslot}_${booking}`;
 
-                currentState = currentState == 1 ? 2 : 1; // switch booking color
+                            bookedSlots--;
+                        }
+
+                        currentState = currentState == 1 ? 2 : 1; // switch booking color
+                    });
+                });
+
+                setUpdated("Last update: " + new Date(table.updated).toLocaleString());
+            })
+            .catch((error) => {
+                console.log(error);
+                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                return;
             });
-        });
-
-        setUpdated("Last update: " + new Date(table.updated).toLocaleString());
     } catch (error) {
         console.error(error);
         alertBox("Error marking booked slots. See console for more information", "error");
     }
 }
 
-
 function action() {
     const action = document.querySelector("select").value;
-
+    console.log(action)
 }
 
-export default function Home({table}) {
+export default function Home() {
     const [updated, setUpdated] = useState("Fetching data...");
+
+    const times = createTableHeaders();
 
     useEffect(() => {
         document.getElementById("cbmode").addEventListener("click", function () {
@@ -143,7 +181,7 @@ export default function Home({table}) {
             }
         }
 
-        markBookedSlots(table, setUpdated);
+        markBookedSlots(setUpdated);
     }, []);
     return (
         <>
@@ -219,7 +257,7 @@ export default function Home({table}) {
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    markBookedSlots(table, setUpdated);
+                    markBookedSlots(setUpdated)
                 }}
                 id="refreshButton"
             ></button>
@@ -234,8 +272,8 @@ export default function Home({table}) {
             <table className="schedule no-select">
                 <thead>
                     <tr>
-                        {Object.keys(table.data).map((time, index) => (
-                            <th className="header" key={`${index}`} id={time}>
+                        {times.map((time, index) => (
+                            <th className="header" key={`${time}`} id={index}>
                                 {time}
                             </th>
                         ))}
@@ -244,8 +282,12 @@ export default function Home({table}) {
                 <tbody>
                     {[...Array(slotsPerColumn)].map((_, rowIndex) => (
                         <tr key={`row_${rowIndex}`}>
-                            {Object.keys(table.data).map((element, colIndex) => (
-                                <td className="slot" key={`${rowIndex}_${colIndex}`} id={`${colIndex}_${rowIndex}`} title="Click to manage" 
+                            {times.map((element, colIndex) => (
+                                <td
+                                    className="slot"
+                                    key={`${rowIndex}_${colIndex}`}
+                                    id={`${colIndex}_${rowIndex}`}
+                                    title="Click to manage"
                                     onClick={(e) => {
                                         cbmode();
                                         e.currentTarget.classList.toggle("selected");
@@ -273,22 +315,16 @@ export default function Home({table}) {
                     </h4>
                 </div>
                 <button
-                    style={{ marginRight: "10vw"}}
+                    style={{ marginRight: "10vw" }}
                     className="buttonReal"
                     onClick={() => {
-                        // download table.json
-                        const element = document.createElement("a");
-                        const file = new Blob([JSON.stringify(table, null, 4)], { type: "text/plain" });
-                        element.href = URL.createObjectURL(file);
-                        element.download = `table${new Date().toISOString()}.json`;
-                        document.body.appendChild(element); // Required for this to work in FireFox
-                        element.click();
+                        markBookedSlots(setUpdated, "dl");
                     }}
                 >
                     Download table.json
                 </button>
                 <label htmlFor="cars">Action</label>
-                
+
                 <select>
                     <option value="inspect">Inspect</option>
                     <option value="edit">Edit</option>
@@ -296,7 +332,12 @@ export default function Home({table}) {
                     <option value="remove">Remove</option>
                 </select>
 
-                <button className="buttonReal" onClick={() => {action()}}>
+                <button
+                    className="buttonReal"
+                    onClick={() => {
+                        action();
+                    }}
+                >
                     Go!
                 </button>
             </div>

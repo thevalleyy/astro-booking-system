@@ -2,8 +2,6 @@ Table.JS
     * make the text fade out before the notification disappears
     * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
     * https://github.com/heineiuo/isomorphic-ws
-    * remove check booked slots
-    * clear selection -> only selected slots
  
 admin.JS
     * admin should be able to delete a booking

@@ -10,9 +10,13 @@ export default function cbmode() {
                 emoji = "⚠️";
             } else if (slots[i].classList.contains("clicked")) {
                 emoji = "🎯";
+            } else if (slots[i].classList.contains("booked1")) {
+                emoji = "⬛";
+            } else if (slots[i].classList.contains("booked2")) {
+                emoji = "🔷";
             }
 
-            slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨/g, "").trim() + emoji;
+            slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨|⬛|🔷/g, "").trim() + emoji;
         }
 
         if (document.getElementsByClassName("legend").length > 0) {
@@ -27,7 +31,7 @@ export default function cbmode() {
     } else {
         for (let i = 0; i < slots.length; i++) {
             // Disable colorblind mode
-            slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨/g, "").trim();
+            slots[i].innerHTML = slots[i].textContent.replace(/⚠️|🎯|✨|⬛|🔷/g, "").trim();
         }
 
         if (document.getElementsByClassName("legend").length > 0) {

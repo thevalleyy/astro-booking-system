@@ -4,7 +4,7 @@ import Head from "next/head";
 import axios from "axios";
 
 // files
-import createTableHeaders from "../js/tableHeaders.js";
+import headers from "../data/headers.json" with { type: "json" };
 import alertBox from "../js/alertBox.js";
 import config from "../config.json" with { type: "json" };
 
@@ -230,7 +230,7 @@ export default function TimeTable() {
     const [enabled, setEnabled] = useState(true);
 
     // Generate the times for the table headers
-    const times = createTableHeaders();
+    const times = headers;
 
     useEffect(() => {
         markBookedSlots(setUpdated, "first");

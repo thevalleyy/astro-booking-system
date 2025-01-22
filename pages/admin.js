@@ -5,7 +5,7 @@ import axios from "axios";
 
 import passwords from "../passwords.json" with { type: "json" };
 import config from "../config.json" with { type: "json" };
-import createTableHeaders from "../js/tableHeaders.js";
+import headers from "../data/headers.json" with { type: "json" };
 
 const metaData = config["html-meta-data"];
 const slotsPerColumn = config.settings.slotsPerColumn;
@@ -45,26 +45,6 @@ export async function getServerSideProps(context) {
     return {
         props: {},
     };
-}
-
-function bookAnimation(action = "start") {
-    const dotsArray = [".", "..", "...", ".."];
-    const button = document.getElementById("book");
-    const originalValue = button.value.replaceAll(".", "");
-
-    if (action == "start") {
-        let i = 0;
-        button.disabled = true;
-
-        window.buttonTextInterval = setInterval(() => {
-            button.value = originalValue + dotsArray[i];
-            i = (i + 1) % dotsArray.length;
-        }, 500);
-    } else {
-        button.disabled = false;
-        button.value = originalValue;
-        clearInterval(window.buttonTextInterval);
-    }
 }
 
 async function markBookedSlots(setUpdated, reason) {
@@ -181,13 +161,12 @@ async function getState() {
             .then((res) => {
                 const state = res.data.enabled;
                 if (state) {
-                    document.getElementById("switchText").innerText = "Disable booking"
+                    document.getElementById("switchText").innerText = "Disable booking";
                     document.getElementById("switchColor").innerHTML = `<span style="color: green">Enabled</span>`;
                 } else {
-                    document.getElementById("switchText").innerText = "Enable booking"
+                    document.getElementById("switchText").innerText = "Enable booking";
                     document.getElementById("switchColor").innerHTML = `<span style="color: red">Disabled</span>`;
                 }
-                
             })
             .catch((error) => {
                 console.log(error);
@@ -200,20 +179,160 @@ async function getState() {
     }
 }
 
+function bookAnimation(action = "start") {
+    const dotsArray = [".", "..", "...", ".."];
+    const button = document.getElementById("book");
+    const originalValue = button.value.replaceAll(".", "");
+
+    if (action == "start") {
+        let i = 0;
+        button.disabled = true;
+
+        window.buttonTextInterval = setInterval(() => {
+            button.value = originalValue + dotsArray[i];
+            i = (i + 1) % dotsArray.length;
+        }, 500);
+    } else {
+        button.disabled = false;
+        button.value = originalValue;
+        clearInterval(window.buttonTextInterval);
+    }
+}
+
+async function updateSlots() {
+    console.log("Updating slots...");
+}
+
 function action() {
-    const action = document.querySelector("select").value;
-    console.log(action);
+    const slot = document.getElementsByClassName("selected")[0];
+
+    if (!slot) {
+        alertBox("No slots selected", "info", 3000);
+        return;
+    }
+
+    function getSlotInfo() {
+        let type,
+            timeslot,
+            id = 0;
+
+        if (slot.id.includes(":")) {
+            // booked slot id=20:40_0
+            type = "booked";
+            timeslot = slot.id.split("_")[0];
+            id = slot.id.split("_")[1];
+        } else {
+            // empty slot id=8_9
+            type = "empty";
+            timeslot = slot.id.split("_")[0];
+            id = "0";
+        }
+
+        return { type, timeslot, id };
+    }
+
+    const { type, timeslot, id } = getSlotInfo();
+    const modal = document.getElementById("myModal");
+
+    if (type == "empty") {
+        // open booking modal
+        return;
+    }
+
+    // open booking info modal
+    axios
+        .get("/api/getAdminData")
+        .then((res) => {
+            const table = res.data.message.table;
+            const booking = table.data[timeslot][id];
+
+            if (!booking) {
+                alertBox("No booking found", "error", 3000);
+                return;
+            }
+
+            // create the modal content
+            const modalContent = document.querySelector(".modal-content").children[1];
+            modalContent.innerHTML = `
+                <h2>Booking Info</h2>
+                <br></br>
+                <div class="table">
+                    <div class="row">
+                        <div class="cell header">Field</div>
+                        <div class="cell header">Value</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Timeslot.ID</div>
+                        <div class="cell">
+                            <input class="modalInput disabled" type="text" value="${timeslot}.${id}" disabled />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">First name</div>
+                        <div class="cell">
+                            <input class="modalInput" type="text" value="${booking.firstname}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Last name</div>
+                        <div class="cell">
+                            <input class="modalInput" type="text" value="${booking.lastname}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Slots booked</div>
+                        <div class="cell">
+                            <input class="modalInput" type="text" value="${booking.bookedSlots}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Email</div>
+                        <div class="cell">
+                            <input class="modalInput" type="text" value="${booking.email}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="cell">Booked at</div>
+                        <div class="cell">
+                            <input class="modalInput disabled" type="text" value="${new Date(booking.time).toLocaleString()}" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <button class="buttonReal" style="margin-right: 1vw;"}} onClick="document.getElementById('myModal').style.display = 'none';">Close</button>
+                    <button class="buttonReal" id="saveButton" onClick="document.getElementById('triggerSave').click();">Save</button>
+                </div>
+       `;
+
+            
+            // display the modal
+            modal.style.display = "block";
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+        .catch((error) => {
+            console.log(error);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+            return;
+        });
 }
 
 export default function Home() {
     const [updated, setUpdated] = useState("Fetching data...");
-    const times = createTableHeaders();
+    const times = headers;
     let clickedAgain = false;
 
     useEffect(() => {
+        // event listeners
         document.getElementById("cbmode").addEventListener("click", function () {
             cbmode();
         });
+
+        const modal = document.getElementById("myModal");
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
 
         // trigger only if the page is loaded, not on every reload
         const navigationEntries = performance.getEntriesByType("navigation");
@@ -228,6 +347,7 @@ export default function Home() {
             }
         }
 
+        // functions
         getState();
         markBookedSlots(setUpdated);
     }, []);
@@ -244,6 +364,20 @@ export default function Home() {
                 <meta content={metaData.color} name="theme-color" />
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span
+                        class="close"
+                        onClick={() => {
+                            document.getElementById("myModal").style.display = "none";
+                        }}
+                    >
+                        &times;
+                    </span>
+                    <p>Some text in the Modal..</p>
+                </div>
+            </div>
+
             <div className="alert">
                 <span
                     className="closebtn no-select"
@@ -316,6 +450,13 @@ export default function Home() {
                 }}
                 id="wsError"
             ></button>
+            <button
+                style={{ display: "none" }}
+                onClick={() => {
+                    updateSlots();
+                }}
+                id="triggerSave"
+            ></button>
 
             <table className="schedule no-select">
                 <thead>
@@ -338,7 +479,13 @@ export default function Home() {
                                     title="Click to manage"
                                     onClick={(e) => {
                                         cbmode();
-                                        e.currentTarget.classList.toggle("selected");
+                                        // remove selected class from all slots
+                                        const slots = document.getElementsByClassName("slot");
+                                        const selected = e.currentTarget.classList.contains("selected");
+                                        for (let slot of slots) {
+                                            slot.classList.remove("selected");
+                                        }
+                                        selected ? e.currentTarget.classList.remove("selected") : e.currentTarget.classList.add("selected");
                                     }}
                                 >
                                     {rowIndex + 1}
@@ -398,33 +545,20 @@ export default function Home() {
                             }}
                             style={{ cursor: "pointer" }}
                         >
-                        {/* Text will be set by getState() */}
+                            {/* Text will be set by getState() */}
                         </h4>
                     </div>
                     <h4>
-                        Current State:{" "}
-                        <span
-                        id="switchColor"
-                        >
-                            {/* innerHTML will be set by getState() */}
-                        </span>
+                        Current State: <span id="switchColor">{/* innerHTML will be set by getState() */}</span>
                     </h4>
                 </div>
-                <label htmlFor="cars">Action</label>
-                <select>
-                    <option value="inspect">Inspect</option>
-                    <option value="edit">Edit</option>
-                    <option value="add">Add</option>
-                    <option value="remove">Remove</option>
-                </select>
-
                 <button
                     className="buttonReal"
                     onClick={() => {
                         action();
                     }}
                 >
-                    Go!
+                    Inspect selected slots
                 </button>
             </div>
         </>

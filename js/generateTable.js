@@ -7,9 +7,7 @@ import fs from "node:fs";
  * Note that this function has to be called from the root directory of the project!
  */
 export default async function generateTable() {
-    const { default: config } = await import("../config.json", { with: { type: "json" } });
-
-    const headers = generateTableHeaders(config.settings.start, config.settings.end, config.settings.increment);
+    const headers = generateTableHeaders();
 
     const table = {
         updated: new Date().getTime(),

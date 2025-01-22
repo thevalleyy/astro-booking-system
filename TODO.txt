@@ -4,16 +4,12 @@ README.txt
     * docs
     * licence
 
-Table.JS
-    * sometimes the api gets "lazy" and doesnt update the bookings, hope build mode can fix this
     * https://github.com/heineiuo/isomorphic-ws -> if ws is not working
  
 admin.JS
     * admin should be able to delete a booking
     * admin should be able to edit a booking
     * admin should be able to add a booking
-    * disable/enable the booking checkbox
-    * cbmode for admin
 
 List.JS
     * display the bookings on a seperate webpage according to the current time

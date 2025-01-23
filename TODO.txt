@@ -7,8 +7,6 @@ README.txt
     * https://github.com/heineiuo/isomorphic-ws -> if ws is not working
  
 admin.JS
-    * admin should be able to delete a booking
-    * admin should be able to edit a booking
     * admin should be able to add a booking
 
 List.JS

@@ -105,6 +105,13 @@ td {
     color: #000000; /* temporarily set to standard black */
 }
 
+/* when media is less than 500px in width, make font-size smaller */
+@media (max-width: 500px) {
+    .header {
+        font-size: 0.8em;
+    }
+}
+
 .slot {
     cursor: pointer;
     border: 1px solid #000;
@@ -507,7 +514,12 @@ ul li a:hover::before {
     height: 2em;
     border-radius: 5px;
     border: 1px solid #ccc;
-    text-indent: 10px;
+    padding-left: 10px;
+}
+
+.modalInput:focus {
+    outline: none;
+    border: 1px solid #000;
 }
 
 .modalInput.disabled {

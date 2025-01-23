@@ -179,28 +179,100 @@ async function getState() {
     }
 }
 
-function bookAnimation(action = "start") {
+function bookAnimation(action = "start", btn = "save") {
     const dotsArray = [".", "..", "...", ".."];
-    const button = document.getElementById("book");
-    const originalValue = button.value.replaceAll(".", "");
+    const button = document.getElementById(btn + "Button");
+    const originalValue = button.innerText.replaceAll(".", "");
 
     if (action == "start") {
         let i = 0;
         button.disabled = true;
 
         window.buttonTextInterval = setInterval(() => {
-            button.value = originalValue + dotsArray[i];
+            button.innerText = originalValue + dotsArray[i];
             i = (i + 1) % dotsArray.length;
         }, 500);
     } else {
         button.disabled = false;
-        button.value = originalValue;
+        button.innerText = originalValue;
         clearInterval(window.buttonTextInterval);
     }
 }
 
 async function updateSlots() {
-    console.log("Updating slots...");
+    const modal = document.getElementById("myModal");
+    if (!modal.style.display || modal.style.display == "none") {
+        alertBox("No opened modal", "info", 3000);
+        return;
+    }
+
+    const modalContent = document.querySelector(".modal-content").children[1];
+    const inputs = modalContent.getElementsByClassName("modalInput");
+    const values = {};
+
+    for (let input of inputs) {
+        values[input.id] = input.value;
+    }
+
+    const timeSlot = values["booking"].split(".")[0];
+    const id = values["booking"].split(".")[1];
+
+    if (!values["firstname"] || !values["lastname"] || !values["bookedSlots"] || !values["email"] || !values["newTimeSlot"]) {
+        alertBox("Please fill in all fields", "info", 3000);
+        return;
+    }
+
+    if (values["bookedSlots"] < 1) {
+        deleteBooking();
+        return;
+    }
+
+    bookAnimation("start", "save");
+
+    // update booking
+    await axios
+        .post("/api/editEntry", { timeSlot, id, ...values })
+        .then((res) => {
+            bookAnimation("stop", "save");
+            if (res.data.success) {
+                alertBox(res.data.message, "success", 10000);
+                modal.style.display = "none";
+            } else {
+                alertBox(res.data.message, "error", 10000);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+            bookAnimation("stop", "save");
+            return;
+        });
+}
+
+async function deleteBooking() {
+    bookAnimation("start", "delete");
+
+    const modal = document.getElementById("myModal");
+    const timeSlot = document.getElementById("booking").value.split(".")[0];
+    const id = document.getElementById("booking").value.split(".")[1];
+    
+    // delete booking
+    await axios
+        .post("/api/deleteEntry", { timeSlot, id })
+        .then((res) => {
+            bookAnimation("stop", "delete");
+            if (res.data.success) {
+                alertBox(res.data.message, "success", 10000);
+                modal.style.display = "none";
+            } else {
+                alertBox(res.data.message, "error", 10000);
+            }
+        }).catch((error) => {
+            console.log(error);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+            bookAnimation("stop", "delete");
+            return;
+        })
 }
 
 function action() {
@@ -253,61 +325,23 @@ function action() {
 
             // create the modal content
             const modalContent = document.querySelector(".modal-content").children[1];
-            modalContent.innerHTML = `
-                <h2>Booking Info</h2>
-                <br></br>
-                <div class="table">
-                    <div class="row">
-                        <div class="cell header">Field</div>
-                        <div class="cell header">Value</div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">Timeslot.ID</div>
-                        <div class="cell">
-                            <input class="modalInput disabled" type="text" value="${timeslot}.${id}" disabled />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">First name</div>
-                        <div class="cell">
-                            <input class="modalInput" type="text" value="${booking.firstname}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">Last name</div>
-                        <div class="cell">
-                            <input class="modalInput" type="text" value="${booking.lastname}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">Slots booked</div>
-                        <div class="cell">
-                            <input class="modalInput" type="text" value="${booking.bookedSlots}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">Email</div>
-                        <div class="cell">
-                            <input class="modalInput" type="text" value="${booking.email}" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="cell">Booked at</div>
-                        <div class="cell">
-                            <input class="modalInput disabled" type="text" value="${new Date(booking.time).toLocaleString()}" disabled />
-                        </div>
-                    </div>
-                </div>
-                <div class="right">
-                    <button class="buttonReal" style="margin-right: 1vw;"}} onClick="document.getElementById('myModal').style.display = 'none';">Close</button>
-                    <button class="buttonReal" id="saveButton" onClick="document.getElementById('triggerSave').click();">Save</button>
-                </div>
-       `;
+            const inputs = modalContent.getElementsByClassName("modalInput");
+            inputs[0].value = `${timeslot}.${id}`;
+            inputs[1].value = timeslot;
+            inputs[2].value = booking.firstname;
+            inputs[3].value = booking.lastname;
+            inputs[4].value = booking.bookedSlots;
+            inputs[5].value = booking.email;
+            inputs[6].value = new Date(booking.time).toLocaleString();
+            if (booking.updatedAt) {
+                document.getElementById("updatedAt").style.display = "contents";
+                inputs[7].value = new Date(booking.updatedAt).toLocaleString();
+            } else {
+                document.getElementById("updatedAt").style.display = "none";
+            }
 
-            
             // display the modal
             modal.style.display = "block";
-            window.scrollTo(0, document.body.scrollHeight);
         })
         .catch((error) => {
             console.log(error);
@@ -325,6 +359,18 @@ export default function Home() {
         // event listeners
         document.getElementById("cbmode").addEventListener("click", function () {
             cbmode();
+        });
+
+        // close modal on escape
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                document.getElementById("myModal").style.display = "none";
+            }
+            
+            if (event.key === "Enter" && document.getElementById("myModal").style.display == "block") {
+                document.getElementById("saveButton").click();
+            }
+
         });
 
         const modal = document.getElementById("myModal");
@@ -364,20 +410,126 @@ export default function Home() {
                 <meta content={metaData.color} name="theme-color" />
                 {metaData.large_image ? <meta content="summary_large_image" name="twitter:card" /> : ""}
             </Head>
-            <div id="myModal" class="modal">
-                <div class="modal-content">
+            <div id="myModal" className="modal">
+                <div className="modal-content">
                     <span
-                        class="close"
+                        className="close"
                         onClick={() => {
                             document.getElementById("myModal").style.display = "none";
                         }}
                     >
                         &times;
                     </span>
-                    <p>Some text in the Modal..</p>
+                    <div>
+                        <h2>Booking Info</h2>
+                        <br></br>
+                        <div className="table">
+                            <div className="row">
+                                <div className="cell header">Field</div>
+                                <div className="cell header">Value</div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Timeslot.ID</div>
+                                <div className="cell">
+                                    <input className="modalInput disabled" id="booking" type="text" defaultChecked="..." disabled readOnly />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Timeslot</div>
+                                <div className="cell">
+                                    <select className="modalInput" id="newTimeSlot">
+                                        {times.map((time) => (
+                                            <option key={`${time}`} value={time}>
+                                                {time}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">First name</div>
+                                <div className="cell">
+                                    <input className="modalInput" id="firstname" type="text" defaultValue="..." />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Last name</div>
+                                <div className="cell">
+                                    <input className="modalInput" id="lastname" type="text" defaultValue="..." />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Slots booked</div>
+                                <div className="cell">
+                                    <input className="modalInput" id="bookedSlots" type="text" defaultValue="..." />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Email</div>
+                                <div className="cell">
+                                    <input className="modalInput" id="email" type="text" defaultValue="..." />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="cell">Booked at</div>
+                                <div className="cell">
+                                    <input
+                                        id="bookedAt"
+                                        className="modalInput disabled"
+                                        type="text"
+                                        defaultValue="..."
+                                        readOnly
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                            <div className="row" id="updatedAt">
+                                <div className="cell">Updated at</div>
+                                <div className="cell">
+                                    <input
+                                        id="updatedAt"
+                                        className="modalInput disabled"
+                                        type="text"
+                                        defaultValue="..."
+                                        readOnly
+                                        disabled
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="right">
+                        <button
+                            className="buttonReal"
+                            style={{ marginRight: "1vw" }}
+                            onClick={() => {
+                                document.getElementById("myModal").style.display = "none";
+                            }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="buttonReal"
+                            style={{ marginRight: "1vw" }}
+                            id="deleteButton"
+                            onClick={() => {
+                                deleteBooking();
+                            }}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="buttonReal"
+                            id="saveButton"
+                            onClick={() => {
+                                updateSlots();
+                            }}
+                        >
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
-
             <div className="alert">
                 <span
                     className="closebtn no-select"
@@ -450,13 +602,6 @@ export default function Home() {
                 }}
                 id="wsError"
             ></button>
-            <button
-                style={{ display: "none" }}
-                onClick={() => {
-                    updateSlots();
-                }}
-                id="triggerSave"
-            ></button>
 
             <table className="schedule no-select">
                 <thead>
@@ -497,28 +642,15 @@ export default function Home() {
             </table>
             <br></br>
             <div className="nextToEachOther">
-                <div className="nextToEachOther">
-                    <input type="checkbox" id="cbmode"></input>
-                    <h4
-                        className="no-select"
-                        onClick={() => {
-                            document.getElementById("cbmode").click();
-                        }}
-                        style={{ cursor: "pointer" }}
-                    >
-                        I&#39;m colorblind
-                    </h4>
-                </div>
                 <button
-                    style={{ marginRight: "2vw" }}
                     className="buttonReal"
                     onClick={() => {
-                        markBookedSlots(setUpdated, "dl");
+                        action();
                     }}
                 >
-                    Download table.json
+                    Inspect selected slots
                 </button>
-                <div style={{ marginRight: "2vw" }}>
+                <div style={{ marginRight: "2vw", marginLeft: "2vw" }}>
                     <div className="nextToEachOther">
                         <input
                             className="switch"
@@ -552,16 +684,26 @@ export default function Home() {
                         Current State: <span id="switchColor">{/* innerHTML will be set by getState() */}</span>
                     </h4>
                 </div>
+                <div className="nextToEachOther">
+                    <input type="checkbox" id="cbmode"></input>
+                    <h4
+                        className="no-select"
+                        onClick={() => {
+                            document.getElementById("cbmode").click();
+                        }}
+                        style={{ cursor: "pointer" }}
+                    >
+                        I&#39;m colorblind
+                    </h4>
+                </div>
                 <button
+                    style={{ marginRight: "2vw" }}
                     className="buttonReal"
                     onClick={() => {
-                        action();
+                        markBookedSlots(setUpdated, "dl");
                     }}
                 >
-                    Inspect selected slots
-                </button>
-                <button className="buttonReal"> 
-                    ?
+                    Download table.json
                 </button>
             </div>
         </>

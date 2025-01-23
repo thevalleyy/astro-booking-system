@@ -8,8 +8,7 @@ import passwords from "../../passwords.json" with { type: "json" };
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
 const slotsPerColumn = config.settings.slotsPerColumn;
-const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
-const validSlots = Object.keys(table.data);
+import validSlots from "../../data/headers.json" with { type: "json" };
 const confirmationEmailSettings = passwords.confirmationEmail;
 const mailSettings = config.mail;
 
@@ -103,17 +102,17 @@ export default async function addEntry(query) {
     }
 
     try {
-        const data = table.data;
+        const data = JSON.parse(await fsl.readFile("./data/table.json", "utf-8")).data;
 
         // check the current index of booked slots for the time slot
         const placedBookings = data[query["timeSlot"]];
-        const currentIndex = Object.keys(placedBookings).length;
+        const currentIndex = Object.keys(placedBookings);
 
         // are there enough slots available?
         let slotsBooked = 0;
-        for (let i = 0; i < currentIndex; i++) {
-            slotsBooked += placedBookings[i]["bookedSlots"];
-        }
+        currentIndex.forEach((index) => {
+            slotsBooked += placedBookings[index]["bookedSlots"];
+        });
 
         // are enough total slots availible
         if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
@@ -157,7 +156,7 @@ export default async function addEntry(query) {
             };
         } else {
             // user books for the first time
-            data[query["timeSlot"]][currentIndex] = {
+            data[query["timeSlot"]][currentIndex.length == 0 ? "0" : Number.parseInt(currentIndex[currentIndex.length - 1]) + 1] = {
                 firstname: query["firstname"],
                 lastname: query["lastname"],
                 email: query["email"],

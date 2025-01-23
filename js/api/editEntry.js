@@ -1,14 +1,15 @@
 import fs from "node:fs";
 import { promises as fsl } from "node:fs"
+import cookie from "cookie";
+import nodemailer from "nodemailer";
+
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
-import cookie from "cookie";
+import validSlots from "../../data/headers.json" with { type: "json" };
 
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
 const slotsPerColumn = config.settings.slotsPerColumn;
-const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
-const validSlots = Object.keys(table.data)
 const confirmationEmailSettings = passwords.confirmationEmail;
 const mailSettings = config.mail;
 
@@ -19,7 +20,6 @@ const mailSettings = config.mail;
  * @returns An object with a http status code, a success flag and a message
  */
 export default async function editEntry(req, query) {
-
     //check admin login credentials
     const passKey = passwords["adminkey"];
 
@@ -37,7 +37,7 @@ export default async function editEntry(req, query) {
         }
 
         for (let i = 0; i < keys.length; i++) {
-            // check if all fields are present
+            // check if all neccessary fields are present -> firstname, lastname, email, bookedSlots
             if (!query[keys[i]]) {
                 return {
                     code: 400,
@@ -47,34 +47,19 @@ export default async function editEntry(req, query) {
             }
         }
 
-        if (!query["timeSlot"]) {
-            // check if timeSlot is present
+        // does the booking exist?
+        const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
+
+        if (!table.data[query["timeSlot"]][query["id"]]) {
             return {
                 code: 400,
                 success: false,
-                message: "Missing field: timeSlot",
+                message: `Booking ${query["timeSlot"]}.${query["id"]} does not exist`,
             };
         }
 
         // at this point, all fields are present
         // perform checks
-        if (query["firstname"].length > checks.firstname) {
-            // check if firstname is too long
-            return {
-                code: 400,
-                success: false,
-                message: `Firstname too long. Maximum is ${checks.firstname}`,
-            };
-        }
-
-        if (query["lastname"].length > checks.lastname) {
-            // check if lastname is too long
-            return {
-                code: 400,
-                success: false,
-                message: `Lastname too long. Maximum is ${checks.lastname}`,
-            };
-        }
 
         if (checks.email) {
             // check if email is valid
@@ -91,7 +76,7 @@ export default async function editEntry(req, query) {
                 };
             }
         }
-        /*
+        
         if (isNaN(query["bookedSlots"]) || Number(query["bookedSlots"]) < 0) {
             // check if bookedSlots is a number
             return {
@@ -101,17 +86,7 @@ export default async function editEntry(req, query) {
             };
         }
 
-        if (Number(query["bookedSlots"]) > checks.maxBookedSlots) {
-            // check if bookedSlots is too high
-            return {
-                code: 400,
-                success: false,
-                message: `Too many booked slots. Maximum is ${checks.maxBookedSlots}`,
-            };
-        }
-        */
-
-        if (!validSlots.includes(query["timeSlot"])) {
+        if (!validSlots.includes(query["newTimeSlot"])) {
             // check if timeSlot is valid
             return {
                 code: 400,
@@ -119,115 +94,112 @@ export default async function editEntry(req, query) {
                 message: "Invalid time slot",
             };
         }
-        if (!Number(query["shouldEntryBeDeleted"]) == 0 || !Number(query["shouldEntryBeDeleted"]) == 1) {
-            return {
-                code: 400,
-                success: false,
-                message: "Invalid value for shouldEntryBeDeleted. Must be 0 or 1.",
-            };
-        }
 
         try {
-            const data = JSON.parse(await fsl.readFile("./data/table.json", "utf-8")).data;
+            const data = table.data;
 
             // check the current index of booked slots for the time slot
-            const placedBookings = data[query["timeSlot"]];
-            const currentIndex = Number(query["SlotIndex"]); //Object.keys(placedBookings).length;
-
-            // check if the slot index is valid
-            if (currentIndex < 0 || currentIndex > slotsPerColumn) {
-                return {
-                    code: 400,
-                    success: false,
-                    message: "Invalid slot index",
-                };
-            }
+            const placedBookings = data[query["newTimeSlot"]];  // all bookings for the time slot
+            const currentIndex = Object.keys(placedBookings); // array of all bookings
 
             // are there enough slots available?
             let slotsBooked = 0;
-            for (let i = 0; i < currentIndex; i++) {
-                slotsBooked += placedBookings[i]["bookedSlots"];
-            }
+            currentIndex.forEach(index => {
+                slotsBooked += placedBookings[index]["bookedSlots"];
+            });
 
             // are enough total slots availible
-            if (slotsBooked + Number(query["bookedSlots"]) > slotsPerlumn) {
+            if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
                 return {
                     code: 400,
                     success: false,
-                    message: "Not enough slots available.",
+                    message: "Not enough slots available at " + query["newTimeSlot"],
                 };
             }
             
-            // Admins should be able to book multiple slots in different time slots
-            /*
-            // Check if user would exceed max booking limit & check if user wants to book in seperate time slots
-            bookings = getUserBookings(query).message.bookedSlots; // [ [ '18:00', 4 ] ]
+            const firstname = data[query["timeSlot"]][query["id"]].firstname;
+            const lastname = data[query["timeSlot"]][query["id"]].lastname;
+            const email = data[query["timeSlot"]][query["id"]].email;
+            const bookedSlots = data[query["timeSlot"]][query["id"]].bookedSlots;
+            const time = data[query["timeSlot"]][query["id"]].time;
 
-            if (bookings.length > 0) {
-                // user has already booked a time slot and requests another one
-                if (bookings[0][0] !== query["timeSlot"]) {
-                    // user has bookings and tries to book in another time slot
-                    return {
-                        code: 400,
-                        success: false,
-                        message: `You cannot book slots in more than one timeslot. You have already booked ${bookings[0][1]} slots in ${bookings[0][0]}`,
-                    };
-                }
-
-                // user exceeds max booking limit
-                if (bookings[0][1] + Number(query["bookedSlots"]) > checks.maxBookedSlots) {
-                    return {
-                        code: 400,
-                        success: false,
-                        message: `Bookings limit exceeded. You can only book ${checks.maxBookedSlots} slots in general.`,
-                    };
-                }
+            if (query["timeSlot"] === query["newTimeSlot"] && firstname === query["firstname"] && lastname === query["lastname"] && email === query["email"] && bookedSlots === Number(query["bookedSlots"])) {
+                return {
+                    code: 200,
+                    success: true,
+                    message: "No changes made",
+                };
             }
-            */
 
-            const old_firstname = data[query["timeSlot"]][currentIndex].firstname;
-            const old_bookedSlots = data[query["timeSlot"]][currentIndex].bookedSlots;
+            if (query["newTimeSlot"] !== query["timeSlot"]) {
+                // the booking needs to be moved to a different time slot
+                // remove the booking from the old time slot
+                delete data[query["timeSlot"]][query["id"]];
 
-            // should the entry be deleted?
-            if (Number(query["shouldEntryBeDeleted"]) == 0) {
-                data[query["timeSlot"]][currentIndex] = {
+                // add the booking to the new time slot
+                data[query["newTimeSlot"]][currentIndex.length == 0 ? "0" : Number.parseInt(currentIndex[currentIndex.length - 1]) + 1] = {
                     firstname: query["firstname"],
                     lastname: query["lastname"],
                     email: query["email"],
                     bookedSlots: Number(query["bookedSlots"]),
-                    time: Date.now(),
+                    time: time,
+                    updatedAt: Date.now(),
                 };
             } else {
-                delete data[query["timeSlot"]][currentIndex];
+                // the booking stays in the same time slot
+                data[query["timeSlot"]][query["id"]] = {
+                    firstname: query["firstname"],
+                    lastname: query["lastname"],
+                    email: query["email"],
+                    bookedSlots: Number(query["bookedSlots"]),
+                    time: data[query["timeSlot"]][query["id"]].time,
+                    updatedAt: Date.now(),
+                };
             }
+            
+            // backup file before writing
+            fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
+            fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
+
+            
+             // send refresh signal to all clients
+             const passwords = JSON.parse(await fsl.readFile("./passwords.json", "utf-8"));
+             const key = passwords.websocketkey;
+
+             const ws = new WebSocket("ws://localhost:8080");
+             ws.onerror = (error) => {
+                 console.error("WebSocket error:", error);
+             };
+         
+             ws.onopen = () => {
+                 ws.send(`${key}:refresh`);
+             };
 
             // notify user about the change via email
             try {
                     const transporter = nodemailer.createTransport(confirmationEmailSettings);
+                    
+                    const mailText = mailSettings.editMailText
+                    .replaceAll("!FIRSTNAME", firstname)
+                    .replaceAll("!LASTNAME", lastname)
+                    .replaceAll("!EMAIL", email)
+                    .replaceAll("!BOOKEDSLOTS", bookedSlots)
+                    .replaceAll("!TIMESLOT", query["timeSlot"])
+                    .replaceAll("!NEWBOOKEDSLOTS", query["bookedSlots"])
+                    .replaceAll("!NEWFIRSTNAME", query["firstname"])
+                    .replaceAll("!NEWLASTNAME", query["lastname"])
+                    .replaceAll("!NEWEMAIL", query["email"])
+                    .replaceAll("!NEWTIMESLOT", query["newTimeSlot"]);
 
-                    let edit_MailText  = mailSettings.editmailText
-                    .replace("!FIRSTNAME", old_firstname)
-                    .replace("!BOOKEDSLOTS", old_bookedSlots)
-                    .replace("!TIMESLOT", query["timeSlot"])
-                    .replace("!NEWBOOKEDSLOTS", query["bookedSlots"])
-                    .replace("!NEWFIRSTNAME", query["firstname"])
-                    .replace("!NEWLASTNAME", query["lastname"])
-                    .replace("!NEWEMAIL", query["email"]);
+                    const mailSubject = mailSettings.editMailSubject;
 
-                    let delete_MailText  = mailSettings.deletemailText
-                    .replace("!FIRSTNAME", old_firstname)
-                    .replace("!BOOKEDSLOTS", old_bookedSlots)
-                    .replace("!TIMESLOT", query["timeSlot"]);
-                
-                    let confirmationMailText = (shouldEntryBeDeleted == 0) ? edit_MailText : delete_MailText;
-                    let confirmationMailSubject = (shouldEntryBeDeleted == 0) ? mailSettings.editmailSubject : mailSettings.deletemailSubject;
                     const info = await transporter.sendMail({
                         from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
                         to: query["email"],
-                        subject: confirmationMailSubject,
-                        text: confirmationMailText,
+                        subject: mailSubject,
+                        text: mailText,
                     });
-            
+
                     console.log("Message sent: %s", info.messageId);
                     transporter.close();
                 } catch (error) {
@@ -236,13 +208,9 @@ export default async function editEntry(req, query) {
                         code: 200,
                         success: true,
                         updated: Date.now(),
-                        message: "Your booking/change/delete was successful, but the confirmation email could not be sent.",
+                        message: "Your action was successful, but the confirmation email could not be sent to the user. (" + query["email"] + ")",
                     };
                 }
-
-            // backup file before writing
-            fs.copyFileSync("./data/table.json", `./data/backup/table_${Date.now()}.json`);
-            fs.writeFileSync("./data/table.json", JSON.stringify({ updated: Date.now(), data: data }, null, 4));
         } catch (error) {
             console.error(error);
             return {
@@ -251,29 +219,6 @@ export default async function editEntry(req, query) {
                 message: "Error writing to file. Refresh the page and try again.",
             };
         }
-
-        // send refresh signal to all clients
-        const passwords = JSON.parse(await fsl.readFile(".passwords.json", "utf-8"));
-        const key = passwords.websocketkey;
-
-        const ws = new WebSocket("ws://localhost:8080");
-        ws.onerror = (error) => {
-            console.error("WebSocket error:", error);
-        };
-
-        ws.onopen = () => {
-            ws.send(`${key}:refresh`);
-        };
-
-        main().catch((error) => {
-            console.error(error);
-            return {
-                code: 500,
-                success: false,
-                message: "Your booking was successful, but we could not send you a confirmation email.",
-            };
-        });
-
     } catch (error) {
         console.error(error);
         return {
@@ -286,6 +231,6 @@ export default async function editEntry(req, query) {
     return {
         code: 200,
         success: true,
-        message: { updated: Date.now() },
+        message: "Booking edited successfully"
     };
 }

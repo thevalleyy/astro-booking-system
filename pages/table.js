@@ -99,23 +99,24 @@ function bookSlots(setUpdated) {
 }
 
 function markBookedSlots(setUpdated, reason) {
-    if (reason == "websocket" && document.getElementById("book").disabled) return;
+    if (reason == "websocket" && (!document.getElementById("book").value.includes("disabled") && document.getElementById("book").disabled)) return;
+    if (reason == "websocket") checkBookedSlots(false);
     // do not update if the book button is disabled, because the client will update the slots after the booking
 
     // get number of booked slots for each time slot
     axios
         .get("/api/getBookings")
         .then((response) => {
-            if (reason == "client") {
+            if (reason == "client") { // the client has booked some slots
                 const clickedSlots = document.getElementsByClassName("clicked");
                 while (clickedSlots.length > 0) {
                     clickedSlots[0].classList.remove("clicked");
                 }
+            }
 
-                const bookedSlots = document.getElementsByClassName("booked");
-                while (bookedSlots.length > 0) {
-                    bookedSlots[0].classList.remove("booked");
-                }
+            const bookedSlots = document.getElementsByClassName("booked");
+            while (bookedSlots.length > 0) {
+                bookedSlots[0].classList.remove("booked");
             }
 
             // color the booked slots
@@ -147,31 +148,43 @@ function markBookedSlots(setUpdated, reason) {
         });
 }
 
-function checkBookedSlots() {
-    document.getElementById("refreshButton").click();
+function checkBookedSlots(runRefresh = true) {
+    if (runRefresh) document.getElementById("refreshButton").click();
+
+    // write the new values for firstname, lastname and email to local storage
+    localStorage.setItem("firstname", document.getElementById("firstname").value.replace(/\s+/g, ""));
+    localStorage.setItem("lastname", document.getElementById("lastname").value.replace(/\s+/g, ""));
+    localStorage.setItem("email", document.getElementById("email").value.replace(/\s+/g, ""));
 
     axios
         .post("/api/getUserBookings", {
-            firstname: document.getElementById("firstname").value.replace(/\s+/g, ""),
-            lastname: document.getElementById("lastname").value.replace(/\s+/g, ""),
-            email: document.getElementById("email").value.replace(/\s+/g, ""),
+            firstname: localStorage.getItem("firstname") || document.getElementById("firstname").value.replace(/\s+/g, ""),
+            lastname: localStorage.getItem("lastname") || document.getElementById("lastname").value.replace(/\s+/g, ""),
+            email: localStorage.getItem("email") || document.getElementById("email").value.replace(/\s+/g, ""),
         })
         .then((response) => {
             document.getElementById("clearSelection").click();
             const { bookedSlots } = response.data.message;
 
-            if (bookedSlots.length === 0) return alertBox("You have not booked any slots yet", "info", 3000);
+            // remove all bookedByClient slots
+            const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
+            while (bookedByClientSlots.length > 0) {
+                bookedByClientSlots[0].classList.remove("bookedByClient");
+            }
+
+            if (bookedSlots.length === 0) {
+                // Use the performance API to check if the page was reloaded
+                if (document.getElementById("firstload").textContent === "true") alertBox("You have not booked any slots yet", "info", 3000);
+                document.getElementById("firstload").textContent = "false";
+                return;
+            }
+            
+            
 
             // remove all clicked slots
             const clickedSlots = document.getElementsByClassName("clicked");
             while (clickedSlots.length > 0) {
                 clickedSlots[0].classList.remove("clicked");
-            }
-
-            // remove all bookedByClient slots
-            const bookedByClientSlots = document.getElementsByClassName("bookedByClient");
-            while (bookedByClientSlots.length > 0) {
-                bookedByClientSlots[0].classList.remove("bookedByClient");
             }
 
             // color the booked slots
@@ -276,6 +289,7 @@ export default function TimeTable() {
                     <span>This is an alert box.</span>
                 </div>
                 <p style={{ display: "none" }} id="var"></p>
+                <p style={{ display: "none" }} id="firstload">true</p>
                 <div className="center-H">
                     <h1>Time Table</h1>
                     <h2>{updated}</h2>
@@ -491,7 +505,7 @@ export default function TimeTable() {
                         <div className="center-H settingsElement" style={{ alignItems: "end" }}>
                             <br style={{ margin: 0, padding: 0 }}></br>
                             <input
-                                style={{ display: "none" }}
+                                // style={{ display: "none" }}
                                 /**
                                  * this button might aswell be displayed, but it could confuse the user
                                  * it will request the api (getUserBookings) and color the slots that the user has booked

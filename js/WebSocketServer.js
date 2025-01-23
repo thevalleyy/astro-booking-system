@@ -1,5 +1,7 @@
-import { WebSocketServer } from "ws";
-const wss = new WebSocketServer({ port: 8080 });
+import { WebSocketServer, Websocket } from "ws";
+import config from "../config.json" with { type: "json" };
+const wsPort = config.settings.wsPort;
+const wss = new WebSocketServer({ port: wsPort });
 
 import passwords from "../passwords.json" with { type: "json" };
 const key = passwords["websocketkey"];

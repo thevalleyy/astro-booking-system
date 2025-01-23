@@ -24,7 +24,7 @@ export default async function createTableHeaders() {
     const incrementM = parseInt(inc.split(":")[1]);
 
     while (startTime.getTime() <= endTime.getTime()) {
-        headers.push(startTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+        headers.push(startTime.toLocaleTimeString(["de"], { hour: "2-digit", minute: "2-digit" }).replaceAll("PM", "").replaceAll("AM", "").trim());
         startTime.setMinutes(startTime.getMinutes() + incrementM);
         startTime.setHours(startTime.getHours() + incrementH);
     }

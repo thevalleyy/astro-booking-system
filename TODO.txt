@@ -4,7 +4,7 @@ README.txt
     * docs
     * licence
 
-    * https://github.com/heineiuo/isomorphic-ws -> if ws is not working
+    * localstorage doesn't seem to work in production
  
 
 List.JS

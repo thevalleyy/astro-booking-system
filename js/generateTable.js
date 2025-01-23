@@ -7,7 +7,7 @@ import fs from "node:fs";
  * Note that this function has to be called from the root directory of the project!
  */
 export default async function generateTable() {
-    const headers = generateTableHeaders();
+    const headers = await generateTableHeaders();
 
     const table = {
         updated: new Date().getTime(),

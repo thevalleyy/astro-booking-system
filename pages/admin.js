@@ -214,6 +214,48 @@ async function updateSlots() {
         values[input.id] = input.value;
     }
 
+    if (values["booking"] == "/") {
+        // new booking
+        const newTimeSlot = values["newTimeSlot"];
+        const firstname = values["firstname"];
+        const lastname = values["lastname"];
+        const bookedSlots = values["bookedSlots"];
+        const email = values["email"];
+
+        if (!firstname || !lastname || !bookedSlots || !email || !newTimeSlot) {
+            alertBox("Please fill in all fields", "info", 3000);
+            return;
+        }
+
+        if (bookedSlots < 1) {
+            alertBox("Please book at least one slot", "info", 3000);
+            return;
+        }
+
+        bookAnimation("start", "save");
+
+        // create booking
+        await axios
+            .post("/api/editEntry", { new: true, newTimeSlot, firstname, lastname, bookedSlots, email })
+            .then((res) => {
+                bookAnimation("stop", "save");
+                if (res.data.success) {
+                    alertBox(res.data.message, "success", 10000);
+                    modal.style.display = "none";
+                } else {
+                    alertBox(res.data.message, "error", 10000);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+                bookAnimation("stop", "save");
+                return;
+            });
+
+        return;
+    }
+
     const timeSlot = values["booking"].split(".")[0];
     const id = values["booking"].split(".")[1];
 
@@ -231,7 +273,7 @@ async function updateSlots() {
 
     // update booking
     await axios
-        .post("/api/editEntry", { timeSlot, id, ...values })
+        .post("/api/editEntry", { new: false, timeSlot, id, ...values })
         .then((res) => {
             bookAnimation("stop", "save");
             if (res.data.success) {
@@ -308,6 +350,26 @@ function action() {
 
     if (type == "empty") {
         // open booking modal
+        // create the modal content
+        const modalContent = document.querySelector(".modal-content").children[1];
+        const inputs = modalContent.getElementsByClassName("modalInput");
+        inputs[0].value = `/`;
+        inputs[1].value = headers[timeslot];
+        inputs[2].value = "";
+        inputs[2].placeholder = "Max"
+        inputs[3].value = "";
+        inputs[3].placeholder = "Mustermann"
+        inputs[4].value = "";
+        inputs[4].placeholder = "2"
+        inputs[5].value = "";
+        inputs[5].placeholder = "email@example.com"
+        inputs[6].value = "/"
+        document.getElementById("updatedAt").style.display = "none";
+        document.getElementById("deleteButton").style.display = "none";
+        document.getElementById("saveButton").innerText = "Book";
+
+        // display the modal
+        modal.style.display = "block";
         return;
     }
 
@@ -339,6 +401,9 @@ function action() {
             } else {
                 document.getElementById("updatedAt").style.display = "none";
             }
+
+            document.getElementById("deleteButton").style.display = "block";
+            document.getElementById("saveButton").innerText = "Save";
 
             // display the modal
             modal.style.display = "block";
@@ -449,25 +514,25 @@ export default function Home() {
                             <div className="row">
                                 <div className="cell">First name</div>
                                 <div className="cell">
-                                    <input className="modalInput" id="firstname" type="text" defaultValue="..." />
+                                    <input className="modalInput" id="firstname" type="text"  />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="cell">Last name</div>
                                 <div className="cell">
-                                    <input className="modalInput" id="lastname" type="text" defaultValue="..." />
+                                    <input className="modalInput" id="lastname" type="text"  />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="cell">Slots booked</div>
                                 <div className="cell">
-                                    <input className="modalInput" id="bookedSlots" type="text" defaultValue="..." />
+                                    <input className="modalInput" id="bookedSlots" type="text"  />
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="cell">Email</div>
                                 <div className="cell">
-                                    <input className="modalInput" id="email" type="text" defaultValue="..." />
+                                    <input className="modalInput" id="email" type="text"  />
                                 </div>
                             </div>
                             <div className="row">

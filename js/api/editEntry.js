@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import config from "../../config.json" with { type: "json" };
 import passwords from "../../passwords.json" with { type: "json" };
 import validSlots from "../../data/headers.json" with { type: "json" };
+import getUserBookings from "./getUserBookings";
 
 const keys = Object.keys(config.settings.default);
 const checks = config.settings.checks;
@@ -50,12 +51,14 @@ export default async function editEntry(req, query) {
         // does the booking exist?
         const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
 
-        if (!table.data[query["timeSlot"]][query["id"]]) {
-            return {
-                code: 400,
-                success: false,
-                message: `Booking ${query["timeSlot"]}.${query["id"]} does not exist`,
-            };
+        if (!query["new"]) {
+            if (!table.data[query["timeSlot"]][query["id"]]) {
+                return {
+                    code: 400,
+                    success: false,
+                    message: `Booking ${query["timeSlot"]}.${query["id"]} does not exist`,
+                };
+            }
         }
 
         // at this point, all fields are present
@@ -108,6 +111,20 @@ export default async function editEntry(req, query) {
                 slotsBooked += placedBookings[index]["bookedSlots"];
             });
 
+            const bookingsResponse = await getUserBookings(query);
+            const bookings = bookingsResponse.message.bookedSlots; // [ '18:00', 4, 0 ] -> slot, number, index
+    
+            if (query["new"]) {
+                if (bookings.length > 0) { 
+                    
+                        return {
+                            code: 400,
+                            success: false,
+                            message: `User has already booked ${bookings[1]} slots in ${bookings[0]}`,
+                        };
+                    }
+            }
+
             // are enough total slots availible
             if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
                 return {
@@ -116,44 +133,56 @@ export default async function editEntry(req, query) {
                     message: "Not enough slots available at " + query["newTimeSlot"],
                 };
             }
-            
-            const firstname = data[query["timeSlot"]][query["id"]].firstname;
-            const lastname = data[query["timeSlot"]][query["id"]].lastname;
-            const email = data[query["timeSlot"]][query["id"]].email;
-            const bookedSlots = data[query["timeSlot"]][query["id"]].bookedSlots;
-            const time = data[query["timeSlot"]][query["id"]].time;
 
-            if (query["timeSlot"] === query["newTimeSlot"] && firstname === query["firstname"] && lastname === query["lastname"] && email === query["email"] && bookedSlots === Number(query["bookedSlots"])) {
-                return {
-                    code: 200,
-                    success: true,
-                    message: "No changes made",
-                };
-            }
+            if (!query["new"]) {
+                // old values
+                var firstname = data[query["timeSlot"]][query["id"]].firstname;
+                var lastname = data[query["timeSlot"]][query["id"]].lastname;
+                var email = data[query["timeSlot"]][query["id"]].email;
+                var bookedSlots = data[query["timeSlot"]][query["id"]].bookedSlots;
+                var time = data[query["timeSlot"]][query["id"]].time;
+ 
+                if (query["timeSlot"] === query["newTimeSlot"] && firstname === query["firstname"] && lastname === query["lastname"] && email === query["email"] && bookedSlots === Number(query["bookedSlots"])) {
+                    return {
+                        code: 200,
+                        success: true,
+                        message: "No changes made",
+                    };
+                }
 
-            if (query["newTimeSlot"] !== query["timeSlot"]) {
-                // the booking needs to be moved to a different time slot
-                // remove the booking from the old time slot
-                delete data[query["timeSlot"]][query["id"]];
+                if (query["newTimeSlot"] !== query["timeSlot"]) {
+                    // the booking needs to be moved to a different time slot
+                    // remove the booking from the old time slot
+                    delete data[query["timeSlot"]][query["id"]];
 
-                // add the booking to the new time slot
+                    // add the booking to the new time slot
+                    data[query["newTimeSlot"]][currentIndex.length == 0 ? "0" : Number.parseInt(currentIndex[currentIndex.length - 1]) + 1] = {
+                        firstname: query["firstname"],
+                        lastname: query["lastname"],
+                        email: query["email"],
+                        bookedSlots: Number(query["bookedSlots"]),
+                        time: time,
+                        updatedAt: Date.now(),
+                    };
+                } else {
+                    // the booking stays in the same time slot
+                    data[query["timeSlot"]][query["id"]] = {
+                        firstname: query["firstname"],
+                        lastname: query["lastname"],
+                        email: query["email"],
+                        bookedSlots: Number(query["bookedSlots"]),
+                        time: data[query["timeSlot"]][query["id"]].time,
+                        updatedAt: Date.now(),
+                    };
+                }
+            } else {
+                // the booking is edited
                 data[query["newTimeSlot"]][currentIndex.length == 0 ? "0" : Number.parseInt(currentIndex[currentIndex.length - 1]) + 1] = {
                     firstname: query["firstname"],
                     lastname: query["lastname"],
                     email: query["email"],
                     bookedSlots: Number(query["bookedSlots"]),
-                    time: time,
-                    updatedAt: Date.now(),
-                };
-            } else {
-                // the booking stays in the same time slot
-                data[query["timeSlot"]][query["id"]] = {
-                    firstname: query["firstname"],
-                    lastname: query["lastname"],
-                    email: query["email"],
-                    bookedSlots: Number(query["bookedSlots"]),
-                    time: data[query["timeSlot"]][query["id"]].time,
-                    updatedAt: Date.now(),
+                    time: Date.now(),
                 };
             }
             
@@ -177,9 +206,14 @@ export default async function editEntry(req, query) {
 
             // notify user about the change via email
             try {
-                    const transporter = nodemailer.createTransport(confirmationEmailSettings);
-                    
-                    const mailText = mailSettings.editMailText
+                const transporter = nodemailer.createTransport(confirmationEmailSettings);
+                
+                let mailText = "";
+                let mailSubject = "";
+
+                if (!query["new"]) {
+                    // a booking was edited
+                    mailText = mailSettings.editMailText
                     .replaceAll("!FIRSTNAME", firstname)
                     .replaceAll("!LASTNAME", lastname)
                     .replaceAll("!EMAIL", email)
@@ -191,17 +225,28 @@ export default async function editEntry(req, query) {
                     .replaceAll("!NEWEMAIL", query["email"])
                     .replaceAll("!NEWTIMESLOT", query["newTimeSlot"]);
 
-                    const mailSubject = mailSettings.editMailSubject;
+                    mailSubject = mailSettings.editMailSubject;
+                } else {
+                    // a new booking was made
+                    mailText = mailSettings.mailText
+                    .replaceAll("!FIRSTNAME", query["firstname"])
+                    .replaceAll("!LASTNAME", query["lastname"])
+                    .replaceAll("!BOOKEDSLOTS", query["bookedSlots"])
+                    .replaceAll("!TIMESLOT", query["newTimeSlot"])
+                    .replaceAll("!EMAIL", query["email"]);
 
-                    const info = await transporter.sendMail({
-                        from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
-                        to: query["email"],
-                        subject: mailSubject,
-                        text: mailText,
-                    });
+                    mailSubject = mailSettings.mailSubject.replaceAll("!BOOKEDSLOTS", query["bookedSlots"]);
+                }
 
-                    console.log("Message sent: %s", info.messageId);
-                    transporter.close();
+                const info = await transporter.sendMail({
+                    from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
+                    to: query["email"],
+                    subject: mailSubject,
+                    text: mailText,
+                });
+
+                console.log("Message sent: %s", info.messageId);
+                transporter.close();
                 } catch (error) {
                     console.error(error);
                     return {
@@ -210,7 +255,7 @@ export default async function editEntry(req, query) {
                         updated: Date.now(),
                         message: "Your action was successful, but the confirmation email could not be sent to the user. (" + query["email"] + ")",
                     };
-                }
+            }
         } catch (error) {
             console.error(error);
             return {

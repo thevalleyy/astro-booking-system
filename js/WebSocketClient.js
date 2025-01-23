@@ -5,6 +5,7 @@ import { useEffect } from "react";
  */
 export default function WebSocketClient() {
     useEffect(() => {
+        // open websocket connection on port 8080
         const ws = new WebSocket("ws://localhost:8080");
 
         ws.onopen = () => {

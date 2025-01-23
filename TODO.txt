@@ -6,8 +6,6 @@ README.txt
 
     * https://github.com/heineiuo/isomorphic-ws -> if ws is not working
  
-admin.JS
-    * admin should be able to add a booking
 
 List.JS
     * display the bookings on a seperate webpage according to the current time

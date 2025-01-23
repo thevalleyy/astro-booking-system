@@ -196,13 +196,15 @@ export default async function addEntry(query) {
         const transporter = nodemailer.createTransport(confirmationEmailSettings);
 
         let confirmationMailText = mailSettings.mailText
-            .replace("!FIRSTNAME", query["firstname"])
-            .replace("!BOOKEDSLOTS", query["bookedSlots"])
-            .replace("!TIMESLOT", query["timeSlot"]);
+            .replaceAll("!FIRSTNAME", query["firstname"])
+            .replaceAll("!LASTNAME", query["lastname"])
+            .replaceAll("!BOOKEDSLOTS", query["bookedSlots"])
+            .replaceAll("!TIMESLOT", query["timeSlot"])
+            .replaceAll("!EMAIL", query["email"]);
         const info = await transporter.sendMail({
             from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
             to: query["email"],
-            subject: mailSettings.mailSubject.replace("!BOOKEDSLOTS", query["bookedSlots"]),
+            subject: mailSettings.mailSubject.replaceAll("!BOOKEDSLOTS", query["bookedSlots"]),
             text: confirmationMailText,
         });
 

@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import config from "../config.json" with { type: "json" };
+const wsURL = config.settings.wsURL;
 
 /**
  * Create a WebSocket client that listens for messages from the server.
@@ -6,7 +8,7 @@ import { useEffect } from "react";
 export default function WebSocketClient() {
     useEffect(() => {
         // open websocket connection on port 8080
-        const ws = new WebSocket("ws://localhost:8080");
+        const ws = new WebSocket(wsURL);
 
         ws.onopen = () => {
             console.log("WebSocket connection established");

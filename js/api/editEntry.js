@@ -195,7 +195,7 @@ export default async function editEntry(req, query) {
              const passwords = JSON.parse(await fsl.readFile("./passwords.json", "utf-8"));
              const key = passwords.websocketkey;
 
-             const ws = new WebSocket("ws://localhost:8080");
+             const ws = new WebSocket(config.settings.wsURL);
              ws.onerror = (error) => {
                  console.error("WebSocket error:", error);
              };

@@ -1,4 +1,4 @@
-import { WebSocketServer } from "ws";
+import { WebSocketServer, Websocket } from "ws";
 import config from "../config.json" with { type: "json" };
 const wsPort = config.settings.wsPort;
 const wss = new WebSocketServer({ port: wsPort });

@@ -75,10 +75,9 @@ export default function Home() {
                      }}
                  >
                      <div className="center-H">
-                         <label htmlFor="name">Password: </label>
-                         <input type="password" id="password" name="password" required size="20" />
+                         <input className="labelInputField" placeholder="Password" type="password" id="password" name="password" required size="20" />
                      </div>
-
+                     
                      <input className="buttonReal" type="submit" value="Authenticate"></input>
                  </form>
                 <div className="nextToEachOther"> 

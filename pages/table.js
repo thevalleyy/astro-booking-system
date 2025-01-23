@@ -480,7 +480,6 @@ export default function TimeTable() {
                                     required
                                 />
                             </div>
-                            <br></br>
                             <input
                                 {...(enabled ? {
                                     // booking is enabled
@@ -502,7 +501,7 @@ export default function TimeTable() {
                             ></input>
                         </div>
 
-                        <div className="center-H settingsElement" style={{ alignItems: "end" }}>
+                        <div className="center-H settingsElement">
                             <br style={{ margin: 0, padding: 0 }}></br>
                             <input
                                 // style={{ display: "none" }}

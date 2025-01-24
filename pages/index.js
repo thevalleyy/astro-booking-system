@@ -63,33 +63,33 @@ export default function Home() {
 
                 <div className="center-H">
                     <br></br>
-                    <h1>Welcome to the <span className="highlighted">Astro Booking System</span></h1>
+                    <h1>Herzlich willkommen im <span className="highlighted">Astro Booking System</span></h1>
                     <br></br>
-                    <h2>This is how it works:</h2>
+                    <h2>So funktionierts:</h2>
                     <h3>
-                        On the time schedule page, you can view all slots. You can book a free one by clicking on it and filling out the form. A confirmation email will be sent to you after booking.
-                    </h3>
-                    <br></br>
-                    <h3>
-                        Note: You can book a maximum of <span className="highlighted">{maxSlots} slots</span>.
-                    </h3>
-                    <h3>
-                        Once you choose a time slot, you can only book slots within that time frame.
-                    </h3>
-                    <h3>
-                        Remember: Once you book a slot, you <span className="highlighted">can&#39;t unbook</span> it.
-                    </h3>
-                    <h3>
-                        If there are any issues, please contact the admin at <a href={`mailto:${mail}`}> {mail}</a>.
+                        Auf der Buchungsseite kannst du alle freien und belegten Slots sehen. Buche einen freien Slot für jede Person die dich begleiten wird indem du den gweünschten Slot anklickst und das Formulat ausfüllst. Dir wird eine Bestätigungsemail zugesendet.
                     </h3>
                     <br></br>
-                    <h2>Table Explanation:</h2>
+                    <h3>
+                        Wichtig: Du kannst maximal <span className="highlighted">{maxSlots} Slots</span> buchen.
+                    </h3>
+                    <h3>
+                        Wenn du einen Slot gebucht hast, kannst du nur noch Slots zu derselben Uhrzeit buchen.
+                    </h3>
+                    <h3>
+                        Beachte: Wenn du einmal einen Slot gebucht hast, kannst du ihn <span className="highlighted">nicht mehr "entbuchen"</span>.
+                    </h3>
+                    <h3>
+                        Falls es irgendwelche Probleme oder Fragen gibt, wende dich bitte an den Admin: <a href={`mailto:${mail}`}> {mail}</a>.
+                    </h3>
+                    <br></br>
+                    <h2>Buchungsseite erklärt:</h2>
                     <div className="nextToEachOther">
                         <table>
                             <thead>
                                 <tr>
                                     <th>
-                                        <h3 style={{ paddingRight: "1em", float: "right" }}>Time slots</h3>
+                                        <h3 style={{ paddingRight: "1em", float: "right" }}>Uhrzeit</h3>
                                     </th>
                                     <th className="header" id="0">
                                         18:00
@@ -104,7 +104,7 @@ export default function Home() {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><h3 style={{ paddingRight: "1em", float: "right" }}>Slots to book</h3></td>
+                                    <td><h3 style={{ paddingRight: "1em", float: "right" }}>buchbarer Slot</h3></td>
                                     <td className="slot booked"></td>
                                     <td className="slot clicked"></td>
                                     <td className="slot bookedByClient"></td>
@@ -113,7 +113,7 @@ export default function Home() {
                         </table>
                         <div>
                             <input type="checkbox" id="cbmode"></input>
-                            <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>I&#39;m colorblind</h4>
+                            <h4 className="no-select" onClick={() => {document.getElementById("cbmode").click()}} style={{cursor:"pointer"}}>Ich bin Farbenblind</h4>
                         </div>
                     </div>
                     <br></br>
@@ -122,31 +122,31 @@ export default function Home() {
                             <tr>
                                 <td className="slot"></td>
                                 <td>
-                                    <h3 style={{ paddingLeft: "1em" }}>Free slot</h3>
+                                    <h3 style={{ paddingLeft: "1em" }}>freier Slot</h3>
                                 </td>
                             </tr>
                             <tr>
                                 <td className="slot clicked"></td>
                                 <td>
-                                    <h3 style={{ paddingLeft: "1em" }}>Selected by you</h3>
+                                    <h3 style={{ paddingLeft: "1em" }}>von die Ausgewählt</h3>
                                 </td>
                             </tr>
                             <tr>
                                 <td className="slot bookedByClient"></td>
                                 <td>
-                                    <h3 style={{ paddingLeft: "1em" }}>Booked by you</h3>
+                                    <h3 style={{ paddingLeft: "1em" }}>von die Gebucht</h3>
                                 </td>
                             </tr>
                             <tr>
                                 <td className="slot booked"></td>
                                 <td>
-                                    <h3 style={{ paddingLeft: "1em" }}>Booked by another user</h3>
+                                    <h3 style={{ paddingLeft: "1em" }}>von einem anderen Besucher gebucht</h3>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <br></br>
-                    <h3>That&#39;s it! Happy booking!</h3>
+                    <h3>Das wars. Viel Spaß!</h3>
                     <br></br>
                 </div>
 
@@ -158,7 +158,7 @@ export default function Home() {
                             window.location.href = "./table";
                         }}
                     >
-                        Time Schedule & Booking
+                        Buchungen
                     </button>
                     <button
                         type="button"

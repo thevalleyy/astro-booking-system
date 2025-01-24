@@ -291,7 +291,7 @@ export default function TimeTable() {
                 <p style={{ display: "none" }} id="var"></p>
                 <p style={{ display: "none" }} id="firstload">true</p>
                 <div className="center-H">
-                    <h1>Time Table</h1>
+                    <h1>Buchungsseite</h1>
                     <h2>{updated}</h2>
                 </div>
                 <h1 className="scheduleHeader">
@@ -309,7 +309,7 @@ export default function TimeTable() {
                             document.location.href = "./login";
                         }}
                     >
-                        Admin panel
+                        Admin
                     </button>
                 </h1>
                 <button
@@ -381,25 +381,25 @@ export default function TimeTable() {
                                     <tr>
                                         <td style={{ opacity: 0 }}></td>
                                         <td>
-                                            <p className="slotColor">Empty slot</p>
+                                            <p className="slotColor">freier Slot</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>🎯</td>
                                         <td>
-                                            <p className="clickedColor">Selected by you</p>
+                                            <p className="clickedColor">von die Ausgewählt</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>✨</td>
                                         <td>
-                                            <p className="bookedByClientColor">Booked by you</p>
+                                            <p className="bookedByClientColor">von dir Gebucht</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>⚠️</td>
                                         <td>
-                                            <p className="bookedColor">Booked by someone else</p>
+                                            <p className="bookedColor">von einem anderen Besucher gebucht</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -407,7 +407,7 @@ export default function TimeTable() {
                         </div>
                     </div>
                     <div className="settingsElement">
-                        <h3 className="center-H">Colorblind mode</h3>
+                        <h3 className="center-H">Farbenblinder modus</h3>
                         <div className="nextToEachOther">
                             <input type="checkbox" id="cbmode"></input>
                             <h4
@@ -417,7 +417,7 @@ export default function TimeTable() {
                                 }}
                                 style={{ cursor: "pointer" }}
                             >
-                                I&#39;m colorblind
+                                Ich bin Farbenblind
                             </h4>
                         </div>
                     </div>
@@ -440,7 +440,7 @@ export default function TimeTable() {
                 >
                     <div className="nextToEachOther" style={{ alignItems: "baseline", paddingLeft: "20vw" }}>
                         <div className="settingsElement">
-                            <h3 className="center-H">Input your data</h3>
+                            <h3 className="center-H">Buchungsdaten</h3>
                             <br style={{ margin: 0, padding: 0 }}></br>
                             <div>
                                 <input
@@ -514,7 +514,7 @@ export default function TimeTable() {
 
                                 type="submit"
                                 id="checkUserBookings"
-                                value="Check booked slots"
+                                value="gebuchte Slots anzeigen"
                                 className="buttonReal"
                                 onClick={() => {
                                     document.getElementById("var").textContent = "check";
@@ -533,7 +533,7 @@ export default function TimeTable() {
                                     cbmode();
                                 }}
                             >
-                                Clear selection
+                                Ausgewählte Slots zurücksetzen
                             </button>
                         </div>
                     </div>

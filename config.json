@@ -2,8 +2,8 @@
     "settings": {
         "enabled": true,
         "port": 3000,
-        "title": "Astro Booking System",
         "wsPort": 8080,
+        "title": "Astro Booking System",
         "wsURL": "ws://localhost:8080",
         "imprintURL": "https://example.com/imprint",
         "adminMail": "admin@expample.com",
@@ -25,9 +25,9 @@
         }
     },
     "mail": {
-        "sender": "Abend der offenen Sternwarte",
+        "sender": "Astro Booking System",
         "mailSubject": "Confirmation for booking !BOOKEDSLOTS slot(s)",
-        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking. Here are the details:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nRemember to be at XXX 5 minutes before !TIMESLOT. We hope you have a great time :)\n\nSincerely\nthe Astroteam",
+        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking. Here are the details:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nRemember to be at XXX 5 minutes before !TIMESLOT on YYY. We hope you have a great time :)\n\nSincerely\nthe Astroteam",
         "editMailSubject": "We have edited your booking for the event",
         "editMailText": "Hello !FIRSTNAME, \n\nwe confirm an edit to your previous booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nYour new updated information:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Booked slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nSincerely\nthe Astroteam",
         "deleteMailSubject": "We have canelled your booking for the event",
@@ -41,11 +41,11 @@
         "log_extension": ".log"
     },
     "html-meta-data": {
-        "title": "Abend der Astronomie",
-        "description": "Buchen Sie Ihren Termin!",
+        "title": "I forgot to customize my project!",
+        "description": "Book your visit!",
         "url": "https://astro.example.com/",
         "image": "https://apod.nasa.gov/apod/image/1611/PacmanCrawfordNew2048.jpg",
         "large_image": true,
-        "color": "#000181"
+        "color": "#b58ef2"
     }
 }

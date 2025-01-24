@@ -173,7 +173,7 @@ export default function Home() {
                 </div>
                 {showUI}
                 <div className="credits no-select">
-                    © 2025 <a href="https://github.com/Dodorex-code" target="_blank">Dodorex</a>, <a href="https://github.com/thevalleyy" target="_blank">thevalleyy</a>, <a href="https://github.com/Xanover" target="_blank">Xanover</a>. This project is licensed unter the <a href="https://github.com/thevalleyy/astro-booking-system/blob/main/LICENCE" target="_blank">GNU General Public License v3.0</a>.
+                    © 2025 <a href="https://github.com/Dodorex-code" target="_blank">Dodorex</a>, <a href="https://github.com/thevalleyy" target="_blank">thevalleyy</a>, <a href="https://github.com/Xanover" target="_blank">Xanover</a>. This project is licensed unter the <a href="https://github.com/thevalleyy/astro-booking-system/blob/main/LICENSE" target="_blank">GNU General Public License v3.0</a>.
                 </div>
         </>
     );

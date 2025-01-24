@@ -26,12 +26,12 @@
     },
     "mail": {
         "sender": "Abend der offenen Sternwarte",
-        "mailSubject": "Confirmation for booking !BOOKEDSLOTS slot(s) for the Event",
-        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking. Here are the details:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nWe hope you have a great time :)\n\nSincerely\nthe Astroteam",
+        "mailSubject": "Confirmation for booking !BOOKEDSLOTS slot(s)",
+        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking. Here are the details:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nRemember to be at XXX 5 minutes before !TIMESLOT. We hope you have a great time :)\n\nSincerely\nthe Astroteam",
         "editMailSubject": "We have edited your booking for the event",
         "editMailText": "Hello !FIRSTNAME, \n\nwe confirm an edit to your previous booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nYour new updated information:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Booked slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nSincerely\nthe Astroteam",
-        "deleteMailSubject": "We have canceled your booking for the event",
-        "deleteMailText": "Hello !FIRSTNAME, \n\nwe removed the following booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nSincerely\nthe Astroteam"
+        "deleteMailSubject": "We have canelled your booking for the event",
+        "deleteMailText": "Hello !FIRSTNAME, \n\nwe removed the following booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nSince we've canelled your booking, you don't have to be at XXX by !TIMESLOT anymore.\n\nSincerely\nthe Astroteam"
     },
     "log": {
         "enabled": false,

@@ -58,7 +58,7 @@ async function markBookedSlots(setUpdated, reason) {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;
-                    a.download = "table.json" + new Date().toISOString().replace(/:/g, "-") + ".json";
+                    a.download = "table" + new Date().toISOString().replace(/-|:/g, "_") + ".json";
                     document.body.appendChild(a);
                     a.click();
                     a.remove();
@@ -415,6 +415,32 @@ function action() {
         });
 }
 
+async function deleteEverything() {
+    if (!confirm("Are you sure you want to delete all bookings?")) return;
+    if (!confirm("Are you really sure?")) return;
+
+    bookAnimation("start", "deleteAll");
+
+    
+    await axios
+        .post("/api/deleteAll")
+        .then((res) => {
+            bookAnimation("stop", "deleteAll");
+            if (res.data.success) {
+                alertBox(res.data.message, "success", 10000);
+                document.getElementById("refreshButton").click();
+            } else {
+                alertBox(res.data.message, "error", 10000);
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
+            bookAnimation("stop", "deleteAll");
+            return;
+        });
+}
+
 export default function Home() {
     const [updated, setUpdated] = useState("Fetching data...");
     const times = headers;
@@ -767,6 +793,16 @@ export default function Home() {
                     }}
                 >
                     Download table.json
+                </button>
+                <button
+                    style={{ backgroundColor: "#ff3f3f" }}
+                    className="buttonReal"
+                    id = "deleteAllButton"
+                    onClick={() => {
+                        deleteEverything();
+                    }}
+                >
+                    Delete ALL bookings
                 </button>
             </div>
         </>

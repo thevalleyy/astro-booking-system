@@ -11,6 +11,5 @@ List.JS
     * display the bookings on a seperate webpage according to the current time
 
 
-Dodorex: Translation
 Xanover: make the text fade out before the notification disappears
 

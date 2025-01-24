@@ -478,7 +478,7 @@ export default function Home() {
             <div id="myModal" className="modal">
                 <div className="modal-content">
                     <span
-                        className="close"
+                        className="close no-select"
                         onClick={() => {
                             document.getElementById("myModal").style.display = "none";
                         }}
@@ -598,9 +598,7 @@ export default function Home() {
             <div className="alert">
                 <span
                     className="closebtn no-select"
-                    onClick={() => {
-                        document.getElementsByClassName("alert")[0].classList = "alert";
-                    }}
+                    id ="closebtn"
                 >
                     &times;
                 </span>

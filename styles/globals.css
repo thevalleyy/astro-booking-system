@@ -208,20 +208,26 @@ td {
 .alert {
     position: fixed;
     margin: auto;
+    left: 0;
+    right: 0;
     width: 95%;
     top: 1em;
     padding: 20px;
     color: white;
     font-weight: bold;
     margin-bottom: 10px;
-    margin-left: 1.5%;
     opacity: 0;
     max-height: 0;
     overflow: hidden;
     border-radius: 3px;
-    max-width: 95%;
     transition: opacity 0.3s ease, max-height 0.3s ease;
     z-index: -1;
+}
+
+.alert.closing {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    transition: opacity 0.3s ease, max-height 0.3s ease !important;
 }
 
 .alert.visible {
@@ -246,12 +252,12 @@ td {
 /* The close button */
 .closebtn {
     position: absolute;
-    right: 3.5%;
+    right: 2%;
     top: 50%;
     transform: translateY(-50%);
     color: white;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 27px;
     line-height: 20px;
     cursor: pointer;
     transition: color 0.3s ease;
@@ -320,8 +326,14 @@ td {
     }
 
     .body {
-        display:flex; flex-direction:column; justify-content:center;
-  min-height:100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .alert {
+        width: 80%;
     }
 }
 
@@ -357,25 +369,24 @@ a:hover {
 
 .selected {
     animation: alternateColors 1s infinite;
-    color: blue;
     font-weight: bold;
-    background-color: #ff5f5f;
+    background-color: #d89a3c;
+}
+
+.selected:hover {
+    background-color: #c88a2c;
 }
 
 @keyframes alternateColors {
     0% {
-        color: blue;
+        color: rgb(0, 0, 0);
     }
     50% {
         color: yellow;
     }
     100% {
-        color: blue;
+        color: rgb(0, 0, 0);
     }
-}
-
-.selected:hover {
-    background-color: #ff5f5f;
 }
 
 .booked1.selected {
@@ -393,6 +404,14 @@ a:hover {
 .booked2.selected:hover {
     background-color: #7c486d;
 }
+
+/* input[type="checkbox"]:checked {
+    outline: 2px solid #b58ef2;
+    color: #fff;
+    color: #b58ef2;
+    background-color: #b58ef2;
+    transition: all 0.2s;
+} */
 
 .credits {
     position: fixed;
@@ -503,7 +522,7 @@ ul li a:hover::before {
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #b58ef2;
     text-decoration: none;
     cursor: pointer;
 }

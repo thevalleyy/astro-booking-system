@@ -43,9 +43,7 @@ export default function Home() {
             <div className="alert">
                 <span
                     className="closebtn no-select"
-                    onClick={() => {
-                        document.getElementsByClassName("alert")[0].classList = "alert";
-                    }}
+                    id ="closebtn"
                 >
                     &times;
                 </span>

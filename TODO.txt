@@ -3,13 +3,6 @@ README.txt
     * add one
     * docs
     * licence
-
-    * localstorage doesn't seem to work in production
  
-
 List.JS
     * display the bookings on a seperate webpage according to the current time
-
-
-Xanover: make the text fade out before the notification disappears
-

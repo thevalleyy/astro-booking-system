@@ -30,7 +30,7 @@ export default function FourOhFour() {
                             history.go(-1);
                         }}
                     >
-                        <span className="btn-text">Back</span>
+                        Back
                     </button>
                     <button
                         className="buttonReal"
@@ -40,7 +40,7 @@ export default function FourOhFour() {
                             window.location.href = "/";
                         }}
                     >
-                        <span className="btn-text">Home</span>
+                        Home
                     </button>
                 </div>
             </div>

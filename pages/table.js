@@ -469,7 +469,7 @@ export default function TimeTable() {
                             <div>
                                 <input
                                     className="labelInputField"
-                                    placeholder="Email Adress"
+                                    placeholder="Email Address"
                                     type="email"
                                     id="email"
                                     name="email"

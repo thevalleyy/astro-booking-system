@@ -71,7 +71,7 @@ async function markBookedSlots(setUpdated, reason) {
                 });
         } catch (error) {
             console.error(error);
-            alertBox("Error downloading table.json. See console for more information", "error");
+            alertBox("Fehler beim Herunterladen von table.json. Mehr Details in der Konsole.", "error");
         }
         return;
     }
@@ -119,7 +119,7 @@ async function markBookedSlots(setUpdated, reason) {
                     });
                 });
 
-                setUpdated("Last update: " + new Date(table.updated).toLocaleString());
+                setUpdated("Zuletzt aktualisiert: " + new Date(table.updated).toLocaleString());
             })
             .catch((error) => {
                 console.log(error);
@@ -128,7 +128,7 @@ async function markBookedSlots(setUpdated, reason) {
             });
     } catch (error) {
         console.error(error);
-        alertBox("Error marking booked slots. See console for more information", "error");
+        alertBox("Fehler beim Markieren gebuchter Slots. Mehr Infos in der Konsole", "error");
     }
 }
 
@@ -150,7 +150,7 @@ async function switchModes() {
             });
     } catch (error) {
         console.error(error);
-        alertBox("Error switching modes. See console for more information", "error");
+        alertBox("Fehler beim Umschalten des Status. Mehr Infos in der Konsole", "error");
     }
 }
 
@@ -161,11 +161,11 @@ async function getState() {
             .then((res) => {
                 const state = res.data.enabled;
                 if (state) {
-                    document.getElementById("switchText").innerText = "Disable booking";
-                    document.getElementById("switchColor").innerHTML = `<span style="color: green">Enabled</span>`;
+                    document.getElementById("switchText").innerText = "Deaktivieren";
+                    document.getElementById("switchColor").innerHTML = `<span style="color: green">Aktiviert</span>`;
                 } else {
-                    document.getElementById("switchText").innerText = "Enable booking";
-                    document.getElementById("switchColor").innerHTML = `<span style="color: red">Disabled</span>`;
+                    document.getElementById("switchText").innerText = "Aktivieren";
+                    document.getElementById("switchColor").innerHTML = `<span style="color: red">Deaktiviert</span>`;
                 }
             })
             .catch((error) => {
@@ -175,7 +175,7 @@ async function getState() {
             });
     } catch (error) {
         console.error(error);
-        alertBox("Error getting state. See console for more information", "error");
+        alertBox("Fehler beim Anfragen des Status. Mehr Infos in der Konsole", "error");
     }
 }
 
@@ -223,12 +223,12 @@ async function updateSlots() {
         const email = values["email"];
 
         if (!firstname || !lastname || !bookedSlots || !email || !newTimeSlot) {
-            alertBox("Please fill in all fields", "info", 3000);
+            alertBox("Bitte alle Felder ausfüllen", "info", 3000);
             return;
         }
 
         if (bookedSlots < 1) {
-            alertBox("Please book at least one slot", "info", 3000);
+            alertBox("Bitte mindestens einen Slot buchen", "info", 3000);
             return;
         }
 
@@ -260,7 +260,7 @@ async function updateSlots() {
     const id = values["booking"].split(".")[1];
 
     if (!values["firstname"] || !values["lastname"] || !values["bookedSlots"] || !values["email"] || !values["newTimeSlot"]) {
-        alertBox("Please fill in all fields", "info", 3000);
+        alertBox("Bitte alle Felder ausfüllen", "info", 3000);
         return;
     }
 
@@ -321,7 +321,7 @@ function action() {
     const slot = document.getElementsByClassName("selected")[0];
 
     if (!slot) {
-        alertBox("No slots selected", "info", 3000);
+        alertBox("Keine Slots ausgewählt", "info", 3000);
         return;
     }
 
@@ -366,7 +366,7 @@ function action() {
         inputs[6].value = "/"
         document.getElementById("updatedAt").style.display = "none";
         document.getElementById("deleteButton").style.display = "none";
-        document.getElementById("saveButton").innerText = "Book";
+        document.getElementById("saveButton").innerText = "Buchen";
 
         // display the modal
         modal.style.display = "block";
@@ -381,7 +381,7 @@ function action() {
             const booking = table.data[timeslot][id];
 
             if (!booking) {
-                alertBox("No booking found", "error", 3000);
+                alertBox("Keine Buchung gefunden", "error", 3000);
                 return;
             }
 
@@ -403,7 +403,7 @@ function action() {
             }
 
             document.getElementById("deleteButton").style.display = "block";
-            document.getElementById("saveButton").innerText = "Save";
+            document.getElementById("saveButton").innerText = "Speichern";
 
             // display the modal
             modal.style.display = "block";
@@ -416,8 +416,8 @@ function action() {
 }
 
 async function deleteEverything() {
-    if (!confirm("Are you sure you want to delete all bookings?")) return;
-    if (!confirm("Are you really sure?")) return;
+    if (!confirm("Alle Buchungen löschen?")) return;
+    if (!confirm("Ganz sicher??")) return;
 
     bookAnimation("start", "deleteAll");
 
@@ -442,7 +442,7 @@ async function deleteEverything() {
 }
 
 export default function Home() {
-    const [updated, setUpdated] = useState("Fetching data...");
+    const [updated, setUpdated] = useState("Daten abrufen...");
     const times = headers;
     let clickedAgain = false;
 
@@ -478,7 +478,7 @@ export default function Home() {
             const navigationEntry = navigationEntries[0];
             if (navigationEntry.type != "reload") {
                 if (document.getElementById("firstLoad").innerText == "true") {
-                    alertBox("Logged in", "success", 2000);
+                    alertBox("Eingeloggt", "success", 2000);
                     document.getElementById("firstLoad").innerText = "false";
                 }
             }
@@ -512,12 +512,12 @@ export default function Home() {
                         &times;
                     </span>
                     <div>
-                        <h2>Booking Info</h2>
+                        <h2>Infos zur Buchung</h2>
                         <br></br>
                         <div className="table">
                             <div className="row">
-                                <div className="cell header">Field</div>
-                                <div className="cell header">Value</div>
+                                <div className="cell header">Feld</div>
+                                <div className="cell header">Wert</div>
                             </div>
                             <div className="row">
                                 <div className="cell">Timeslot.ID</div>
@@ -526,7 +526,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="cell">Timeslot</div>
+                                <div className="cell">Zeitslot</div>
                                 <div className="cell">
                                     <select className="modalInput" id="newTimeSlot">
                                         {times.map((time) => (
@@ -538,19 +538,19 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="cell">First name</div>
+                                <div className="cell">Vorname</div>
                                 <div className="cell">
                                     <input className="modalInput" id="firstname" type="text"  />
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="cell">Last name</div>
+                                <div className="cell">Nachname</div>
                                 <div className="cell">
                                     <input className="modalInput" id="lastname" type="text"  />
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="cell">Slots booked</div>
+                                <div className="cell">Slots gebucht</div>
                                 <div className="cell">
                                     <input className="modalInput" id="bookedSlots" type="text"  />
                                 </div>
@@ -562,7 +562,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="cell">Booked at</div>
+                                <div className="cell">Gebucht am</div>
                                 <div className="cell">
                                     <input
                                         id="bookedAt"
@@ -575,7 +575,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="row" id="updatedAt">
-                                <div className="cell">Updated at</div>
+                                <div className="cell">Aktualisiert am</div>
                                 <div className="cell">
                                     <input
                                         id="updatedAt"
@@ -597,7 +597,7 @@ export default function Home() {
                                 document.getElementById("myModal").style.display = "none";
                             }}
                         >
-                            Cancel
+                            Abbrechen
                         </button>
                         <button
                             className="buttonReal"
@@ -607,7 +607,7 @@ export default function Home() {
                                 deleteBooking();
                             }}
                         >
-                            Delete
+                            Löschen
                         </button>
                         <button
                             className="buttonReal"
@@ -616,7 +616,7 @@ export default function Home() {
                                 updateSlots();
                             }}
                         >
-                            Save
+                            Speichern
                         </button>
                     </div>
                 </div>
@@ -628,7 +628,7 @@ export default function Home() {
                 >
                     &times;
                 </span>
-                <span>This is an alert box.</span>
+                <span>Das ist eine Benachrichtigung.</span>
             </div>
 
             <p style={{ display: "none" }} id="var"></p>
@@ -636,7 +636,7 @@ export default function Home() {
                 true
             </p>
             <div className="center-H">
-                <h1>Time Table</h1>
+                <h1>Zeitplan</h1>
                 <h2>{updated}</h2>
             </div>
             <h1 className="scheduleHeader">
@@ -646,7 +646,7 @@ export default function Home() {
                         document.location.href = ".";
                     }}
                 >
-                    Home
+                    Startseite
                 </button>
                 <button
                     className="scheduleHeaderButton"
@@ -654,7 +654,7 @@ export default function Home() {
                         document.location.href = "./table";
                     }}
                 >
-                    Booking Panel
+                    Buchungs-Seite
                 </button>
                 <button
                     className="scheduleHeaderButton"
@@ -665,7 +665,7 @@ export default function Home() {
                                 if (response.data.success) {
                                     document.location.href = "./login";
                                 } else {
-                                    alertBox("Error logging out", "error");
+                                    alertBox("Fehler beim Ausloggen", "error");
                                 }
                             })
                             .catch((error) => {
@@ -673,7 +673,7 @@ export default function Home() {
                             });
                     }}
                 >
-                    Log out
+                    Ausloggen
                 </button>
             </h1>
 
@@ -687,7 +687,7 @@ export default function Home() {
             <button
                 style={{ display: "none" }}
                 onClick={() => {
-                    alertBox("The websocket connection failed. Live updates are disabled.", "error");
+                    alertBox("Fehler bei der WebSocket-Verbindung. Live-Aktualisierungen sind deaktiviert.", "error");
                 }}
                 id="wsError"
             ></button>
@@ -710,7 +710,7 @@ export default function Home() {
                                     className="slot"
                                     key={`${rowIndex}_${colIndex}`}
                                     id={`${colIndex}_${rowIndex}`}
-                                    title="Click to manage"
+                                    title="Anklicken um zu verwalten"
                                     onClick={(e) => {
                                         cbmode();
                                         // remove selected class from all slots
@@ -737,7 +737,7 @@ export default function Home() {
                         action();
                     }}
                 >
-                    Inspect selected slots
+                    Ausgewählte Slots verwalten
                 </button>
                 <div style={{ marginRight: "2vw", marginLeft: "2vw" }}>
                     <div className="nextToEachOther">
@@ -750,7 +750,7 @@ export default function Home() {
                                 if (clickedAgain) {
                                     switchModes();
                                 } else {
-                                    alertBox("Are you sure you want to switch modes? If yes, click the button again within 5 seconds.", "info", 5000);
+                                    alertBox("Sicher, dass der Modus gewechselt werden soll? Wenn ja, innerhalb von 5 Sekunden erneut klicken.", "info", 5000);
                                     clickedAgain = true;
                                     setTimeout(() => {
                                         clickedAgain = false;
@@ -782,7 +782,7 @@ export default function Home() {
                         }}
                         style={{ cursor: "pointer" }}
                     >
-                        I&#39;m colorblind
+                        Farbblind-Modus
                     </h4>
                 </div>
                 <button
@@ -792,7 +792,7 @@ export default function Home() {
                         markBookedSlots(setUpdated, "dl");
                     }}
                 >
-                    Download table.json
+                    table.json herunterladen
                 </button>
                 <button
                     style={{ backgroundColor: "#ff3f3f" }}
@@ -802,7 +802,7 @@ export default function Home() {
                         deleteEverything();
                     }}
                 >
-                    Delete ALL bookings
+                    ALLE Buchungen löschen
                 </button>
             </div>
         </>

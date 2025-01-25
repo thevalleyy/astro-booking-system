@@ -33,7 +33,7 @@ export default function Home() {
                 </h1>
                 <br></br>
                 <h2>
-                    <u>Wepbage</u>
+                    <u>Website</u>
                 </h2>
                 <h3>
                     © 2025{" "}
@@ -48,18 +48,18 @@ export default function Home() {
                     <a href="https://github.com/Xanover" target="_blank">
                         Xanover
                     </a>
-                    . This project is licensed unter the{" "}
+                    . Dieses Projekt ist unter der{" "}
                     <a href="https://github.com/thevalleyy/astro-booking-system/blob/main/LICENSE" target="_blank">
                         GNU General Public License v3.0
                     </a>
-                    .
+                    {" "}lizenziert.
                 </h3>
                 <br></br>
                 <h2>
                     <u>Font Awesome</u>
                 </h2>
                 <h3>
-                    Icons by{" "}
+                    Icons von{" "}
                     <a href="https://fontawesome.com" target="_blank">
                         Font Awesome
                     </a>
@@ -67,10 +67,10 @@ export default function Home() {
                 </h3>
                 <br></br>
                 <h2>
-                    <u>Font</u>
+                    <u>Schriftart</u>
                 </h2>
                 <h3>
-                    <p>Font &#34;Montserrat&#34; by Julieta Ulanovsky, available under the SIL Open Font License 1.1: </p>
+                    <p>&#34;Montserrat&#34; von Julieta Ulanovsky, verfügbar unter der SIL Open Font License 1.1: </p>
                     <a href="https://fonts.google.com/specimen/Montserrat" target="_blank">
                         https://fonts.google.com/specimen/Montserrat
                     </a>
@@ -80,27 +80,27 @@ export default function Home() {
                     <u>Favicon</u>
                 </h2>
                 <h3>
-                    <p>This favicon was generated using the following graphics from Twitter Twemoji:</p>
+                    <p>Dieses Favicon wurde unter Verwendung der folgenden Grafiken von Twitter Twemoji erstellt:</p>
                     <p>
-                        Graphics Title:{" "}
+                        Titel:{" "}
                         <a href="https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg" target="_blank">
                             2728.svg
                         </a>
                     </p>
                     <p>
-                        Graphics Author:{" "}
+                        Ersteller:{" "}
                         <a href="https://github.com/twitter/twemoji" target="_blank">
-                            Copyright 2020 Twitter, Inc and other contributors
+                            Copyright 2020 Twitter, Inc und andere Mitwirkende
                         </a>
                     </p>
                     <p>
-                        Graphics Source:{" "}
+                        Quelle:{" "}
                         <a href="https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg" target="_blank">
                             https://github.com/twitter/twemoji/blob/master/assets/svg/2728.svg
                         </a>
                     </p>
                     <p>
-                        Graphics License:{" "}
+                        Lizenz:{" "}
                         <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
                             CC-BY 4.0
                         </a>
@@ -119,7 +119,7 @@ export default function Home() {
                         window.location.href = "/";
                     }}
                 >
-                    <span className="btn-text">Back to homepage</span>
+                    <span className="btn-text">Zurück zur Startseite</span>
                 </button>
             </div>
         </>

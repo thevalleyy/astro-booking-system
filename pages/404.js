@@ -7,7 +7,7 @@ export default function FourOhFour() {
     return (
         <>
             <Head>
-                <title>{`${title} – Not Found`}</title>
+                <title>{`${title} – Nicht gefunden`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />
@@ -19,8 +19,8 @@ export default function FourOhFour() {
             </Head>
             <div className="fullscreen no-select center-H">
                 <h1 style={{ fontSize: "5em" }}>404</h1>
-                <h1>How did you manage to do that?</h1>
-                <h2>This page does not exist :(</h2>
+                <h1>Wie haste das geschafft?</h1>
+                <h2>Diese Seite existiert nicht :(</h2>
                 <div className="nextToEachOther">
                     <button
                         className="buttonReal"
@@ -30,7 +30,7 @@ export default function FourOhFour() {
                             history.go(-1);
                         }}
                     >
-                        <span className="btn-text">Back</span>
+                        <span className="btn-text">Zurück</span>
                     </button>
                     <button
                         className="buttonReal"
@@ -40,7 +40,7 @@ export default function FourOhFour() {
                             window.location.href = "/";
                         }}
                     >
-                        <span className="btn-text">Home</span>
+                        <span className="btn-text">Startseite</span>
                     </button>
                 </div>
             </div>

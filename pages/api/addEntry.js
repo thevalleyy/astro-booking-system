@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
     const enabled = JSON.parse(await fs.readFile("./config.json", "utf-8")).settings.enabled;
     if (!enabled) {
-        res.status(423).json({ code: 423, success: false, message: "Booking is currently disabled" });
+        res.status(423).json({ code: 423, success: false, message: "Buchungen sind aktuell deaktiviert" });
         return;
     }
 

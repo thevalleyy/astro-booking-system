@@ -47,7 +47,7 @@ export default function Home() {
                 >
                     &times;
                 </span>
-                <span>This is an alert box.</span>
+                <span>Dies ist eine Benachrichtigung.</span>
             </div>
             <div style={{ display: "none" }}>
                 <button
@@ -58,13 +58,13 @@ export default function Home() {
                 ></button>
                 <button
                     onClick={() => {
-                        alertBox("The websocket connection failed. Live updates are disabled.", "error");
+                        alertBox("Fehler bei der WebSocket-Verbindung. Live-Aktualisierungen sind deaktiviert.", "error");
                     }}
                     id="wsError"
                 ></button>
             </div>
             <div className="fullscreen center-H">
-                <h1 id="textfield" >Identify yourself</h1>
+                <h1 id="textfield" >Anmelden</h1>
                  <form
                      className="nextToEachOther"
                      onSubmit={(e) => {
@@ -73,10 +73,10 @@ export default function Home() {
                      }}
                  >
                      <div className="center-H">
-                         <input className="labelInputField" placeholder="Password" type="password" id="password" name="password" required size="20" />
+                         <input className="labelInputField" placeholder="Passwort" type="password" id="password" name="password" required size="20" />
                      </div>
                      
-                     <input className="buttonReal" type="submit" value="Authenticate"></input>
+                     <input className="buttonReal" type="submit" value="Authentifizieren"></input>
                  </form>
                 <div className="nextToEachOther"> 
                 {/* TODO: top right corner */}
@@ -86,7 +86,7 @@ export default function Home() {
                             document.location.href = "./table";
                         }}
                     >
-                        Booking panel
+                        Buchungs-Seite
                     </button>
                     <button
                         className="buttonReal"
@@ -94,7 +94,7 @@ export default function Home() {
                             document.location.href = "./";
                         }}
                     >
-                        Home
+                        Startseite
                     </button>
                 </div>
             </div>

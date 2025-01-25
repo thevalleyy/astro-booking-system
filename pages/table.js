@@ -49,7 +49,7 @@ function bookSlots(setUpdated) {
     const slotsArr = Array.from(document.getElementsByClassName("clicked")).map((slot) => slot.id);
 
     if (slotsArr.length === 0) {
-        alertBox("Please select at least one slot", "info", 3000);
+        alertBox("Bitte mindestens einen Slot auswählen", "info", 3000);
         bookAnimation("stop");
         return;
     }
@@ -58,7 +58,7 @@ function bookSlots(setUpdated) {
     const firstColumn = slotsArr[0].split("_")[0] || "0";
     for (let i = 1; i < slotsArr.length; i++) {
         if (slotsArr[i].split("_")[0] !== firstColumn) {
-            alertBox("You can only book slots in one column", "info", 3000);
+            alertBox("Du kannst nur in einer Spalte buchen", "info", 3000);
             bookAnimation("stop");
             return;
         }
@@ -79,7 +79,7 @@ function bookSlots(setUpdated) {
         .then((response) => {
             bookAnimation("stop");
             alertBox(response.data.message, "success", 10000);
-            setUpdated("Last update: " + new Date(response.data.updated).toLocaleString());
+            setUpdated("Zuletzt aktualisiert: " + new Date(response.data.updated).toLocaleString());
 
             markBookedSlots(setUpdated, "client");
             document.getElementById("checkUserBookings")?.click();
@@ -92,14 +92,14 @@ function bookSlots(setUpdated) {
             // and checkBookedSlots()
         })
         .catch((error) => {
-            if (error?.response?.data.updated) setUpdated("Last update: " + new Date(error.response.data.updated).toLocaleString());
+            if (error?.response?.data.updated) setUpdated("Zuletzt aktualisiert: " + new Date(error.response.data.updated).toLocaleString());
             alertBox(`Error ${error?.response?.data.code || error} ${error?.response?.data.message || ""}`, "error");
             bookAnimation("stop");
         });
 }
 
 function markBookedSlots(setUpdated, reason) {
-    if (reason == "websocket" && (!document.getElementById("book").value.includes("disabled") && document.getElementById("book").disabled)) return;
+    if (reason == "websocket" && (!document.getElementById("book").value.includes("deaktiviert") && document.getElementById("book").disabled)) return;
     if (reason == "websocket") checkBookedSlots(false);
     // do not update if the book button is disabled, because the client will update the slots after the booking
 
@@ -128,7 +128,7 @@ function markBookedSlots(setUpdated, reason) {
                     const index = Object.keys(slots).indexOf(key);
                     document.getElementById(`${index}_${i}`).classList.add("booked");
                     document.getElementById(`${index}_${i}`).style.cursor = "not-allowed";
-                    document.getElementById(`${index}_${i}`).title = "Already booked";
+                    document.getElementById(`${index}_${i}`).title = "Schon gebucht";
                     if (document.getElementById(`${index}_${i}`).classList.contains("clicked")) {
                         document.getElementById(`${index}_${i}`).classList.remove("clicked");
                         clickedSlotsWereBooked = true;
@@ -136,9 +136,9 @@ function markBookedSlots(setUpdated, reason) {
                 }
             });
 
-            setUpdated("Last update: " + new Date(response.data.message.updated).toLocaleString());
+            setUpdated("Zuletzt aktualisiert: " + new Date(response.data.message.updated).toLocaleString());
             if (clickedSlotsWereBooked) {
-                alertBox("Some of the slots you selected are no longer available. Please select other slots.", "info", 5000);
+                alertBox("Einige der von dir ausgewählten Slots sind nicht mehr verfügbar. Bitte wähle andere Slots.", "info", 5000);
             }
 
             cbmode();
@@ -174,7 +174,7 @@ function checkBookedSlots(runRefresh = true) {
 
             if (bookedSlots.length === 0) {
                 // Use the performance API to check if the page was reloaded
-                if (document.getElementById("firstload").textContent === "true") alertBox("You have not booked any slots yet", "info", 3000);
+                if (document.getElementById("firstload").textContent === "true") alertBox("Du hast noch keine Slots gebucht", "info", 3000);
                 document.getElementById("firstload").textContent = "false";
                 return;
             }
@@ -199,7 +199,7 @@ function checkBookedSlots(runRefresh = true) {
                 document.getElementById(`${header.id}_${i}`).classList.remove("booked");
                 document.getElementById(`${header.id}_${i}`).classList.add("bookedByClient");
                 document.getElementById(`${header.id}_${i}`).style.cursor = "not-allowed";
-                document.getElementById(`${header.id}_${i}`).title = "Your booking";
+                document.getElementById(`${header.id}_${i}`).title = "Von dir gebucht";
             }
 
             cbmode();
@@ -234,12 +234,12 @@ async function getState(setEnabled) {
             });
     } catch (error) {
         console.error(error);
-        alertBox("Error getting state. See console for more information", "error");
+        alertBox("Fehler beim Abfragen des Status. Mehr Infos in der Konsole", "error");
     }
 }
 
 export default function TimeTable() {
-    const [updated, setUpdated] = useState("Fetching data...");
+    const [updated, setUpdated] = useState("Daten abrufen...");
     const [enabled, setEnabled] = useState(true);
 
     // Generate the times for the table headers
@@ -266,7 +266,7 @@ export default function TimeTable() {
     return (
         <>
             <Head>
-                <title>{`${title} – Time Schedule`}</title>
+                <title>{`${title} – Zeitplan`}</title>
                 <link rel="icon" href="/favicon.ico" />
                 <meta content={metaData.title} property="og:title" />
                 <meta content="website" property="og:type" />
@@ -284,12 +284,12 @@ export default function TimeTable() {
                     >
                         &times;
                     </span>
-                    <span>This is an alert box.</span>
+                    <span>Dies ist eine Benachrichtigung.</span>
                 </div>
                 <p style={{ display: "none" }} id="var"></p>
                 <p style={{ display: "none" }} id="firstload">true</p>
                 <div className="center-H">
-                    <h1>Time Table</h1>
+                    <h1>Zeitplan</h1>
                     <h2>{updated}</h2>
                 </div>
                 <h1 className="scheduleHeader">
@@ -299,7 +299,7 @@ export default function TimeTable() {
                             document.location.href = ".";
                         }}
                     >
-                        Home
+                        Startseite
                     </button>
                     <button
                         className="scheduleHeaderButton"
@@ -307,7 +307,7 @@ export default function TimeTable() {
                             document.location.href = "./login";
                         }}
                     >
-                        Admin panel
+                        Admin-Panel
                     </button>
                 </h1>
                 <button
@@ -320,7 +320,7 @@ export default function TimeTable() {
                 <button
                     style={{ display: "none" }}
                     onClick={() => {
-                        alertBox("Websocket connection failed. Live updates are disabled.", "error");
+                        alertBox("Fehler bei der WebSocket-Verbindung. Live-Aktualisierungen sind deaktiviert.", "error");
                     }}
                     id="wsError"
                 ></button>
@@ -348,14 +348,14 @@ export default function TimeTable() {
                                             document.getElementById(`${colIndex}_${rowIndex}`).classList.toggle("clicked");
                                             cbmode();
                                         },
-                                        title: "Click to select",
+                                        title: "Anklicken um auszuwählen",
 
                                     } : {
                                         // booking is disabled
                                         onClick: () => {
-                                            alertBox("Booking is currently disabled", "info", 3000);
+                                            alertBox("Buchungen sind aktuell deaktiviert", "info", 3000);
                                         },
-                                        title: "Booking is disabled",
+                                        title: "Buchungen sind deaktiviert",
                                         style: { cursor: "not-allowed" }
                                     })}
                                     key={`${rowIndex}_${colIndex}`}
@@ -379,25 +379,25 @@ export default function TimeTable() {
                                     <tr>
                                         <td style={{ opacity: 0 }}></td>
                                         <td>
-                                            <p className="slotColor">Empty slot</p>
+                                            <p className="slotColor">Freier Slot</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>🎯</td>
                                         <td>
-                                            <p className="clickedColor">Selected by you</p>
+                                            <p className="clickedColor">Von dir ausgewählt</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>✨</td>
                                         <td>
-                                            <p className="bookedByClientColor">Booked by you</p>
+                                            <p className="bookedByClientColor">Von dir gebucht</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style={{ opacity: 0 }}>⚠️</td>
                                         <td>
-                                            <p className="bookedColor">Booked by someone else</p>
+                                            <p className="bookedColor">Von jemand anderem gebucht</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -405,7 +405,7 @@ export default function TimeTable() {
                         </div>
                     </div>
                     <div className="settingsElement">
-                        <h3 className="center-H">Colorblind mode</h3>
+                        <h3 className="center-H">Farbblind-Modus</h3>
                         <div className="nextToEachOther">
                             <input type="checkbox" id="cbmode"></input>
                             <h4
@@ -415,7 +415,7 @@ export default function TimeTable() {
                                 }}
                                 style={{ cursor: "pointer" }}
                             >
-                                I&#39;m colorblind
+                                Umschalten
                             </h4>
                         </div>
                     </div>
@@ -438,12 +438,12 @@ export default function TimeTable() {
                 >
                     <div className="nextToEachOther" style={{ alignItems: "baseline", paddingLeft: "20vw" }}>
                         <div className="settingsElement">
-                            <h3 className="center-H">Input your data</h3>
+                            <h3 className="center-H">Eingabe der Daten</h3>
                             <br style={{ margin: 0, padding: 0 }}></br>
                             <div>
                                 <input
                                     className="labelInputField"
-                                    placeholder="Firstname"
+                                    placeholder="Vorname"
                                     type="text"
                                     id="firstname"
                                     name="firstname"
@@ -456,7 +456,7 @@ export default function TimeTable() {
                             <div>
                                 <input
                                     className="labelInputField"
-                                    placeholder="Lastname"
+                                    placeholder="Nachname"
                                     type="text"
                                     id="lastname"
                                     name="lastname"
@@ -469,7 +469,7 @@ export default function TimeTable() {
                             <div>
                                 <input
                                     className="labelInputField"
-                                    placeholder="Email Adress"
+                                    placeholder="E-Mail-Adresse"
                                     type="email"
                                     id="email"
                                     name="email"
@@ -481,12 +481,12 @@ export default function TimeTable() {
                             <input
                                 {...(enabled ? {
                                     // booking is enabled
-                                    value: "Book",
+                                    value: "Buchen",
                                     disabled: false
                                 } : { 
                                     // booking is disabled
                                     style: { cursor: "not-allowed" },
-                                    value: "Booking is disabled",
+                                    value: "Buchungen deaktiviert",
                                     disabled: true
                                 })}
 
@@ -512,7 +512,7 @@ export default function TimeTable() {
 
                                 type="submit"
                                 id="checkUserBookings"
-                                value="Check booked slots"
+                                value="Gebuchte Slots abfragen"
                                 className="buttonReal"
                                 onClick={() => {
                                     document.getElementById("var").textContent = "check";
@@ -531,7 +531,7 @@ export default function TimeTable() {
                                     cbmode();
                                 }}
                             >
-                                Clear selection
+                                Auswahl entfernen
                             </button>
                         </div>
                     </div>

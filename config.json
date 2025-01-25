@@ -26,12 +26,12 @@
     },
     "mail": {
         "sender": "Astro Booking System",
-        "mailSubject": "Confirmation for booking !BOOKEDSLOTS slot(s)",
-        "mailText": "Hello !FIRSTNAME, \n\nwe confirm your booking. Here are the details:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nRemember to be at XXX 5 minutes before !TIMESLOT on YYY. We hope you have a great time :)\n\nSincerely\nthe Astroteam",
-        "editMailSubject": "We have edited your booking for the event",
-        "editMailText": "Hello !FIRSTNAME, \n\nwe confirm an edit to your previous booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nYour new updated information:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Booked slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nSincerely\nthe Astroteam",
-        "deleteMailSubject": "We have canelled your booking for the event",
-        "deleteMailText": "Hello !FIRSTNAME, \n\nwe removed the following booking:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Booked slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nSince we've canelled your booking, you don't have to be at XXX by !TIMESLOT anymore.\n\nSincerely\nthe Astroteam"
+        "mailSubject": "Bestätigung für !BOOKEDSLOTS slot(s)",
+        "mailText": "Hey !FIRSTNAME, \n\nwir bestätigen deine Buchung. Hier sind die Infos:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nVergiss nicht, 5 Minuten vor !TIMESLOT (YYY) am XXX zu sein. Viel Spaß :)\n\nMit besten Grüßen\ndas Astroteam",
+        "editMailSubject": "Wir haben deine Buchung geändert",
+        "editMailText": "Hey !FIRSTNAME, \n\nwir bestätigen eine Änderung an deiner vorherigen Buchung:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nDeine neuen Daten:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Gebuchte Slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nMit besten Grüßen\nthe Astroteam",
+        "deleteMailSubject": "Wir haben deine Buchung gelöscht",
+        "deleteMailText": "Hey !FIRSTNAME, \n\nwir haben die folgende Buchung gelöscht:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nDa wir deine Buchung gelöscht haben, brauchst du nicht mehr um !TIMESLOT am XXX zu sein.\n\nMit besten Grüßen\nthe Astroteam"
     },
     "log": {
         "enabled": false,
@@ -41,8 +41,8 @@
         "log_extension": ".log"
     },
     "html-meta-data": {
-        "title": "I forgot to customize my project!",
-        "description": "Book your visit!",
+        "title": "Ich habe vergessen, mein Projekt zu konfigurieren!",
+        "description": "Termin buchen",
         "url": "https://astro.example.com/",
         "image": "https://apod.nasa.gov/apod/image/1611/PacmanCrawfordNew2048.jpg",
         "large_image": true,

@@ -110,7 +110,7 @@ export default async function deleteEntry(req, query) {
                         code: 200,
                         success: true,
                         updated: Date.now(),
-                        message: "Your deletion was successful, but the confirmation email could not be sent to the user. (" + query["email"] + ")",
+                        message: "Your deletion was successful, but the confirmation email could not be sent to the user. (" + email + ")",
                     };
                 }
         } catch (error) {

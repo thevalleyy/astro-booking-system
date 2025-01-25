@@ -77,7 +77,7 @@ export default function Home() {
                         Sobald du dich für ein Zeitfenster entschieden hast, kannst du <i>nurnoch innerhalb dieses Zeitfensters</i> buchen.
                     </h3>
                     <h3>
-                        Sobal du einen Slot gebucht hast, kannst du ihn <span className="highlighted">nicht mehr entbuchen</span>.
+                        Sobald du einen Slot gebucht hast, kannst du ihn <span className="highlighted">nicht mehr entbuchen</span>.
                     </h3>
                     <h3>
                         Falls es jegliche Probleme gibt, wende dich bitte an den Admin via <a href={`mailto:${mail}`}> {mail}</a>.

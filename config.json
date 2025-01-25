@@ -29,9 +29,9 @@
         "mailSubject": "Bestätigung für !BOOKEDSLOTS slot(s)",
         "mailText": "Hey !FIRSTNAME, \n\nwir bestätigen deine Buchung. Hier sind die Infos:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nVergiss nicht, 5 Minuten vor !TIMESLOT (YYY) am XXX zu sein. Viel Spaß :)\n\nMit besten Grüßen\ndas Astroteam",
         "editMailSubject": "Wir haben deine Buchung geändert",
-        "editMailText": "Hey !FIRSTNAME, \n\nwir bestätigen eine Änderung an deiner vorherigen Buchung:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nDeine neuen Daten:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Gebuchte Slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nMit besten Grüßen\nthe Astroteam",
+        "editMailText": "Hey !FIRSTNAME, \n\nwir bestätigen eine Änderung an deiner vorherigen Buchung:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\n\nDeine neuen Daten:\n* Name: !NEWFIRSTNAME !NEWLASTNAME\n* E-Mail: !NEWEMAIL\n* Gebuchte Slots: !NEWBOOKEDSLOTS\n* Timeslot: !NEWTIMESLOT\n\nMit besten Grüßen\ndas Astroteam",
         "deleteMailSubject": "Wir haben deine Buchung gelöscht",
-        "deleteMailText": "Hey !FIRSTNAME, \n\nwir haben die folgende Buchung gelöscht:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nDa wir deine Buchung gelöscht haben, brauchst du nicht mehr um !TIMESLOT am XXX zu sein.\n\nMit besten Grüßen\nthe Astroteam"
+        "deleteMailText": "Hey !FIRSTNAME, \n\nwir haben die folgende Buchung gelöscht:\n* Name: !FIRSTNAME !LASTNAME\n* E-Mail: !EMAIL\n* Gebuchte Slots: !BOOKEDSLOTS\n* Timeslot: !TIMESLOT\nDa wir deine Buchung gelöscht haben, brauchst du nicht mehr um !TIMESLOT am XXX zu sein.\n\nMit besten Grüßen\ndas Astroteam"
     },
     "log": {
         "enabled": false,

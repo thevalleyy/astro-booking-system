@@ -123,16 +123,18 @@ export default async function editEntry(req, query) {
                             message: `User has already booked ${bookings[1]} slots in ${bookings[0]}`,
                         };
                     }
+
+                // are enough total slots availible
+                if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
+                    return {
+                        code: 400,
+                        success: false,
+                        message: "Not enough slots available at " + query["newTimeSlot"],
+                    };
+                }
             }
 
-            // are enough total slots availible
-            if (slotsBooked + Number(query["bookedSlots"]) > slotsPerColumn) {
-                return {
-                    code: 400,
-                    success: false,
-                    message: "Not enough slots available at " + query["newTimeSlot"],
-                };
-            }
+            
 
             if (!query["new"]) {
                 // old values
@@ -141,6 +143,15 @@ export default async function editEntry(req, query) {
                 var email = data[query["timeSlot"]][query["id"]].email;
                 var bookedSlots = data[query["timeSlot"]][query["id"]].bookedSlots;
                 var time = data[query["timeSlot"]][query["id"]].time;
+
+                // are enough total slots availible
+                if (slotsBooked + ((query["timeSlot"] === query["newTimeSlot"]) ? (Number(query["bookedSlots"]) - bookedSlots) : (Number(query["bookedSlots"]))) > slotsPerColumn) {
+                    return {
+                        code: 400,
+                        success: false,
+                        message: "Not enough slots available at " + query["newTimeSlot"],
+                    };
+                }
  
                 if (query["timeSlot"] === query["newTimeSlot"] && firstname === query["firstname"] && lastname === query["lastname"] && email === query["email"] && bookedSlots === Number(query["bookedSlots"])) {
                     return {

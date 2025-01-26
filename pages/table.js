@@ -369,7 +369,9 @@ export default function TimeTable() {
                         ))}
                     </tbody>
                 </table>
+                <div className="mobileAlign">
                 <div className="nextToEachOther" style={{ alignItems: "baseline", float: "left" }}>
+                    <div className="mobileAlignHorizontal">
                     <div className="settingsElement">
                         <h3 className="center-H">Legend</h3>
                         <br></br>
@@ -404,6 +406,7 @@ export default function TimeTable() {
                             </table>
                         </div>
                     </div>
+                    <br></br>
                     <div className="settingsElement">
                         <h3 className="center-H">Colorblind mode</h3>
                         <div className="nextToEachOther">
@@ -418,6 +421,7 @@ export default function TimeTable() {
                                 I&#39;m colorblind
                             </h4>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <form
@@ -536,6 +540,7 @@ export default function TimeTable() {
                         </div>
                     </div>
                 </form>
+                </div>
             </div>
         </>
     );

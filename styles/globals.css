@@ -321,15 +321,29 @@ td {
     .nextToEachOther {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: center !important;
         justify-content: center;
+        float: none !important;
     }
 
-    .body {
+    .scheduleHeader {
+        position: relative;
+        margin-bottom: 15vw;
+        margin-right: 3vw;
+    }
+
+    .mobileAlign {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        min-height: 100vh;
+    }
+
+    .mobileAlignHorizontal {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .legend {
+        width: 40vw;
     }
 
     .alert {

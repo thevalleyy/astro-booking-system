@@ -73,7 +73,8 @@ function startEvent() {
         updateTime();
     }, 1000);
 
-    // 
+    // determine the nearest timeframe
+
 }
 
 export default function Home() {
@@ -161,6 +162,9 @@ export default function Home() {
             </h1>
 
             <div className="center-H" id="startButton">
+                <label style={{cursor: "pointer"}} onClick={() => {document.getElementById("forcestart").click()}}>Forced start at the first timeslot ({headers[0]}). If {headers[0]} has already passed today, the event will not start until tomorrow.</label>
+                <input type="checkbox" id="forcestart" style={{cursor: "pointer"}}></input>
+                <br></br>
                 <button className="buttonReal" onClick={() => {startEvent()}}>Start</button>
             </div>
 

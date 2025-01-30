@@ -1,3 +1,0 @@
-List.JS
-    * display the bookings on a seperate webpage according to the current time
-    

@@ -74,7 +74,9 @@ function startEvent() {
     }, 1000);
 
     // determine the nearest timeframe
+    const forceFirst = document.getElementById("forcestart").checked;
 
+    
 }
 
 export default function Home() {

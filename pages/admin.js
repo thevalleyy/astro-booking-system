@@ -659,6 +659,14 @@ export default function Home() {
                 <button
                     className="scheduleHeaderButton"
                     onClick={() => {
+                        document.location.href = "./countdown";
+                    }}
+                >
+                    Countdown
+                </button>
+                <button
+                    className="scheduleHeaderButton"
+                    onClick={() => {
                         axios
                             .get("/api/logout")
                             .then((response) => {

@@ -317,7 +317,7 @@ td {
 }
 
 /* Phones, and other vertical devices */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .nextToEachOther {
         display: flex;
         flex-direction: column;
@@ -589,4 +589,14 @@ ul li a:hover::before {
 .right {
     display: flex;
     justify-content: flex-end; /* Aligns content to the right */
+}
+
+#startButton {
+    transform: translateY(calc(50vh - 50%));
+}
+
+#curr,
+#next {
+    font-size: 1.5em;
+    font-weight: bold;
 }

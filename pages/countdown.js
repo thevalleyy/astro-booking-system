@@ -5,9 +5,9 @@ import cookie from "cookie";
 import passwords from "../passwords.json" with { type: "json" };
 import config from "../config.json" with { type: "json" };
 import headers from "../data/headers.json" with { type: "json" };
+import table from "../data/table.json" with { type: "json" };
 
 const metaData = config["html-meta-data"];
-const slotsPerColumn = config.settings.slotsPerColumn;
 const title = config.settings.title;
 const adminkey = passwords.adminkey;
 
@@ -63,6 +63,28 @@ function updateTime() {
     document.getElementById("time").innerText = `${hours}:${minutes}:${seconds}`;
 }
 
+function evaluateCurrentTimeframe(timeframes) {
+    const time = new Date();
+    const currentTime = time.getTime();
+
+    if (currentTime > Number.parseInt(timeframes[timeframes.length - 1])) {
+        // all timeframes have already passed
+        return headers.length;
+    }
+
+    let curr = 0;
+
+    for (let i = 0; i < timeframes.length; i++) {
+        if (Number.parseInt(timeframes[i]) > currentTime) {
+            // found next timeframe
+            curr = i;
+            break;
+        }
+    }
+
+    return curr - 1;
+}
+
 function startEvent() {
     document.getElementById("startButton").style.display = "none";
     document.getElementById("event").style.display = "block";
@@ -73,15 +95,174 @@ function startEvent() {
         updateTime();
     }, 1000);
 
-    // determine the nearest timeframe
+    // get forced start
     const forceFirst = document.getElementById("forcestart").checked;
-
     
+    // calculate all time frames
+    const timeframes = [];
+    let firstSlotAlreadyPassed = false;
+
+    for (let i = 0; i < headers.length; i++) {
+        const time = headers[i].split(":");
+        const hours = parseInt(time[0]);
+        const minutes = parseInt(time[1]);
+
+        let timeFrame = new Date();
+        timeFrame.setHours(hours);
+        timeFrame.setMinutes(minutes);
+        timeFrame.setSeconds(0);
+        timeFrame.setMilliseconds(0);
+
+        if (headers[i - 1] && headers[i - 1].split(":")[0] > hours) {
+            // new day
+            timeFrame.setDate(timeFrame.getDate() + 1);
+        }
+
+        if (forceFirst) {
+            // check if the time has already passed today
+            if (timeFrame < new Date() || firstSlotAlreadyPassed) {
+                // add 1 day
+                timeFrame.setDate(timeFrame.getDate() + 1);
+
+                firstSlotAlreadyPassed = true;
+            }
+        }
+
+        timeframes.push(timeFrame.getTime().toString());
+    }
+
+
+    function update() {
+        // evaluate the current timeframe
+        const current = evaluateCurrentTimeframe(timeframes);
+        // console.log(timeframes, current, new Date(Number.parseInt(timeframes[0])));
+
+        // update the current timeframe
+        if (current < 0) {
+            document.getElementById("curr").innerText = "None";
+            document.getElementById("next").innerText = headers[0];
+        } else if (current == headers.length) {
+            document.getElementById("curr").innerText = headers[headers.length - 1];
+            document.getElementById("next").innerText = "None";
+        } else {
+            document.getElementById("curr").innerText = headers[current];
+            document.getElementById("next").innerText = headers[current + 1];
+        }
+    }
+
+    update();
+    setInterval(() => {
+        update();
+    }, 1000);
+
+    // update time remaining
+    function updateTimeRemaining() {
+        const current = evaluateCurrentTimeframe(timeframes);
+        const time = new Date();
+        const currentTime = time.getTime();
+
+        if (current < 0) {
+            // no current timeframe
+            const nextTime = Number.parseInt(timeframes[current + 1]);
+            const timeRemaining = nextTime - currentTime;
+
+            const hours = Math.floor(timeRemaining / 3600000);
+            const minutes = Math.floor((timeRemaining % 3600000) / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+
+            document.getElementById("timeRem").innerText = `${hours ? hours + "h" : ""} ${minutes}m ${seconds}s`;
+        } else if (current == headers.length) {
+            // all timeframes have already passed
+            document.getElementById("timeRem").innerText = "...";
+
+        } else {
+            const nextTime = Number.parseInt(timeframes[current + 1]);
+            const timeRemaining = nextTime - currentTime;
+
+            const hours = Math.floor(timeRemaining / 3600000);
+            const minutes = Math.floor((timeRemaining % 3600000) / 60000);
+            const seconds = Math.floor((timeRemaining % 60000) / 1000);
+
+            document.getElementById("timeRem").innerText = `${hours ? hours + "h" : ""} ${minutes}m ${seconds}s`;
+        }
+    }
+
+    updateTimeRemaining();
+    setInterval(() => {
+        updateTimeRemaining();
+    }, 1000);
+
+    function fillBookings(index, element) {
+        const timeslot = table.data[Object.keys(table.data)[index]];
+        let sum = 0;
+        let tableHTML = `<table style="width: 100%; border-collapse: collapse;">`;
+    
+        // Kopfzeile (optional, falls du Spaltenüberschriften möchtest)
+        tableHTML += `
+          <tr>
+            <th style="text-align: left; border-bottom: 1px solid #ccc;">Name</th>
+            <th style="text-align: right; border-bottom: 1px solid #ccc;">Slots</th>
+          </tr>
+        `;
+    
+        // Zeilen für jede Buchung
+        for (let i = 0; i < Object.keys(timeslot).length; i++) {
+            const booking = timeslot[i];
+            sum += booking.bookedSlots;
+            tableHTML += `
+              <tr>
+                <td style="padding: 5px 0; text-align: left;">${booking.firstname.substring(0, 1).toUpperCase()}. ${booking.lastname}</td>
+                <td style="padding: 5px 0; text-align: right;">${booking.bookedSlots}</td>
+              </tr>
+            `;
+        }
+    
+        // Falls keine Slots gebucht wurden
+        if (sum === 0) {
+            tableHTML = "<h3>None!</h3>";
+        } else {
+            // Zeile für die Summe
+            tableHTML += `
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 10px; text-align: left;">Total</td>
+                  <td style="padding-top: 10px; text-align: right; font-weight: bold;">${sum}</td>
+                </tr>
+            `;
+        }
+    
+        tableHTML += "</table>";
+    
+        element.innerHTML = tableHTML;
+    }
+    
+    
+
+    function updateBookings() {
+        const current = evaluateCurrentTimeframe(timeframes);
+        if (current < 0) {
+            // no current timeframe
+            document.getElementById("currSlots").innerText = "None";
+            fillBookings(0, document.getElementById("nextSlots"));
+        } else if (current == headers.length) {
+            // all timeframes have already passed
+            fillBookings(headers.length - 1, document.getElementById("currSlots"));
+            document.getElementById("nextSlots").innerText = "None";
+        } else {
+            fillBookings(current, document.getElementById("currSlots"));
+            fillBookings(current + 1, document.getElementById("nextSlots"));
+        }
+    }
+
+    updateBookings();
+    setInterval(() => {
+        updateBookings();
+    }, 1000);
 }
 
 export default function Home() {
-    const times = headers;
-
     useEffect(() => {
         // portrait mode warning
         if (window.innerHeight > window.innerWidth) {
@@ -89,7 +270,6 @@ export default function Home() {
         }
 
         window.addEventListener("resize", () => {
-            console.log("fullscreenchange");
             if (window.innerHeight !== window.screen.height) {
                 // make buttons visible
                 document.getElementsByClassName("scheduleHeader")[0].style.display = "block";
@@ -163,8 +343,9 @@ export default function Home() {
                 </button>
             </h1>
 
-            <div className="center-H" id="startButton">
+            <div className="center-H no-select" id="startButton">
                 <label style={{cursor: "pointer"}} onClick={() => {document.getElementById("forcestart").click()}}>Forced start at the first timeslot ({headers[0]}). If {headers[0]} has already passed today, the event will not start until tomorrow.</label>
+                <br style={{fontSize: "0.3em"}}></br>
                 <input type="checkbox" id="forcestart" style={{cursor: "pointer"}}></input>
                 <br></br>
                 <button className="buttonReal" onClick={() => {startEvent()}}>Start</button>
@@ -177,10 +358,27 @@ export default function Home() {
                 <br></br>
                 <div className="center-H">
                     <h1>Event started!</h1>
-                    <h2 id="time">...</h2>
+                    <h1 id="time">...</h1>
                     <br></br>
-                    <h2>Current Timeframe:</h2>
-                    <h2>Next Timeframe:</h2>
+                    <div className="nextToEachOther" style={{width: "80vw", alignItems: "flex-start"}}>
+                        <div style={{width: "30vw"}}>
+                            <h1>Current timeslot:<p id="curr"></p></h1>
+                            <br></br>
+                            <h1 style={{paddingBottom: "10px"}}>Booked slots:</h1>
+                            <h2 id="currSlots"></h2>
+                        </div>
+                        
+                        <div style={{width: "20vw" }} className="center-H">
+                            <h1><p id="timeRem"></p></h1><h2> until next timeslot</h2>
+                        </div>
+
+                        <div style={{width: "30vw"}}>
+                            <h1>Next timeslot:<p id="next"></p></h1>
+                            <br></br>
+                            <h1 style={{paddingBottom: "10px"}}>Booked slots:</h1>
+                            <h2 id="nextSlots"></h2>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

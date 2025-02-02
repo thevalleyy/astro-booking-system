@@ -597,3 +597,9 @@ ul li a:hover::before {
 #startButton {
     transform: translateY(calc(50vh - 50%));
 }
+
+#curr,
+#next {
+    font-size: 1.5em;
+    font-weight: bold;
+}

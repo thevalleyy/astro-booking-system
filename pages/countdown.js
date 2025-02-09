@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {promises as fsl } from "fs";
 import Head from "next/head";
 import cookie from "cookie";
 
@@ -40,8 +41,10 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const table = JSON.parse(await fsl.readFile("./data/table.json", "utf-8"));
+
     return {
-        props: {},
+        props: { table },
     };
 }
 
@@ -85,7 +88,7 @@ function evaluateCurrentTimeframe(timeframes) {
     return curr - 1;
 }
 
-function startEvent() {
+function startEvent(table) {
     document.getElementById("startButton").style.display = "none";
     document.getElementById("event").style.display = "block";
 
@@ -262,7 +265,7 @@ function startEvent() {
     }, 1000);
 }
 
-export default function Home() {
+export default function Home({ table }) {
     useEffect(() => {
         // portrait mode warning
         if (window.innerHeight > window.innerWidth) {
@@ -348,7 +351,7 @@ export default function Home() {
                 <br style={{fontSize: "0.3em"}}></br>
                 <input type="checkbox" id="forcestart" style={{cursor: "pointer"}}></input>
                 <br></br>
-                <button className="buttonReal" onClick={() => {startEvent()}}>Start</button>
+                <button className="buttonReal" onClick={() => {startEvent(table)}}>Start</button>
             </div>
 
             <div id="event" style={{display: "none"}}>

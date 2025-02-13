@@ -778,7 +778,7 @@ export default function Home() {
                         </h4>
                     </div>
                     <h4>
-                        Current State: <span id="switchColor">{/* innerHTML will be set by getState() */}</span>
+                        Aktuell: <span id="switchColor">{/* innerHTML will be set by getState() */}</span>
                     </h4>
                 </div>
                 <div className="nextToEachOther">

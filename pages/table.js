@@ -373,7 +373,7 @@ export default function TimeTable() {
                 <div className="nextToEachOther" style={{ alignItems: "baseline", float: "left" }}>
                     <div className="mobileAlignHorizontal">
                     <div className="settingsElement">
-                        <h3 className="center-H">Legend</h3>
+                        <h3 className="center-H">Legende</h3>
                         <br></br>
                         <div className="legend no-select center-H">
                             <table>

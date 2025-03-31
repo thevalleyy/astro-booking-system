@@ -70,35 +70,35 @@ export default async function deleteAll(req, query) {
         };
 
         // notify all users about the change via email
-        try {
-            const transporter = nodemailer.createTransport(confirmationEmailSettings);
+        // try {
+        //     const transporter = nodemailer.createTransport(confirmationEmailSettings);
 
-            for (const booking of bookings) {
-                try {
-                    const mailText = mailSettings.deleteMailText
-                        .replaceAll("!FIRSTNAME", booking.firstname)
-                        .replaceAll("!LASTNAME", booking.lastname)
-                        .replaceAll("!TIMESLOT", booking.timeslot)
-                        .replaceAll("!BOOKEDSLOTS", booking.bookedSlots)
-                        .replaceAll("!EMAIL", booking.email);
+        //     for (const booking of bookings) {
+        //         try {
+        //             const mailText = mailSettings.deleteMailText
+        //                 .replaceAll("!FIRSTNAME", booking.firstname)
+        //                 .replaceAll("!LASTNAME", booking.lastname)
+        //                 .replaceAll("!TIMESLOT", booking.timeslot)
+        //                 .replaceAll("!BOOKEDSLOTS", booking.bookedSlots)
+        //                 .replaceAll("!EMAIL", booking.email);
 
-                    const mailSubject = mailSettings.deleteMailSubject;
+        //             const mailSubject = mailSettings.deleteMailSubject;
 
-                    const info = await transporter.sendMail({
-                        from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
-                        to: booking.email, 
-                        subject: mailSubject,
-                        text: mailText,
-                    });
+        //             const info = await transporter.sendMail({
+        //                 from: `"${mailSettings.sender}" <${confirmationEmailSettings.auth.user}>`,
+        //                 to: booking.email, 
+        //                 subject: mailSubject,
+        //                 text: mailText,
+        //             });
 
-                    console.log("Message sent: %s", info.messageId);
-                } catch (emailError) {
-                    console.error(`Failed to send email to ${booking.email}:`, emailError);
-                    throw emailError; // Stop further processing if any email fails
-                }
-            }
+        //             console.log("Message sent: %s", info.messageId);
+        //         } catch (emailError) {
+        //             console.error(`Failed to send email to ${booking.email}:`, emailError);
+        //             throw emailError; // Stop further processing if any email fails
+        //         }
+        //     }
 
-            transporter.close();
+        //     transporter.close();
 
             return {
                 code: 200,
@@ -106,15 +106,16 @@ export default async function deleteAll(req, query) {
                 updated: Date.now(),
                 message: "Deleted all entries. A backup is available at " + filename,
             };
-        } catch (error) {
-            console.error("Error sending emails:", error);
-            return {
-                code: 200,
-                success: true,
-                updated: Date.now(),
-                message: "Your deletion was successful, but we couldn't send an email to all users. Check console. A backup is available at " + filename,
-            };
-        }
+        // } catch (error) {
+        //     console.error("Error sending emails:", error);
+        //     return {
+        //         code: 200,
+        //         success: true,
+        //         updated: Date.now(),
+        //         message: "Your deletion was successful, but we couldn't send an email to all users. Check console. A backup is available at " + filename,
+        //     };
+        // }
+
     } catch (error) {
         console.error(error);
         return {

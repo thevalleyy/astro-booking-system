@@ -427,10 +427,10 @@ async function deleteEverything() {
         .then((res) => {
             bookAnimation("stop", "deleteAll");
             if (res.data.success) {
-                alertBox(res.data.message, "success", 10000);
+                alertBox(res.data.message, "success");
                 document.getElementById("refreshButton").click();
             } else {
-                alertBox(res.data.message, "error", 10000);
+                alertBox(res.data.message, "error");
             }
         })
         .catch((error) => {

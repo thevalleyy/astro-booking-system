@@ -13,19 +13,19 @@
     "reset": "node ./js/reset.js"
   },
   "dependencies": {
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "concurrently": "^9.1.2",
     "cookie": "^1.0.2",
-    "next": "15.1.6",
+    "next": "15.2.4",
     "nodemailer": "^6.10.0",
     "prompt-sync": "^4.2.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "ws": "^8.18.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^9",
-    "eslint-config-next": "15.1.6"
+    "eslint-config-next": "15.2.4"
   }
 }

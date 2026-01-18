@@ -36,7 +36,7 @@ export default function Home() {
                     <u>Wepbage</u>
                 </h2>
                 <h3>
-                    © 2025{" "}
+                    © 2026{" "}
                     <a href="https://github.com/Dodorex-code" target="_blank">
                         Dodorex
                     </a>
